@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2CA26348-7E5D-4506-9BB4-61AE64510942}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DamLKK</RootNamespace>
+    <AssemblyName>DamLKK</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>DM21.ico</ApplicationIcon>
+    <PublishUrl>http://localhost/DamLKK/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <StartupObject>DamLKK.Program</StartupObject>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Enterprise.Framework, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.Enterprise.InfoStore, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TeamSystem.Data.UnitTesting, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\System.Web.Services\2.0.0.0__b03f5f7f11d50a3a\System.Web.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DB\CarDistributeDAO.cs" />
+    <Compile Include="DB\DateUtil.cs" />
+    <Compile Include="DB\DeckDAO.cs" />
+    <Compile Include="DB\RollerDAO.cs" />
+    <Compile Include="DB\TracePointDAO.cs" />
+    <Compile Include="Forms\AssignVehicle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AssignVehicle.designer.cs">
+      <DependentUpon>AssignVehicle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DeckCoordInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DeckCoordInput.designer.cs">
+      <DependentUpon>DeckCoordInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DeckInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DeckInfo.designer.cs">
+      <DependentUpon>DeckInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\EagleEye.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EagleEye.Designer.cs">
+      <DependentUpon>EagleEye.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Landscape.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Landscape.designer.cs">
+      <DependentUpon>Landscape.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LayerPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LayerPreview.designer.cs">
+      <DependentUpon>LayerPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ToolsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ToolsWindow.Designer.cs">
+      <DependentUpon>ToolsWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UnitInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UnitInput.designer.cs">
+      <DependentUpon>UnitInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\VehicleHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\VehicleHistory.designer.cs">
+      <DependentUpon>VehicleHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Warning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Warning.designer.cs">
+      <DependentUpon>Warning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WarningList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WarningList.designer.cs">
+      <DependentUpon>WarningList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Geo\Coord84To54.cs" />
+    <Compile Include="Geo\DamUtils.cs" />
+    <Compile Include="Geo\LineIntersect.cs" />
+    <Compile Include="Geo\PolygonBoolean.cs" />
+    <Compile Include="Geo\Vector.cs" />
+    <Compile Include="Utils\Graph\RoundPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\Graph\RoundPanel.designer.cs">
+      <DependentUpon>RoundPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\Sys\SysUtils.cs" />
+    <Compile Include="Utils\TabControl\BaseStyledPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\TabControl\CollectionWithEvents.cs" />
+    <Compile Include="Utils\TabControl\Delegates.cs" />
+    <Compile Include="Utils\TabControl\Enums.cs" />
+    <Compile Include="Utils\TabControl\FATabStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\TabControl\FATabStripCloseButton.cs" />
+    <Compile Include="Utils\TabControl\FATabStripDesigner.cs" />
+    <Compile Include="Utils\TabControl\FATabStripItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\TabControl\FATabStripItemCollection.cs" />
+    <Compile Include="Utils\TabControl\FATabStripItemDesigner.cs" />
+    <Compile Include="Utils\TabControl\FATabStripMenuGlyph.cs" />
+    <Compile Include="Utils\TabControl\ICaptionSupport.cs" />
+    <Compile Include="Views\Compass.cs" />
+    <Compile Include="Views\LayerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\LayerView.Designer.cs">
+      <DependentUpon>LayerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Operations.cs" />
+    <Compile Include="Views\PolySelector.cs" />
+    <Compile Include="Views\RectSelector.cs" />
+    <Compile Include="Views\Scaler.cs" />
+    <Compile Include="Views\Zoomer.cs" />
+    <Compile Include="_Control\DeckControl.cs" />
+    <Compile Include="_Control\LayerControl.cs" />
+    <Compile Include="_Control\LoginControl.cs" />
+    <Compile Include="DB\BlockDAO.cs" />
+    <Compile Include="DB\DBconfig.cs" />
+    <Compile Include="DB\DBconnectioin.cs" />
+    <Compile Include="DB\LoginDAO.cs" />
+    <Compile Include="DB\UnitDAO.cs" />
+    <Compile Include="Forms\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Login.designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Waiting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Waiting.Designer.cs">
+      <DependentUpon>Waiting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Geo\Coord.cs" />
+    <Compile Include="Geo\DMMatrix.cs" />
+    <Compile Include="Geo\DMRectangle.cs" />
+    <Compile Include="_Control\SoundControl.cs" />
+    <Compile Include="_Control\TrackGPSControl.cs" />
+    <Compile Include="_Control\TrackGPSInstant.cs" />
+    <Compile Include="_Control\VehicleControl.cs" />
+    <Compile Include="_Control\WarningControl.cs" />
+    <Compile Include="_Model\Block.cs" />
+    <Compile Include="_Model\Config.cs" />
+    <Compile Include="_Model\Dam.cs" />
+    <Compile Include="_Model\Deck.cs" />
+    <Compile Include="_Model\Elevation.cs" />
+    <Compile Include="_Model\Layer.cs" />
+    <Compile Include="_Model\Polygon.cs" />
+    <Compile Include="_Model\Roller.cs" />
+    <Compile Include="_Model\RollerDis.cs" />
+    <Compile Include="_Model\TraceGPS.cs" />
+    <Compile Include="_Model\Track.cs" />
+    <Compile Include="_Model\Unit.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\DeckCoordInput.resx">
+      <DependentUpon>DeckCoordInput.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EagleEye.resx">
+      <DependentUpon>EagleEye.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Landscape.resx">
+      <DependentUpon>Landscape.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LayerPreview.resx">
+      <DependentUpon>LayerPreview.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ToolsWindow.resx">
+      <DependentUpon>ToolsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UnitInput.resx">
+      <DependentUpon>UnitInput.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\MacWait.resx">
+      <DependentUpon>MacWait.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\VistaButton\VistaButton.resx">
+      <DependentUpon>VistaButton.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\LayerView.resx">
+      <DependentUpon>LayerView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Doc\龙开口对象模型图.vsd" />
+    <None Include="Doc\龙开口层次图.vsd" />
+    <None Include="Doc\龙开口数据流图.vsd" />
+    <None Include="Doc\龙开口流程图.vsd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Utils\DebugUtil.cs" />
+    <Compile Include="Utils\FileHelper.cs" />
+    <Compile Include="Utils\Graph\OutGlow.cs" />
+    <Compile Include="Utils\Graph\Rect.cs" />
+    <Compile Include="Utils\MacWait.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Utils\MacWait.designer.cs">
+      <DependentUpon>MacWait.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\MsgBox.cs" />
+    <Compile Include="Utils\Security.cs" />
+    <Compile Include="Utils\VistaButton\VistaButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Utils\Xml\XMLSerializer.cs" />
+    <Compile Include="Utils\Xml\XMLUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DM21.ico">
+    </Content>
+    <Content Include="Doc\DM2.iss" />
+    <Content Include="Doc\TrackPoint.wav" />
+    <Content Include="Doc\旋转坐标+.txt" />
+    <Content Include="Doc\软件重用修改目录.txt" />
+    <Content Include="Pictures\Locks.png" />
+    <None Include="Doc\Chinese.isl" />
+    <None Include="Resources\warning.png" />
+    <EmbeddedResource Include="Forms\AssignVehicle.resx">
+      <DependentUpon>AssignVehicle.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DeckInfo.resx">
+      <DependentUpon>DeckInfo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\VehicleHistory.resx">
+      <DependentUpon>VehicleHistory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Warning.resx">
+      <DependentUpon>Warning.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WarningList.resx">
+      <DependentUpon>WarningList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MAGNIFY.CUR" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
