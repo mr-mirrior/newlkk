@@ -43,7 +43,7 @@
             this.miVehicleInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.miArrows = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsReport = new System.Windows.Forms.ToolStripMenuItem();
             this.miDataMap = new System.Windows.Forms.ToolStripMenuItem();
             this.生成压实厚度图TToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miProperties = new System.Windows.Forms.ToolStripMenuItem();
@@ -122,7 +122,7 @@
             this.miVehicleInfo,
             this.miArrows,
             this.toolStripMenuItem3,
-            this.toolStripMenuItem2,
+            this.tsReport,
             this.miDataMap,
             this.生成压实厚度图TToolStripMenuItem});
             视图VToolStripMenuItem.Name = "视图VToolStripMenuItem";
@@ -169,12 +169,13 @@
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(174, 6);
             // 
-            // toolStripMenuItem2
+            // tsReport
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.ShortcutKeyDisplayString = "F9";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 22);
-            this.toolStripMenuItem2.Text = "生成图形报告(&R)";
+            this.tsReport.Name = "tsReport";
+            this.tsReport.ShortcutKeyDisplayString = "F9";
+            this.tsReport.Size = new System.Drawing.Size(177, 22);
+            this.tsReport.Text = "生成图形报告(&R)";
+            this.tsReport.Click += new System.EventHandler(this.tsReport_Click);
             // 
             // miDataMap
             // 
@@ -336,7 +337,7 @@
         private System.Windows.Forms.ToolStripMenuItem miVehicleInfo;
         private System.Windows.Forms.ToolStripMenuItem miArrows;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem tsReport;
         private System.Windows.Forms.ToolStripMenuItem miDataMap;
         private System.Windows.Forms.ToolStripMenuItem 生成压实厚度图TToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
