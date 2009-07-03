@@ -284,7 +284,8 @@ namespace DamLKK._Control
         {
             System.Diagnostics.Debug.Print(fmt);
         }
-        public static bool IsConnected { get { return socket.Connected; } }
+
+        public static bool IsConnected { get { return false;/* socket.Connected;*/ } }            //此此为判断是否soket已经连接，测试阶段先置false；
 
         static DamLKK.Geo.GPSCoord cd;
         static DamLKK.Geo.Coord cdBar;

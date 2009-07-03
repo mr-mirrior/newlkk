@@ -377,6 +377,23 @@ namespace DamLKK._Model
             return Polygon.Boundary.Contains(pt.PF);
         }
 
+        public void ShowDrawingComponent(DrawingComponent dc, bool show)
+        {
+            if (show)
+                ShowDrawingComponent(dc);
+            else
+                HideDrawComponent(dc);
+        }
+
+        public void ShowDrawingComponent(DrawingComponent dc)
+        {
+            drawingComponent |= dc;
+        }
+        public void HideDrawComponent(DrawingComponent dc)
+        {
+            drawingComponent &= ~dc;
+        }
+
         /// <summary>
         /// 边数颜色0-15
         /// </summary>
@@ -404,7 +421,7 @@ namespace DamLKK._Model
         Font ft;
         Geo.Coord _DamOrignCoord;
         string _OrignCoordString;
-        string _Rolladdress;
+        public string _Rolladdress;
 
 #region  --------------------------------------碾压边数原图-------------------------------------
         /// <summary>
@@ -1344,6 +1361,10 @@ namespace DamLKK._Model
             double zoomold = this.MyLayer.Zoom;
             this.MyLayer.Zoom = 5;
             Bitmap bmp = ElevationImage(out lo, out hi);
+            //无高程原图
+            if (bmp == null)
+                return null;
+
             DB.DeckDAO.GetInstance().UpdateElevationBitMap(this._Unit.ID, this._Elevation.Height, this._ID,DamLKK.DB.DeckDAO.GetInstance().ToByte(bmp), lo.ToString("0.00") + "," + hi.ToString("0.00"));
             this.MyLayer.Zoom = zoomold;
             bmp = ElevationImage(out lo, out hi);

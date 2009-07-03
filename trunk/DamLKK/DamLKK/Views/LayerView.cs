@@ -922,78 +922,78 @@ namespace DamLKK.Views
 
         public bool ProcessKeys(KeyEventArgs e)
         {
-        //    if (e.KeyCode == Keys.Escape)
-        //    {
-        //        if (isRectSelecting)
-        //        {
-        //            // 取消选择
-        //            CancelPolySelecting();
-        //            CancelRectSelecting();
-        //            e.SuppressKeyPress = true;
-        //            return true;
-        //        }
-        //    }
-        //    if (e.KeyCode == Keys.Space)
-        //    {
-        //    }
-        //    /*
-        //     * 左键 单击 切换可见
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (_IsRectSelecting)
+                {
+                    // 取消选择
+                    CancelPolySelecting();
+                    CancelRectSelecting();
+                    e.SuppressKeyPress = true;
+                    return true;
+                }
+            }
+            if (e.KeyCode == Keys.Space)
+            {
+            }
+            /*
+             * 左键 单击 切换可见
 
-        //        开仓、关仓：CTRL+ALT+SHIFT+D
-        //        删除仓面：delete
+                开仓、关仓：CTRL+ALT+SHIFT+D
+                删除仓面：delete
 
-        //        轨迹：F5
-        //        碾压编数：F6
-        //        超速：F7
-        //        碾压及：F8
+                轨迹：F5
+                碾压编数：F6
+                超速：F7
+                碾压及：F8
 
-        //        F：F9
-        //        仓面信息：F10
-        //        车辆安排：F11
-        //    */
-        //    switch (e.KeyCode)
-        //    {
-        //        case Keys.D:
-        //            if (e.Control && e.Shift && e.Alt)
-        //                if (layer.VisibleDeck != null)
-        //                {
-        //                    _Model.Deck dk = layer.VisibleDeck;
-        //                    if (dk.IsWorking)
-        //                        layer.DeckControl.Stop(dk);
-        //                    else
-        //                        layer.DeckControl.Start(dk);
-        //                }
-        //            return true;
-        //        case Keys.F5:
-        //            miSkeleton_Click(null, null);
-        //            return true;
-        //        case Keys.F6:
-        //            miRollingCount_Click(null, null);
-        //            return true;
-        //        case Keys.F7:
-        //            miOverspeed_Click(null, null);
-        //            return true;
-        //        case Keys.F8:
-        //            miVehicleInfo_Click(null, null);
-        //            return true;
-        //        case Keys.F9:
-        //            tsReport_Click(null, null);
-        //            return true;
-        //        case Keys.F10:
-        //            if (e.Control)
-        //            {
-        //                tmiNotRolling_Click(null, null);
-        //            }
-        //            else
-        //                miProperties_Click(null, null);
-        //            return true;
-        //        case Keys.F11:
-        //            miVehicle_Click(null, null);
-        //            return true;
-        //    }
+                F：F9
+                仓面信息：F10
+                车辆安排：F11
+            */
+            switch (e.KeyCode)
+            {
+                case Keys.D:
+                    if (e.Control && e.Shift && e.Alt)
+                        if (_MyLayer.VisibleDeck != null)
+                        {
+                            _Model.Deck dk = _MyLayer.VisibleDeck;
+                            if (dk.WorkState== DeckWorkState.WORK)
+                                _MyLayer.DeckControl.Stop(dk);
+                            else
+                                _MyLayer.DeckControl.Start(dk);
+                        }
+                    return true;
+                case Keys.F5:
+                    miSkeleton_Click(null, null);
+                    return true;
+                //case Keys.F6:
+                //    miRollingCount_Click(null, null);
+                //    return true;
+                case Keys.F7:
+                    miOverspeed_Click(null, null);
+                    return true;
+                case Keys.F8:
+                    miVehicleInfo_Click(null, null);
+                    return true;
+                case Keys.F9:
+                    tsReport_Click(null, null);
+                    return true;
+                case Keys.F10:
+                    //if (e.Control)
+                    //{
+                    //    tmiNotRolling_Click(null, null);
+                    //}
+                    //else
+                        miProperties_Click(null, null);
+                    return true;
+                case Keys.F11:
+                    miAssignment_Click(null, null);
+                    return true;
+            }
 
-        //    return Forms.Main.MainWindow.ProcessKeys(this, e);
-            return true;  //me add feiying 
+            return Forms.Main.MyInstance().ProcessKeys(this, e);
+            //return true;  //me add feiying 
         }
 
         /// <summary>
@@ -1601,11 +1601,88 @@ namespace DamLKK.Views
             _MyLayer.DeckControl.LookVehicleHistory(_MyLayer.VisibleDeck);
         }
 
+        //显示轨迹骨架
+        private void miSkeleton_Click(object sender, EventArgs e)
+        {
+            CheckMenu(miSkeleton, _Model.DrawingComponent.SKELETON);
+        }
+        //超速指示
+        private void miOverspeed_Click(object sender, EventArgs e)
+        {
+            CheckMenu(miOverspeed, _Model.DrawingComponent.OVERSPEED);
+        }
+        //碾压机信息
+        private void miVehicleInfo_Click(object sender, EventArgs e)
+        {
+            CheckMenu(miVehicleInfo, _Model.DrawingComponent.VEHICLE);
+        }
+        //轨迹箭头
+        private void miArrows_Click(object sender, EventArgs e)
+        {
+            CheckMenu(miArrows, _Model.DrawingComponent.ARROWS);
+        }
+
+        Forms.Waiting dlg = new Forms.Waiting();
+        //生成图形报告
+        private void tsReport_Click(object sender, EventArgs e)
+        {
+            _IsMenuDeckOn = false;
+            if (_MyLayer.VisibleDeck == null)
+                return;
+
+            if (!Utils.MB.OKCancelQ("您确定生成图形报告吗？"))
+            {
+                return;
+            }
+            dlg.Dispose();
+            dlg = new Forms.Waiting();
+            dlg.Start(this, "正在计算，请稍候……", ReportOK, 1000);
+        }
+
+
+        private void ReportOK()
+        {
+            if (_MyLayer.VisibleDeck == null)
+                return;
+            if (_MyLayer.VisibleDeck.WorkState == DeckWorkState.END)
+            {
+                lock (_UpdateLock)
+                {
+                    //_MyLayer.CreateDataMap();
+                }
+            }
+            bool result;
+            lock (_UpdateLock)
+            {
+                result = _MyLayer.VisibleDeck.CreateRollCountReport(_Zoom, false);
+            }
+            dlg.Finished = true;
+            if (!result)
+                return;
+            System.IO.FileInfo fi = new System.IO.FileInfo(@"C:\output\" + this._MyLayer.CurrentDeck.Name + @"\" + this._MyLayer.CurrentDeck._Rolladdress);
+            if (result)
+            {
+#if !DEBUG
+                Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
+#else
+                Utils.Sys.SysUtils.StartProgram(@"C:\output\" + this._MyLayer.CurrentDeck._Rolladdress, null);
+#endif
+            }
+        }
+
+        private void CheckMenu(ToolStripMenuItem mi, _Model.DrawingComponent dc)
+        {
+            _IsMenuDeckOn = false;
+            _Model.Deck deck = _MyLayer.VisibleDeck;
+            if (deck != null)
+            {
+                bool check = deck.IsDrawing(dc);
+                deck.ShowDrawingComponent(dc, !check);
+                Refresh();
+                mi.Checked = !check;
+            }
+        }
         #endregion
-
-       
-
-        
         
     }
 }

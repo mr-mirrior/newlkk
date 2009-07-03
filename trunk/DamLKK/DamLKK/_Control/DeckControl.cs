@@ -338,6 +338,7 @@ namespace DamLKK._Control
 
             foreach (Deck deck in _Decks)
             {
+                deck.MyLayer = this.Owner;
                 Polygon vertex = new Polygon();
                 string s = deck.Vertex;
                 // x1,y1;x2,y2;...
