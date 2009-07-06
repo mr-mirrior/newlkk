@@ -520,7 +520,7 @@ namespace DamLKK.DB
                 reader = DBConnection.executeQuery(connection, sqlTxt);
                 while (reader.Read())
                 {
-                    Int32 carID = (Convert.ToInt32(reader["carid"]));
+                    int carID = (Convert.ToInt32(reader["carid"]));
                     Roller carinfo = RollerDAO.GetInstance().GetCarInfo(all, carID);
                     carinfos.Add(carinfo);
                 }

@@ -1389,7 +1389,32 @@ namespace DamLKK._Model
         }
 #endregion
 
-       
+        double _Thicknes=0;
+        // 厚度监控，-1表示不监控
+        public double Thickness { get { return _Thicknes; } set { _Thicknes = value; } }
+
+        public void CheckOverThickness(Geo.GPSCoord c3d)
+        {
+            if (_Thicknes == -1)
+                return;
+            if (!this.RectContains(c3d.Plane))
+                return;
+
+            double distance = c3d.Z - (Thickness + (1 + this.ErrorParam / 100) * this.DesignDepth);
+            if (distance > 0)
+            {
+                Geo.Coord c = c3d.Plane.ToDamAxisCoord();
+                string position = string.Format("{{{0:0.00},{1:0.00}}}", c.X, c.Y);
+                string warning = string.Format("碾压超厚告警！分区 {0}，高程 {1}米，仓面 {2}，超厚 {3:0.00}米，桩号 {4}",
+                    this.Unit.Name,
+                    this.Elevation.Height,
+                    this.Name,
+                    distance,
+                    position
+                    );
+            }
+        }
+
 
         //返回相应面积比
         double[] _AreaScale = null;

@@ -33,8 +33,8 @@ namespace DamLKK._Control
         public Geo.XYZ XYZ { get { return Geo.Coord84To54.Convert(BLH); } }
         // XYZ 中，X和Y互换 dont know why
         public Geo.GPSCoord GPSCoord { get { Geo.XYZ xyz = this.XYZ; 
-            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(xyz.y, -xyz.x, xyz.z, Speed,0);
-            c.When = this.Time;
+            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(CarID,xyz.y, -xyz.x, xyz.z, Speed,0,this.Time,LibratedSatus);
+            //c.When = this.Time;
             return c;
         }
         }
@@ -71,6 +71,9 @@ namespace DamLKK._Control
 
         [MarshalAs(UnmanagedType.U1)]
         public byte WorkFlag;   //高4位为工作状态 0xFx 表示正在碾压, 低四位为GPS定位状态
+
+        [MarshalAs(UnmanagedType.U1)]
+        public byte LibratedSatus;
 
     }
     //超速报警结构 
@@ -287,8 +290,6 @@ namespace DamLKK._Control
 
         public static bool IsConnected { get { return false;/* socket.Connected;*/ } }            //此此为判断是否soket已经连接，测试阶段先置false；
 
-        static DamLKK.Geo.GPSCoord cd;
-        static DamLKK.Geo.Coord cdBar;
         unsafe private static void OnGPSData()
         {
             GPSCoordEventArg e = new GPSCoordEventArg();
@@ -302,12 +303,36 @@ namespace DamLKK._Control
             }
             OnResponseData.Invoke(null, e);
         }
-        //public delegate void dlgShowWarn();
-        
-//         void RecordError()
-//         {
-// 
-//         }
+
+        #region  ----///////////临时数据测试，跳过tcp传输部分-----
+
+
+        static System.Timers.Timer temptime = new System.Timers.Timer();
+       
+        public static void StartSendTestData()
+        {
+            OnResponseData -= Dummy;
+            OnResponseData += Dummy;
+
+            temptime.Interval = 1000;
+            temptime.Elapsed += new System.Timers.ElapsedEventHandler(temptime_Elapsed);
+            temptime.Start();
+        }
+
+        unsafe static void temptime_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            GPSCoordEventArg ex = new GPSCoordEventArg();
+            GPSDATA gps = new GPSDATA();
+
+            ex.msg = GPSMessage.GPSDATA;
+            ex.gps = gps;
+
+            OnResponseData.Invoke(null, ex);
+        }
+
+
+       #endregion
+
         unsafe private static void OnWarningSpeed()
         {
             WarningSpeed* warningSpeed = null;

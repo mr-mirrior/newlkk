@@ -61,13 +61,13 @@ namespace DamLKK._Control
             if( carid == 993 )
             {
                 RollerDis cd = new RollerDis();
-                //cd.Carid = 3;
-                //cd.Segmentid = 0;
-                //cd.Blockid = 13;
-                //cd.DesignZ = 615;
-                //cd.DTStart = DateTime.MinValue;
-                //cd.DTEnd = DateTime.MinValue;
-                //cd.Status = DM.RollerDis_Status.ENDWORK;
+                cd.RollerID = 3;
+                cd.SegmentID = 0;
+                cd.UnitID =3;
+                cd.DesignZ = 615;
+                cd.DTStart = DateTime.MinValue;
+                cd.DTEnd = DateTime.MinValue;
+                cd.Status= CarDis_Status.ENDWORK;
                 return cd;
             }
             //test
@@ -204,23 +204,23 @@ namespace DamLKK._Control
                     }
                 }
 
-                //Roller vk = new Roller(cd);
-                //vk.Owner = this.Owner;
-                //vk.TrackGPSControl.LoadDB();
-                //vk.TrackGPSControl.Tracking.Color = cls[color];
-                //if (cd.IsWorking())
-                //    vk.ListenGPS();
-                //vs.Add(vk);
+                Roller vk = new Roller(cd);
+                vk.Owner = this.Owner;
+                vk.TrackGPSControl.LoadDB();
+                vk.TrackGPSControl.Tracking.Color = cls[color];
+                if (cd.IsWorking())
+                    vk.ListenGPS();
+                vs.Add(vk);
             }
             return vs;
         }
        
         private static int VechilePriority(Roller v1, Roller v2)
         {
-            //if (v1.Assignment.DTStart < v2.Assignment.DTStart)
-            //    return -1;
-            //if (v1.Assignment.DTStart == v2.Assignment.DTStart)
-            //    return 0;
+            if (v1.Assignment.DTStart < v2.Assignment.DTStart)
+                return -1;
+            if (v1.Assignment.DTStart == v2.Assignment.DTStart)
+                return 0;
             return 1;
         }
         private void Sort()

@@ -105,7 +105,7 @@ namespace DamLKK.DB
             try
             {
                 conn = DBConnection.getSqlConnection();
-                reader = DBConnection.executeQuery(conn, "select * from unit where unitname='"+p_UnitName+"'");
+                reader = DBConnection.executeQuery(conn, "select * from unit where unitname='" + p_UnitName + "'order by ID desc");
                 _Model.Unit unit = new _Model.Unit();
                 while (reader.Read())
                 {
@@ -113,6 +113,7 @@ namespace DamLKK.DB
                     unit.Name = reader["UnitName"].ToString();
                     unit.StartZ = Convert.ToSingle(reader["StartZ"]);
                     unit.EndZ = Convert.ToSingle(reader["EndZ"]);
+                    if (reader["Vertex"] != DBNull.Value)
                     unit.Vertex = reader["Vertex"].ToString();
                     unit.Blocks = GetBlockIDs(reader["BlockID"].ToString());
                 }
@@ -141,7 +142,7 @@ namespace DamLKK.DB
             try
             {
                 conn = DBConnection.getSqlConnection();
-                reader = DBConnection.executeQuery(conn, "select * from unit order by ID asc");
+                reader = DBConnection.executeQuery(conn, "select * from unit");
                 List<_Model.Unit> units = new List<_Model.Unit>();
                 while (reader.Read())
                 {
@@ -151,6 +152,7 @@ namespace DamLKK.DB
                     unit.Name = reader["UnitName"].ToString();
                     unit.StartZ = Convert.ToSingle(reader["StartZ"]);
                     unit.EndZ = Convert.ToSingle(reader["EndZ"]);
+                    if (reader["Vertex"]!=DBNull.Value)
                     unit.Vertex = reader["Vertex"].ToString();
                     unit.Blocks=GetBlockIDs(reader["BlockID"].ToString());
                     units.Add(unit);
@@ -224,6 +226,8 @@ namespace DamLKK.DB
 
                 if(onlyWorking)
                     sqltxt += " and workstate=1";
+
+                sqltxt += " order by designz asc";
 
                 reader = DBConnection.executeQuery(conn, sqltxt);
                 List<double> tags = new List<double>();

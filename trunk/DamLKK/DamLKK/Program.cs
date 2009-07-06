@@ -27,11 +27,10 @@ namespace DamLKK
 
         static void Init()
         {
-            //DMControl.UnitControl.Init();
-            //DMControl.VehicleControl.ReadVehicleInfo();
-            //DMControl.VehicleControl.LoadCarDistribute();
-            //DMControl.LayerControl.Instance.LoadWorkingLayer();
-            //DMControl.WarningControl.Init();
+            _Control.VehicleControl.ReadVehicleInfo();
+            _Control.VehicleControl.LoadCarDistribute();
+            _Control.LayerControl.Instance.LoadWorkingLayer();
+            _Control.WarningControl.Init();
             DamLKK._Model.Dam.GetInstance();
             DB.DBconfig.GetInstance();
             dlg.Finished = true;

@@ -425,7 +425,7 @@ namespace DamLKK._Model
                 lstoflst.Add(onelist);
 
                 int index = GetCarIDIndex(_OwnerRoller.ID);
-                bool isRight = VehicleControl.carLibratedStates[index] == _OwnerRoller.Owner.NOLibRollCount || VehicleControl.carLibratedStates[index] == -1;
+                bool isRight = false;// VehicleControl.carLibratedStates[index] == _OwnerRoller.Owner.NOLibRollCount || VehicleControl.carLibratedStates[index] == -1;
                 bool isbreak = false;
                 bool hasNOlibrated = false;//第一个不合格list开关量
                 //bool BFWHEN = false;//实时和数据库点交替开关
@@ -994,12 +994,12 @@ namespace DamLKK._Model
                 int i = GetCarIDIndex(_OwnerRoller.ID);
                 DateTime dtnow = DB.DateUtil.GetDate();
                 string libratedstring = string.Empty;
-                if (VehicleControl.carLibratedStates[i] == -1 || !_OwnerRoller.Assignment.IsWorking()/*||this.owner.Assignment.DTEnd < lstLInfos.Last().Dt*/)
-                    libratedstring = string.Empty;
-                else if (dtnow > VehicleControl.carLibratedTimes[i] && (dtnow - VehicleControl.carLibratedTimes[i]) > TimeSpan.FromSeconds(240))
-                    libratedstring = string.Empty;
-                else
-                    libratedstring = "（" + Forms.Warning.GetLibratedString(VehicleControl.carLibratedStates[i]) + "）";
+                //if (VehicleControl.carLibratedStates[i] == -1 || !_OwnerRoller.Assignment.IsWorking()/*||this.owner.Assignment.DTEnd < lstLInfos.Last().Dt*/)
+                //    libratedstring = string.Empty;
+                //else if (dtnow > VehicleControl.carLibratedTimes[i] && (dtnow - VehicleControl.carLibratedTimes[i]) > TimeSpan.FromSeconds(240))
+                //    libratedstring = string.Empty;
+                //else
+                //    libratedstring = "（" + Forms.Warning.GetLibratedString(VehicleControl.carLibratedStates[i]) + "）";
 
                 string strInfo = string.Format("{0}", OwnerRoller.Name + libratedstring, lastpt.Plane.ToString());
                 string strVelocity = string.Format("{0:0.00} km/h", lastpt.V);
@@ -1045,7 +1045,10 @@ namespace DamLKK._Model
                 this.screenSeg[i] = s;
             }
         }
-        // 重置原点
+        
+        /// <summary>
+        /// // 重置原点
+        /// </summary>
         public static void SetOrigin(ref List<GPSCoord> lst, Coord neworig)
         {
             Coord origin = new Coord(double.MaxValue, double.MaxValue);
@@ -1076,18 +1079,12 @@ namespace DamLKK._Model
                     return 0;
                 int count = 0;
                 using (Pen p = WidthPen(Color.Black))
-                    //for (int i = 0; i < gpTracking.Count; i++)
-                    for (int i = 0; i < gpBand.Count; i++)
-                    {
-                        if (/*!gpOverspeed[i] &&*/ gpBand[i].IsOutlineVisible(scrPoint, p))
-                            count++;
-                    }
-                //using (Pen p = WidthPen(Color.Black))
-                //    for (int i = 0; i < libratedTracking.Count; i++)
-                //    {
-                //        if (/*!gpOverspeed[i] &&*/ libratedTracking[i].IsOutlineVisible(scrPoint, p))
-                //            count++;
-                //    }
+                for (int i = 0; i < gpBand.Count; i++)
+                {
+                    if (gpBand[i].IsOutlineVisible(scrPoint, p))
+                        count++;
+                }
+              
                 return count;
             }
         }
