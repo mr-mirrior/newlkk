@@ -222,11 +222,61 @@ namespace DamLKK._Model
                         if (v.Length() > Config.I.OVERTHICKNESS_DISTANCE)
                             _OwnerDeck.CheckOverThickness(e.gps.GPSCoord);
                     }
+                    //feiying  击震力报警
+                    //1.是否在仓面内
+                    //2.边数和击震力状态是否符合要求
+                    if (Owner.IsInThisDeck(e.gps.GPSCoord.Plane))
+                    {
+                        int[] count=Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
+                        
+                        if(count!=null&&(count[0]+count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedSatus!=0)
+                        {
+                            WaringLibrated(true,count);
+                        }
+                        else if(count!=null&&(count[0]+count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedSatus==0)
+                        {
+                            WaringLibrated(false,count);
+                        }
+                    }
+
 
                     TrackGPSControl.Tracking.AddOnePoint(e.gps.GPSCoord, 0, 0);
                     _OwnerDeck.MyLayer.OwnerView.RequestPaint();
                 }
             }
+        }
+
+        /// <summary>
+        /// 击震力不合格报警,
+        /// </summary>
+        private void WaringLibrated(bool isNolib,int[] count)
+        {
+            string warning;
+            Forms.Warning warndlg = new DamLKK.Forms.Warning();
+            if (isNolib)
+            {
+                warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为振动,设计应为不振。)",
+                                this.Name, count[0].ToString(), count[1].ToString());
+                warndlg.LibrateState = 1;
+            }
+            else
+            {
+                warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为不振,设计应为振动。)",
+                               this.Name, count[0].ToString(), count[1].ToString());
+                warndlg.LibrateState = 0;
+            }
+
+            WarningControl.SendMessage(WarningType.LIBRATED, Owner.Unit.ID, warning);
+
+           
+            warndlg.UnitName = this.Owner.Unit.Name;
+            warndlg.DeckName = this.Owner.Name;
+            warndlg.DesignZ = this.Owner.Elevation.Height;
+            warndlg.WarningDate = DB.DateUtil.GetDate().Date.ToString("D");
+            warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
+            warndlg.WarningType = WarningType.LIBRATED;
+            warndlg.FillForms();
+            Forms.Main.MyInstance().ShowWarningDlg(warndlg);
         }
 #endregion
     }

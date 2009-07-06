@@ -1741,14 +1741,14 @@ namespace DamLKK.Views
             Coord origin = dk.Polygon.Boundary.LeftTop;
             _Model.TrackGPS.PreFilter(ref tracking);
             _Model.Roller v = new _Model.Roller(dk);
-            dk.VehicleControl.AddVehicle(v);
 
+            dk.VehicleControl.AddVehicle(v);
             _Model.TrackGPS t = new _Model.TrackGPS(v);
             v.TrackGPSControl.Tracking = t;
             v.ScrollWidth = 1f;
             List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
             //_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
-            t.SetTracking(trackingAnother,0,0);
+            t.SetTracking(trackingAnother, 0, 0);
             v.ID = 100;
             v.Name = "test1";
 
@@ -1770,11 +1770,12 @@ namespace DamLKK.Views
             _Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
             vInstant.TrackGPSControl.Tracking = tInstant;
             tInstant.Color = Color.Black;
-            vInstant.ID = 12;
+            vInstant.ID = 101;
+            vInstant.Name = "实时测试";
             vInstant.ListenGPS();
 
             trackingCount = 0;
-            timerTracking.Interval = 1;
+            timerTracking.Interval = 50;
             timerTracking.Tick -= OnTickTracking;
             timerTracking.Tick += OnTickTracking;
             timerTracking.Start();
@@ -1808,15 +1809,6 @@ namespace DamLKK.Views
             MyRefresh();
         }
 #endregion
-
-     
-      
-
-      
-
-       
-
-       
         
     }
 }

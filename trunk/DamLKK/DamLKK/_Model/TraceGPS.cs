@@ -363,7 +363,6 @@ namespace DamLKK._Model
                     Coord c = new Coord(_OwnerLayer.DamToScreen(screenSeg[i][j].Plane));
                     c = c.Offset(offScrX, offScrY);
                     screenSeg[i][j] = new GPSCoord(filteredSeg[i][j].RollerID, c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
-                    //FilterBoundary(c);
                 }
             }
             RectangleF rc = new RectangleF();
