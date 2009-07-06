@@ -1456,6 +1456,16 @@ namespace DamLKK._Model
             origP.Y = (float)(p.Y - offsetY);
             return origP;
         }
+
+        /// <summary>
+        /// 改仓面上的该点碾压边数
+        /// </summary>
+        public int[] RollCount(PointF pt)
+        {
+            if (!this.Polygon.IsScreenVisible(new Geo.Coord(pt)))
+                return null;
+            return VehicleControl.RollCount(pt);
+        }
     }
 
 }

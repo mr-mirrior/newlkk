@@ -158,14 +158,18 @@ namespace DamLKK._Control
             }
             vehicles.Clear();
         }
-        public int RollCount(PointF pt)
+        public int[] RollCount(PointF pt)
         {
-            int count = 0;
+            int count = 0,countNo=0;
             foreach (Roller vk in vehicles)
             {
-                //count += vk.RollCount(pt);
+                int[] ct=vk.RollCount(pt);
+                if(ct==null)
+                   continue;
+                count +=ct[1];
+                countNo += ct[0];
             }
-            return count;
+            return new int[]{countNo,count};
         }
         private List<Roller> Translate(List<RollerDis> lst)
         {

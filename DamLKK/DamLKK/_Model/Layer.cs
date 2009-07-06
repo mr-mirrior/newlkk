@@ -744,11 +744,13 @@ namespace DamLKK._Model
         }
 
         /// <算边数>
-        /// 算边数入口
+        /// 算边某点碾压的边数
         /// </算边数>
-        public int RollCount(PointF p_CursorPos)
+        public int[] RollCount(PointF p_CursorPos)
         {
-            return 0;
+            if (!this._ScreenBoundary.Contains(p_CursorPos))
+                return null;
+            return _Dkcontrol.RollCount(p_CursorPos);
         }
 
         /// <summary>

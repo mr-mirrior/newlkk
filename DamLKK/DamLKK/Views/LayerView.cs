@@ -789,7 +789,11 @@ namespace DamLKK.Views
             sf.LineAlignment = StringAlignment.Far;
             PointF pt = MyCoordSys(_CursorPos);
 
-            int count = _MyLayer.RollCount(_CursorPos);
+            int[] count = _MyLayer.RollCount(_CursorPos);
+
+            if (count == null)
+                count=new int[]{0,0};
+
             Coord dampt = ScreenToDam(DePadding(_CursorPos));
             Coord damaxis = dampt.ToDamAxisCoord();
             dampt.Y = -dampt.Y;
@@ -803,12 +807,12 @@ namespace DamLKK.Views
                 return;
             rc = _Zoomer.Boundary;
             rc.Offset(0, rc.Height + 50);
-            int emSize = count * 3 + 12;
+            int emSize = (count[0]+count[1]) * 3 + 12;
             emSize = Math.Min(emSize, 80);
-            string strCount = string.Format("碾压{0}遍", count);
-            if (count == 0)
-                strCount = "未碾压";
-            Font ft = new Font(Font.FontFamily, emSize, count == 0 ? FontStyle.Regular : FontStyle.Bold, GraphicsUnit.Pixel);
+            string strCount = string.Format("静碾{0}遍,振碾{1}遍", count[0],count[1]);
+            //if (count == null)
+            //    strCount = "未碾压";
+            Font ft = new Font(Font.FontFamily, emSize, (count[0] + count[1]) == 0 ? FontStyle.Regular : FontStyle.Bold, GraphicsUnit.Pixel);
             SizeF size = g.MeasureString(strCount, ft);
             rc.Location = new PointF(0, rc.Location.Y);
             rc.Height = (int)size.Height + 1;
@@ -821,12 +825,12 @@ namespace DamLKK.Views
             int goodCount = 8;
             _Model.Deck deck = _MyLayer.VisibleDeck;
             if (deck != null) goodCount = deck.NOLibRollCount+deck.LibRollCount;
-            if (count >= goodCount)
+            if ((count[0] + count[1]) >= goodCount)
                 cl = Color.OliveDrab;
             rc.Location = DeScrollPoint(_CursorPos); 
 
             GraphicsPath gp = new GraphicsPath();
-            gp.AddString(strCount, Font.FontFamily, (int)(count == 0 ? FontStyle.Regular : FontStyle.Bold), emSize, rc, sf);
+            gp.AddString(strCount, Font.FontFamily, (int)((count[0] + count[1]) == 0 ? FontStyle.Regular : FontStyle.Bold), emSize, rc, sf);
            
             using (Pen p1 = new Pen(Color.FromArgb(0x0, cl)), p2 = new Pen(Color.FromArgb(0x40, Color.White)))
                 Utils.Graph.OutGlow.DrawOutglowPath(g, gp, p1, p2);
