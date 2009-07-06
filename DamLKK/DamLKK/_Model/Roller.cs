@@ -114,6 +114,15 @@ namespace DamLKK._Model
         }
         #endregion
 
+        public Roller(RollerDis car)
+        {
+            Init();
+            this.Assignment = car;
+        }
+        public Roller(){  Init(); }
+        
+        public Roller(Deck o) { _OwnerDeck = o; Init(); }
+
         Deck _OwnerDeck = null;
         TrackGPSControl _TrackCtrl=new TrackGPSControl();
         RollerDis _RollDis = new RollerDis();
@@ -130,7 +139,7 @@ namespace DamLKK._Model
         private void Init()
         {
             TrackGPSControl.Owner = this;
-            _Roll.ScrollWidth = 2.17;
+            this.ScrollWidth = 2.17;
         }
 
         public RollerDis Assignment
@@ -146,15 +155,16 @@ namespace DamLKK._Model
         }
         private Roller FindThis() { return _Control.VehicleControl.FindVechicle(ID); }
 
+
         public void Dispose()
         {
-            //lock (disposing)
-            //{
-            //    TurnOffGPS();
-            //    trackCtrl.Dispose();
-            //    GC.SuppressFinalize(this);
-            //    isDisposed = true;
-            //}
+            lock (disposing)
+            {
+                TurnOffGPS();
+                _TrackCtrl.Dispose();
+                GC.SuppressFinalize(this);
+                isDisposed = true;
+            }
         }
 
 
@@ -167,5 +177,57 @@ namespace DamLKK._Model
         {
             TrackGPSControl.Draw(g, frameonly);
         }
+
+
+#region -----------------------接收gps点----------------------------
+
+
+        public void TurnOffGPS()
+        {
+            _Control.GPSServer.OnResponseData -= OnGPSData;
+        }
+        public void ListenGPS()
+        {
+            _Control.GPSServer.OnResponseData -= OnGPSData;
+            _Control.GPSServer.OnResponseData += OnGPSData;
+        }
+        object disposing = new object();
+        bool isDisposed = false;
+        private void OnGPSData(object sender, _Control.GPSCoordEventArg e)
+        {
+            lock (disposing)
+            {
+                if (isDisposed)
+                    return;
+                if (e.msg != _Control.GPSMessage.GPSDATA)
+                    return;
+                if (e.gps.CarID != this.ID)
+                    return;
+                if (!_RollDis.IsWorking())
+                    return;
+
+                // 这个点属于该车段
+                if (_OwnerDeck.IsVisible)
+                {
+                    if (!_OwnerDeck.MyLayer.RectContains(e.gps.GPSCoord.Plane))
+                        return;
+                    SoundControl.BeepIII();
+
+                    // John, 2009-1-20
+                    if (TrackGPSControl.Tracking.Count != 0)
+                    {
+                        // 判断超厚
+                        // 先要看是否停在某个固定点
+                        Geo.Vector v = new Geo.Vector(e.gps.GPSCoord.Plane, TrackGPSControl.Tracking.TrackPoints.Last().Plane);
+                        if (v.Length() > Config.I.OVERTHICKNESS_DISTANCE)
+                            _OwnerDeck.CheckOverThickness(e.gps.GPSCoord);
+                    }
+
+                    TrackGPSControl.Tracking.AddOnePoint(e.gps.GPSCoord, 0, 0);
+                    _OwnerDeck.MyLayer.OwnerView.RequestPaint();
+                }
+            }
+        }
+#endregion
     }
 }

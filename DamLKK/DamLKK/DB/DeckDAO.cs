@@ -200,7 +200,7 @@ namespace DamLKK.DB
             public bool UpdateVertex(DamLKK._Model.Deck deck)
             {
 
-                string sqlTxt = "update segment set Vertex='"+deck.Vertex+"' where unitid="+deck.Unit.ID+" and Designz='"+deck.Elevation.Height.ToString("0.0")+"'and Segmentid="+deck.ID.ToString();
+                string sqlTxt = "update segment set Vertex='"+deck.Vertex+"' where unitid="+deck.Unit.ID+" and Designz='"+deck.Elevation.Height.ToString()+"'and Segmentid="+deck.ID.ToString();
                 try
                 {
                     if (DBConnection.executeUpdate(sqlTxt) != 1)

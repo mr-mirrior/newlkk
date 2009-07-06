@@ -990,10 +990,12 @@ namespace DamLKK.Views
                 case Keys.F11:
                     miAssignment_Click(null, null);
                     return true;
+                case Keys.F12:
+                    CreateExperiment(this.Zoom);
+                    return true;
             }
 
             return Forms.Main.MyInstance().ProcessKeys(this, e);
-            //return true;  //me add feiying 
         }
 
         /// <summary>
@@ -1036,6 +1038,8 @@ namespace DamLKK.Views
                 return false;
             List<Coord> lst = new List<Coord>();
 
+            if (p.Polygon == null)
+                return false;
             lst=p.Polygon.Vertex;
 
             if (lst == null)
@@ -1461,7 +1465,7 @@ namespace DamLKK.Views
                     }
                     else 
                     {
-                        Utils.MB.Warning("数据库修改成功！");
+                        Utils.MB.Warning("数据库修改失败！");
                     }
                     Forms.ToolsWindow.GetInstance()._IsTempSelectDeck = false;
 
@@ -1638,7 +1642,31 @@ namespace DamLKK.Views
             dlg = new Forms.Waiting();
             dlg.Start(this, "正在计算，请稍候……", ReportOK, 1000);
         }
-
+        //是否显示轨迹
+        private void miSkeleton_Click_1(object sender, EventArgs e)
+        {
+            CheckMenu(miSkeleton, _Model.DrawingComponent.SKELETON);
+        }
+        //是否显示边数
+        private void miRollingCount_Click(object sender, EventArgs e)
+        {
+            CheckMenu(miRollingCount, _Model.DrawingComponent.BAND);
+        }
+        //超速指示
+        private void miOverspeed_Click_1(object sender, EventArgs e)
+        {
+            CheckMenu(miOverspeed, _Model.DrawingComponent.OVERSPEED);
+        }
+        //碾压机信息
+        private void miVehicleInfo_Click_1(object sender, EventArgs e)
+        {
+            CheckMenu(miVehicleInfo, _Model.DrawingComponent.VEHICLE);
+        }
+        //轨迹箭头
+        private void miArrows_Click_1(object sender, EventArgs e)
+        {
+            CheckMenu(miArrows, _Model.DrawingComponent.ARROWS);
+        }
 
         private void ReportOK()
         {
@@ -1683,6 +1711,108 @@ namespace DamLKK.Views
             }
         }
         #endregion
+
+
+
+
+#region -----------------------------测试-------------------------------
+        List<Geo.GPSCoord> tracking;
+        Timer timerTracking = new Timer();
+        int trackingCount = 0;
+        private void CreateExperiment(double zm)
+        {
+            // EXPERIMENT
+            if (!IsPreview && _MyLayer.DeckControl.Decks.Count != 0)
+            {
+            }
+            else
+                return;
+            
+            _Model.Deck dk = _MyLayer.DeckControl.Decks[0];
+            dk.VehicleControl.Clear();
+
+            if (tracking == null)
+                tracking = DamLKK.Utils.FileHelper.ReadTracking(@"C:\TrackingExp.txt");
+
+            Coord origin = dk.Polygon.Boundary.LeftTop;
+            _Model.TrackGPS.PreFilter(ref tracking);
+            _Model.Roller v = new _Model.Roller(dk);
+            dk.VehicleControl.AddVehicle(v);
+
+            _Model.TrackGPS t = new _Model.TrackGPS(v);
+            v.TrackGPSControl.Tracking = t;
+            v.ScrollWidth = 1f;
+            List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
+            //_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
+            t.SetTracking(trackingAnother,0,0);
+            v.ID = 100;
+            v.Name = "test1";
+
+            ////origin = origin.Offset(5, 2);
+            //List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
+           
+            ////_Model.TrackGPS.SetOrigin(ref trackingYetAnother, origin);
+            //_Model.Roller v2 = new _Model.Roller(dk);
+            //dk.VehicleControl.AddVehicle(v2);
+            //_Model.TrackGPS t2 = new _Model.TrackGPS(v2);
+            //v2.TrackGPSControl.Tracking = t2;
+            //t2.SetTracking(trackingYetAnother, 0, 0);
+            //t2.Color = Color.OrangeRed;
+            //v2.ID = 101;
+            //v2.Name = "test2";
+
+            _Model.Roller vInstant = new _Model.Roller(dk);
+            dk.VehicleControl.AddVehicle(vInstant);
+            _Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
+            vInstant.TrackGPSControl.Tracking = tInstant;
+            tInstant.Color = Color.Black;
+            vInstant.ID = 12;
+            vInstant.ListenGPS();
+
+            trackingCount = 0;
+            timerTracking.Interval = 1;
+            timerTracking.Tick -= OnTickTracking;
+            timerTracking.Tick += OnTickTracking;
+            timerTracking.Start();
+            ExperimentAtOnce(zm);
+        }
+
+        private void ExperimentAtOnce(double zm)
+        {
+            if (_MyLayer.DeckControl.Decks.Count == 0)
+                return;
+
+            _Model.Deck dk = _MyLayer.DeckControl.Decks[0];
+        }
+
+
+        private void OnTickTracking(object sender, EventArgs e)
+        {
+            if (trackingCount >= tracking.Count)
+            {
+                timerTracking.Stop();
+                trackingCount = 0;
+                return;
+            }
+            _Model.Deck dk =_MyLayer.DeckControl.Decks[0];
+            _Model.Roller veh = dk.VehicleControl.Rollers[0];
+            veh.TrackGPSControl.Tracking.AddOnePoint(tracking[trackingCount],
+                0,
+                0);
+ 
+            trackingCount++;
+            MyRefresh();
+        }
+#endregion
+
+     
+      
+
+      
+
+       
+
+       
         
     }
 }

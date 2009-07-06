@@ -36,6 +36,12 @@ namespace DamLKK.Forms
         {
             float StartZ,EndZ;
 
+            if(tbName.Text==string.Empty)
+            {
+                Utils.MB.Warning("单元名称不能为空!");
+                return;
+            }
+
 
             if (cbStart.SelectedIndex==-1 || cbEnd.SelectedIndex==-1)
             {

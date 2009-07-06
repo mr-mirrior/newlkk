@@ -167,12 +167,19 @@ namespace DamLKK._Model
              if (p_modeindex==1)
              {
                  decktags = DB.UnitDAO.GetInstance().GetTagsInUnit(this.ID,false);
-                 foreach (double i in decktags)
+
+                 if (decktags == null)
+                     return;
+
+                 for(int i=0;i<decktags.Count;i++)
                  {
-                     if (i < 100)
-                         tags.Add("斜-" + i.ToString("0"));
+                     if (i >= 1 && decktags[i] == decktags[i - 1])
+                         continue;
+
+                     if (decktags[i] < 100)
+                         tags.Add("斜-" + decktags[i].ToString("0"));
                      else
-                         tags.Add(i.ToString());
+                         tags.Add(decktags[i].ToString());
                  }
              }
              else   //每0.1米一层

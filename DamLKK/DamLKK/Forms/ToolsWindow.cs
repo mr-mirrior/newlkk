@@ -215,6 +215,9 @@ namespace DamLKK.Forms
 
         private void cbMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (DamLKK._Model.Dam.GetInstance().CurrentUnit == null)
+                return;
+
             if (cbMode.SelectedIndex == 0)
             {
                 cbSyncline.Enabled = true;
@@ -478,6 +481,12 @@ namespace DamLKK.Forms
             y = rc.Bottom - FrmWarnlst.Height;
             FrmWarnlst.Location = new Point(x, y);
             FrmWarnlst.Show();
+        }
+
+        //单击边数查询
+        private void btnRollCount_Click(object sender, EventArgs e)
+        {
+            Operation = Views.Operations.ROOL_COUNT;
         }
         
     }

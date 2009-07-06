@@ -151,29 +151,29 @@ namespace DamLKK.Forms
             e.SuppressKeyPress = true;
             switch (e.KeyCode)
             {
-                //case Keys.P:
-                //    toolsWnd.FitScreen();
-                //    break;
+                case Keys.P:
+                    toolsWnd.FitScreen();
+                    break;
                 //case Keys.H:
                 //    toolsWnd.ResetRotate();
-                //    break;
-                //case Keys.M:
-                //    toolsWnd.Operation = Views.Operations.SCROLL_FREE;
-                //    break;
-                //case Keys.X:
-                //    toolsWnd.Operation = Views.Operations.ROTATE;
-                //    break;
-                //case Keys.F:
-                //    toolsWnd.Operation = Views.Operations.ZOOM;
-                //    break;
-                //case Keys.W:
-                //    if (e.Control)
-                //    {
-                //        if (tab.SelectedItem != null)
-                //            DMControl.LayerControl.Instance.CloseLayer((Views.LayerView)tab.SelectedItem.Tag);
-                //        return true;
-                //    }
-                //    break;
+                 //   break;
+                case Keys.M:
+                    toolsWnd.Operation = Views.Operations.SCROLL_FREE;
+                    break;
+                case Keys.X:
+                    toolsWnd.Operation = Views.Operations.ROTATE;
+                    break;
+                case Keys.F:
+                    toolsWnd.Operation = Views.Operations.ZOOM;
+                    break;
+                case Keys.W:
+                    if (e.Control)
+                    {
+                        if (_FATabStrip.SelectedItem != null)
+                            _Control.LayerControl.Instance.CloseLayer((Views.LayerView)_FATabStrip.SelectedItem.Tag);
+                        return true;
+                    }
+                    break;
                 case Keys.Escape:
                     System.Diagnostics.Debug.Print(sender.ToString());
                     Exit();
@@ -183,7 +183,7 @@ namespace DamLKK.Forms
                     return true;
                 //case Keys.G:
                 //    ToggleToolbar();
-                //    return true;
+                    //return true;
                 case Keys.Tab:
                     if (e.Control)
                     {
@@ -209,11 +209,9 @@ namespace DamLKK.Forms
                         toolsWnd.CurrentLayer.ShowLandscape(toolsWnd.Visible);
                     System.Diagnostics.Debug.Print("F1 pressed");
                     return true;
-                //case Keys.F12:
-                //    //Warning dlg = new Warning();
-                //    //dlg.Show(this);
-                //    DMControl.GPSServer.test();
-                //    return true;
+                case Keys.F12:
+                    _Control.GPSServer.StartSendTestData();        ////////////////////////////////////////////////////开始发送测试数据测试数据
+                    return true;
                 default:
                     break;
             }

@@ -135,6 +135,7 @@
             this.miSkeleton.ShortcutKeyDisplayString = "F5";
             this.miSkeleton.Size = new System.Drawing.Size(177, 22);
             this.miSkeleton.Text = "轨迹(&S)";
+            this.miSkeleton.Click += new System.EventHandler(this.miSkeleton_Click_1);
             // 
             // miRollingCount
             // 
@@ -143,6 +144,7 @@
             this.miRollingCount.Size = new System.Drawing.Size(177, 22);
             this.miRollingCount.Text = "碾压遍数(&R)";
             this.miRollingCount.Visible = false;
+            this.miRollingCount.Click += new System.EventHandler(this.miRollingCount_Click);
             // 
             // miOverspeed
             // 
@@ -150,6 +152,7 @@
             this.miOverspeed.ShortcutKeyDisplayString = "F7";
             this.miOverspeed.Size = new System.Drawing.Size(177, 22);
             this.miOverspeed.Text = "超速指示(&O)";
+            this.miOverspeed.Click += new System.EventHandler(this.miOverspeed_Click_1);
             // 
             // miVehicleInfo
             // 
@@ -157,12 +160,14 @@
             this.miVehicleInfo.ShortcutKeyDisplayString = "F8";
             this.miVehicleInfo.Size = new System.Drawing.Size(177, 22);
             this.miVehicleInfo.Text = "碾压机信息(&V)";
+            this.miVehicleInfo.Click += new System.EventHandler(this.miVehicleInfo_Click_1);
             // 
             // miArrows
             // 
             this.miArrows.Name = "miArrows";
             this.miArrows.Size = new System.Drawing.Size(177, 22);
             this.miArrows.Text = "轨迹箭头(&W)";
+            this.miArrows.Click += new System.EventHandler(this.miArrows_Click_1);
             // 
             // toolStripMenuItem3
             // 

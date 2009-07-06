@@ -331,10 +331,10 @@ namespace DamLKK._Model
             {
                 Polygon pl = _Dkcontrol.Decks[i].Polygon;
                 CreateDeckScreen(ref pl);
-                //foreach (Vehicle v in _Control.DeckControl.MyInstance().Decks[i].VehicleControl.Vehicles)
-                //{
-                //    v.TrackGPSControl.Tracking.CreateScreen();
-                //}
+                foreach (Roller v in _Dkcontrol.Decks[i].VehicleControl.Rollers)
+                {
+                    v.TrackGPSControl.Tracking.CreateScreen();
+                }
             }
         }
 
@@ -604,6 +604,10 @@ namespace DamLKK._Model
             _MyPolygon.Elevation = e;   
         }
 
+        public bool RectContains(Coord pt)
+        {
+            return _Mtx.Boundary.Contains(pt.PF);
+        }
 
 
         // 主界面每次MouseMove都会调用Refresh
