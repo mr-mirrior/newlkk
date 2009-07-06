@@ -1466,6 +1466,17 @@ namespace DamLKK._Model
                 return null;
             return VehicleControl.RollCount(pt);
         }
+
+       
+        Geo.BorderShapeII bs;
+        /// <summary>
+        /// 点是否在仓面范围内
+        /// </summary>
+        public bool IsInThisDeck(DamLKK.Geo.Coord cd)
+        {
+             bs= new DamLKK.Geo.BorderShapeII(this._Polygon.Vertex);
+             return bs.IsInsideIII(cd);
+        }
     }
 
 }

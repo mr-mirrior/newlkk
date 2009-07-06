@@ -86,7 +86,7 @@ namespace DamLKK._Control
         public static string warningString;
         public static WorkErrorString workErrorString = new WorkErrorString();
 
-        public static void SendMessage(WarningType type, int blockid, string warningString)
+        public static void SendMessage(WarningType type, int unitid, string warningString)
         {
             if (LoginControl.User.Authority == LoginResult.DISWARNING)
                 return;
@@ -114,7 +114,7 @@ namespace DamLKK._Control
             {
                 workErrorString.Type = 0x05;
             }
-            workErrorString.BlockID = (byte)blockid;
+            workErrorString.BlockID = (byte)unitid;
 
             //发送错误信息
 
