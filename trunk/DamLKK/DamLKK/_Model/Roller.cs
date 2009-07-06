@@ -168,7 +168,7 @@ namespace DamLKK._Model
         }
 
 
-        public int RollCount(PointF pt)
+        public int[] RollCount(PointF pt)
         {
             return TrackGPSControl.Tracking.RollCount(pt);
         }

@@ -70,8 +70,6 @@ namespace DamLKK._Control
                 }
             }
 
-            TrackGPS.hasReadCar.Clear();
-            TrackGPS.alltimes.Clear();
             UpdateGraphics();
             ReportRolling(_Tobesetvisible);
             _Tobesetvisible = null;
@@ -567,5 +565,22 @@ namespace DamLKK._Control
             DamLKK.Forms.ToolsWindow.GetInstance().btnDeckPoly_Click(null,null);
         }
 
+        // 计算该仓面某点的碾压次数，按照屏幕坐标
+        /// <summary>
+        ///  // 计算该仓面某点的碾压次数，按照屏幕坐标
+        /// </summary>
+        public int[] RollCount(PointF pt)
+        {
+            int count = 0,countNo=0;
+            foreach (Deck dk in _Decks)
+            {
+                int[] ct=dk.RollCount(pt);
+                if(ct==null)
+                    continue;
+                count += ct[1];
+                countNo += ct[0];
+            }
+            return new int[]{countNo,count};
+        }
     }
 }

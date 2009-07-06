@@ -11,8 +11,8 @@ namespace DamLKK._Model
 {
     public class TrackGPS : ICloneable, IDisposable
     {
-        public TrackGPS(Roller v) { _OwnerRoller = v; /*origTP.Capacity = 1000000;*/ }
-        public TrackGPS() { /*origTP.Capacity = 1000000;*/ }
+        public TrackGPS(Roller v) { _OwnerRoller = v; origTP.Capacity = 1000000; }
+        public TrackGPS() { origTP.Capacity = 1000000; }
 
         public object Clone()
         {
@@ -32,11 +32,8 @@ namespace DamLKK._Model
                 gpLibrated.Clear();
                 gpOverspeed.Clear();
                 gpTracking.Clear();
-                gpALLNOTracking.Clear();
                 gpBand.Clear();
-                libratedTracking.Clear();
-                libratedOKTracking.Clear();
-                screenSegLibrated.Clear();
+                gpNoLib.Clear();
             }
             screenSeg.Clear();
             screenSegFiltered.Clear();
@@ -58,10 +55,9 @@ namespace DamLKK._Model
         List<List<Geo.GPSCoord>> segmentedTP = new List<List<Geo.GPSCoord>>();   // 分段的坐标，施工坐标，未段内筛选
 
         List<List<Geo.GPSCoord>> filteredSeg = new List<List<Geo.GPSCoord>>();    // 经过段内筛选的分段坐标，施工坐标
-        public static DateTime SetTime = DateTime.MinValue;
+
         List<List<Geo.GPSCoord>> screenSeg = new List<List<Geo.GPSCoord>>();     // 经过2次筛选的屏幕坐标
         List<List<Geo.GPSCoord>> screenSegFiltered = new List<List<Geo.GPSCoord>>();     // 经过2次筛选的屏幕坐标
-        List<List<Geo.GPSCoord>> screenSegLibrated = new List<List<Geo.GPSCoord>>(); //经过筛选振动的屏幕坐标
 
         bool inCurve = true;
         public bool InCurve { get { return inCurve; } set { inCurve = value; } }
@@ -97,14 +93,12 @@ namespace DamLKK._Model
                 CreatePath(0, 0);
         }
         List<GraphicsPath> gpTracking = new List<GraphicsPath>();
-        List<GraphicsPath> gpALLNOTracking = new List<GraphicsPath>();
-        List<GraphicsPath> gpBand = new List<GraphicsPath>();
+        List<GraphicsPath> gpBand = new List<GraphicsPath>();  //所有图形的GP
+        List<GraphicsPath> gpNoLib = new List<GraphicsPath>();  //未振动点图形的的GP
+      
         List<bool> gpOverspeed = new List<bool>();
         List<bool> gpLibrated = new List<bool>();
-        List<GraphicsPath> libratedTracking = new List<GraphicsPath>();
-        List<GraphicsPath> libratedOKTracking = new List<GraphicsPath>();
-        public static List<RollerDis> hasReadCar = new List<RollerDis>(); //已经读过库的车
-        public static List<List<Timeslice>> alltimes = new List<List<Timeslice>>();
+
         public void SetTracking(List<Geo.GPSCoord> pts, double offScrX, double offScrY)
         {
             lock (adding)
@@ -341,26 +335,18 @@ namespace DamLKK._Model
             scrBoundary.Bottom = Math.Max(scrBoundary.Bottom, c.Y);
         }
 
-        bool isFirst = true;
-        bool ISCOMMAND = false;
-
         private void CreatePath(double offScrX, double offScrY)
         {
-            if (_OwnerRoller.Owner.NOLibRollCount == 3)
-                ISCOMMAND = true;
-            isFirst = true;
-
-            if (filteredSeg.Count == 0)
+             if (filteredSeg.Count == 0)
                 return;
-            libratedTracking.Clear();
-            gpALLNOTracking.Clear();
+
+
             gpTracking.Clear();
+            gpNoLib.Clear();
             gpBand.Clear();
             gpOverspeed.Clear();
             screenSegFiltered.Clear();
             gpLibrated.Clear();
-            libratedOKTracking.Clear();
-            screenSegLibrated.Clear();
 
 
             screenSeg = new List<List<GPSCoord>>(filteredSeg);
@@ -381,33 +367,7 @@ namespace DamLKK._Model
                 }
             }
             RectangleF rc = new RectangleF();
-            //筛选击震力不合格点  feiying 09.3.19
-            List<Timeslice> times = new List<Timeslice>();
-            int carindex = 0;
-
-            //一个车只读一次库  
-            foreach (RollerDis id in hasReadCar)
-            {
-                if (id.DTStart.Equals(_OwnerRoller.Assignment.DTStart) && id.RollerID == _OwnerRoller.Assignment.RollerID)
-                {
-                    isFirst = false;
-                    break;
-                }
-                carindex++;
-            }
-
-            if (isFirst)
-            {
-                times = FiterLibrated();
-                hasReadCar.Add(_OwnerRoller.Assignment);
-                alltimes.Add(times);
-                carindex = -1;
-            }
-
-            if (carindex != -1)
-                times = alltimes[carindex];
-
-
+        
 
             foreach (List<GPSCoord> lst in screenSeg)
             {
@@ -415,98 +375,17 @@ namespace DamLKK._Model
                 //int count = 0;
                 List<GPSCoord> onelist = new List<GPSCoord>();
                 List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
-                List<GPSCoord> libratedNO = new List<GPSCoord>();
-                List<List<GPSCoord>> libratedNOlst = new List<List<GPSCoord>>();//存放所有振动不合格段
-                List<GPSCoord> libratedOK = new List<GPSCoord>();//存放所有筛选过后振动合格的点
-                List<List<GPSCoord>> libratedOKlst = new List<List<GPSCoord>>();//存放所有筛选过后振动合格的点
+
 
                 bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
                 onelist.Add(lst[0]);
                 lstoflst.Add(onelist);
 
-                int index = GetCarIDIndex(_OwnerRoller.ID);
-                bool isRight = false;// VehicleControl.carLibratedStates[index] == _OwnerRoller.Owner.NOLibRollCount || VehicleControl.carLibratedStates[index] == -1;
-                bool isbreak = false;
-                bool hasNOlibrated = false;//第一个不合格list开关量
-                //bool BFWHEN = false;//实时和数据库点交替开关
-
-                DateTime when = lst[0].When;
-
-                if (times.Count > 0)
-                {
-                    for (int j = 0; j < times.Count; j++)
-                    {
-                        if (when < times[j].DtEnd && when > times[j].DtStart)
-                        {
-                            hasNOlibrated = true;
-                            isbreak = true;
-                            break;
-                        }
-                    }
-                    if (!isbreak)
-                    {
-                        libratedOK = new List<GPSCoord>();
-                        libratedOK.Add(lst[0]);
-                        libratedOKlst.Add(libratedOK);
-                    }
-                    else
-                    {
-                        libratedNO = new List<GPSCoord>();
-                        libratedNO.Add(lst[0]);
-                        libratedNOlst.Add(libratedNO);
-                    }
-                }
-                else
-                {
-                    libratedNO = new List<GPSCoord>();
-                    libratedOK.Add(lst[0]);
-                    libratedOKlst.Add(libratedOK);
-                }
-
-                isbreak = false;
                 GPSCoord previous = lst[0];
 
                 for (int i = 1; i < lst.Count; i++)
                 {
-                    when = lst[i].When;
-                    isbreak = false;
-                    //if ( when< SetTime /*|| VehicleControl.carLibratedTimes[index].Equals(DateTime.MinValue)*/)
-                    //{
-                    if (times.Count > 0)
-                    {
-                        for (int j = 0; j < times.Count; j++)
-                        {
-                            if (when < times[j].DtEnd && when > times[j].DtStart)
-                            {
-                                if (when - lst[i - 1].When < TimeSpan.FromSeconds(Config.I.LIBRATE_Secends))
-                                {
-                                    libratedNO.Add(lst[i]);
-                                    isbreak = true;
-                                    //hasNOlibrated = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    libratedNOlst.Add(libratedNO);
-                                    libratedNO = new List<GPSCoord>();
-                                    libratedNO.Add(lst[i]);
-                                    libratedNOlst.Add(libratedNO);
-                                    isbreak = true;
-                                    hasNOlibrated = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!isbreak)
-                        {
-                            libratedOK.Add(lst[i]);
-                        }
-                    }
-                    else
-                    {
-                        libratedOK.Add(lst[i]);
-                    }
-
+  
                     if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
                     {
                         if (!overspeeding)
@@ -534,10 +413,7 @@ namespace DamLKK._Model
                     onelist.Add(lst[i]);
                     previous = lst[i];
                 }
-                if (hasNOlibrated && (libratedNOlst.Count == 0))
-                {
-                    libratedNOlst.Add(libratedNO);
-                }
+               
                 //System.Diagnostics.Debug.Print("舍弃超速点{0}个", count);
                 using (Pen p = WidthPen(Color.Black))
                     for (int i = 0; i < lstoflst.Count; i++)
@@ -546,64 +422,17 @@ namespace DamLKK._Model
                             continue;
                         GraphicsPath gp = new GraphicsPath();
                         PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
-                        //                 if (inCurve)
-                        //                     gp.AddCurve(plane);
-                        //                 else
+        
                         screenSegFiltered.Add(lstoflst[i]);
                         gp.AddLines(plane);
                         rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
                         gpTracking.Add(gp);
                         gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
                     }
-                using (Pen p = WidthPen(Color.Black))
-                    for (int i = 0; i < libratedOKlst.Count; i++)
-                    {
-                        if (libratedOKlst[i].Count < 2)
-                            continue;
-                        PointF[] pf = Geo.DamUtils.Translate(libratedOKlst[i]);
-                        GraphicsPath path = new GraphicsPath();
-                        path.AddLines(pf);
-                        rc = RectangleF.Union(rc, path.GetBounds(new Matrix(), p));
-                        screenSegLibrated.Add(libratedOKlst[i]);
-                        libratedOKTracking.Add(path);
-                    }
-                using (Pen p = WidthPen(Color.Black))
-                    for (int i = 0; i < libratedNOlst.Count; i++)
-                    {
-                        if (libratedNOlst[i].Count < 2)
-                            continue;
-                        PointF[] pf = Geo.DamUtils.Translate(libratedNOlst[i]);
-                        GraphicsPath path = new GraphicsPath();
-                        path.AddLines(pf);
-                        rc = RectangleF.Union(rc, path.GetBounds(new Matrix(), p));
-                        libratedTracking.Add(path);
-                    }
-
-                //取出振动合格的点列表放入screenSegLibrated
             }
 
             //// John, 2009-1-19
-            //if (Config.I.IS_OVERSPEED_VALID)
-            //{
-            //    foreach (List<GPSCoord> elem in screenSeg)
-            //    {
-            //        GraphicsPath gp = new GraphicsPath();
-            //        PointF[] lines = Geo.DamUtils.Translate(elem);
-            //        gp.AddLines(lines);
-            //        gpBand.Add(gp);
-            //    }
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < gpTracking.Count; i++ )
-            //    {
-            //        GraphicsPath gp = gpTracking[i];
-            //        if( !gpOverspeed[i] )
-            //            gpBand.Add(gp.Clone() as GraphicsPath);
-            //    }
-            //}
-            //////////////////////////////////////////////////////////////////feiying
-            if (Config.I.IS_LIBRATE_VALID && Config.I.IS_OVERSPEED_VALID)
+            if (Config.I.IS_OVERSPEED_VALID)
             {
                 foreach (List<GPSCoord> elem in screenSeg)
                 {
@@ -613,7 +442,7 @@ namespace DamLKK._Model
                     gpBand.Add(gp);
                 }
             }
-            else if (Config.I.IS_LIBRATE_VALID && !Config.I.IS_OVERSPEED_VALID)//只击震力算做遍数超速不算做遍数
+            else
             {
                 for (int i = 0; i < gpTracking.Count; i++)
                 {
@@ -622,84 +451,7 @@ namespace DamLKK._Model
                         gpBand.Add(gp.Clone() as GraphicsPath);
                 }
             }
-            else if (!Config.I.IS_LIBRATE_VALID && Config.I.IS_OVERSPEED_VALID)//只超速算做遍数击震力不算做遍数
-            {
-                for (int i = 0; i < libratedOKTracking.Count; i++)
-                {
-                    GraphicsPath gp = libratedOKTracking[i];
-                    gpBand.Add(gp.Clone() as GraphicsPath);
-                }
-            }
-            else                                                                //全部不计入遍数
-            {
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                /////////////////////从振动合格的点中筛选超速点、//////////////////
-                foreach (List<GPSCoord> lst in screenSegLibrated)
-                {
-                    // 筛选超速点
-                    //int count = 0;
-                    List<GPSCoord> onelist = new List<GPSCoord>();
-                    List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
-
-                    bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
-                    onelist.Add(lst[0]);
-                    lstoflst.Add(onelist);
-
-                    GPSCoord previous = lst[0];
-
-                    for (int i = 1; i < lst.Count; i++)
-                    {
-                        if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
-                        {
-                            if (!overspeeding)
-                            {
-                                onelist = new List<GPSCoord>();
-                                onelist.Add(previous);
-                                lstoflst.Add(onelist);
-                                //System.Diagnostics.Debug.Print("未超速->超速");
-                                //                             gpOverspeed.SetVertex(true);
-                            }
-                            overspeeding = true;
-                        }
-                        else
-                        {
-                            if (overspeeding)
-                            {
-                                onelist = new List<GPSCoord>();
-                                onelist.Add(previous);
-                                lstoflst.Add(onelist);
-                                //System.Diagnostics.Debug.Print("超速->未超速");
-                                //                             gpOverspeed.SetVertex(false);
-                            }
-                            overspeeding = false;
-                        }
-                        onelist.Add(lst[i]);
-                        previous = lst[i];
-                    }
-
-                    using (Pen p = WidthPen(Color.Black))
-                        for (int i = 0; i < lstoflst.Count; i++)
-                        {
-                            if (lstoflst[i].Count < 2)
-                                continue;
-                            GraphicsPath gp = new GraphicsPath();
-                            PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
-                            //                 if (inCurve)
-                            //                     gp.AddCurve(plane);
-                            //                 else
-                            gp.AddLines(plane);
-                            rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
-                            gpALLNOTracking.Add(gp);
-                            gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
-                        }
-                }
-                for (int i = 0; i < gpALLNOTracking.Count; i++)
-                {
-                    GraphicsPath gp = gpALLNOTracking[i];
-                    if (!gpOverspeed[i])
-                        gpBand.Add(gp.Clone() as GraphicsPath);
-                }
-            }
+            //////////////////////////////////////////////////////////////////feiying
 
 
             // John, 2009-1-19
@@ -709,131 +461,6 @@ namespace DamLKK._Model
             //System.Diagnostics.Debug.Print(libratedTracking.Count.ToString());
         }
 
-        //时间片结构体
-        public struct Timeslice
-        {
-            DateTime dtStart;
-
-            public DateTime DtStart
-            {
-                get { return dtStart; }
-                set { dtStart = value; }
-            }
-            DateTime dtEnd;
-
-            public DateTime DtEnd
-            {
-                get { return dtEnd; }
-                set { dtEnd = value; }
-            }
-            int libratedState;
-
-            public int LibratedState
-            {
-                get { return libratedState; }
-                set { libratedState = value; }
-            }
-
-        }
-        //获得参数车辆id的索引
-        int GetCarIDIndex(int carid)
-        {
-            int k = 0;
-            foreach (int id in VehicleControl.carIDs)
-            {
-                if (id == carid)
-                    break;
-                k++;
-            }
-            return k;
-        }
-
-        /// <summary>
-        /// 筛选击震力时间段
-        /// </summary>
-        private List<Timeslice> FiterLibrated()
-        {
-            DateTime end;
-            //不合格时间段集合
-            List<Timeslice> times = new List<Timeslice>();
-            //Timeslice time = new Timeslice();
-            if (this._OwnerRoller.Owner.WorkState == DeckWorkState.WAIT)
-                return null;
-            else if (this._OwnerRoller.Assignment.DTEnd == DateTime.MinValue)
-                end = DamLKK.DB.DateUtil.GetDate();
-            else
-                end = this._OwnerRoller.Assignment.DTEnd;
-
-            //List<DB.LibrateInfo> lstLInfos = DB.LibrateInfoDAO.Instance.getLibrateInfosOfthisCar(this._OwnerRoller.ID, this._OwnerRoller.Assignment.DTStart, end);
-
-            //for (int i = 0; i < lstLInfos.Count; i++)
-            //{
-            //    if (!ISCOMMAND && lstLInfos[i].State != this._OwnerRoller.Owner.DeckInfo.LibrateState)
-            //    {
-            //        time.LibratedState = lstLInfos[i].State;
-            //        time = new Timeslice();
-            //        time.DtStart = lstLInfos[i].Dt;
-            //        if ((i + 1) < lstLInfos.Count)
-            //            time.DtEnd = lstLInfos[i + 1].Dt;
-            //        else
-            //        {
-            //            if (this._OwnerRoller.Assignment.DTEnd == DateTime.MinValue)
-            //                time.DtEnd = DamLKK.DB.DateUtil.GetDate();
-            //            else
-            //                time.DtEnd = this._OwnerRoller.Assignment.DTEnd;
-            //        }
-            //        times.Add(time);
-            //    }
-            //    else if (ISCOMMAND && lstLInfos[i].State == 0 || lstLInfos[i].State == 3)
-            //    {
-            //        time.LibratedState = lstLInfos[i].State;
-            //        time = new Timeslice();
-            //        time.DtStart = lstLInfos[i].Dt;
-            //        if ((i + 1) < lstLInfos.Count)
-            //            time.DtEnd = lstLInfos[i + 1].Dt;
-            //        else
-            //        {
-            //            if (this._OwnerRoller.Assignment.DTEnd == DateTime.MinValue)
-            //                time.DtEnd = DamLKK.DB.DateUtil.GetDate();
-            //            else
-            //                time.DtEnd = this._OwnerRoller.Assignment.DTEnd;
-            //        }
-            //        times.Add(time);
-            //    }
-            //}
-
-
-            List<Timeslice> Timeslices = new List<Timeslice>();
-            if (times.Count < 2)////////////////筛选连接不合格的时间片
-                return times;
-            else
-            {
-                for (int i = 0; i < times.Count; )
-                {
-                    Timeslice thistime = times[i];
-                    if (i == times.Count - 1) { Timeslices.Add(thistime); break; }
-                    for (int j = i + 1; j < times.Count; j++)
-                    {
-                        if (times[j].DtStart == thistime.DtEnd)
-                        {
-                            thistime.DtEnd = times[j].DtEnd;
-                            if (j == times.Count - 1)
-                            {
-                                Timeslices.Add(thistime);
-                                i = j;
-                            }
-                        }
-                        else
-                        {
-                            Timeslices.Add(thistime);
-                            i = j;
-                            break;
-                        }
-                    }
-                }
-                return Timeslices;
-            }
-        }
         private float WidthPen()
         {
             return (float)OwnerRoller.Owner.MyLayer.ScreenSize(_OwnerRoller.ScrollWidth);
@@ -862,11 +489,7 @@ namespace DamLKK._Model
                 {
                     p.LineJoin = LineJoin.Round;
                     // 画碾压带
-                    //                     for (int i = 0; i < gpTracking.Count; i++)
-                    //                     {
-                    //                         if (!gpOverspeed[i])
-                    //                             g.DrawPath(p, gpTracking[i]);
-                    //                     }
+                   
                     for (int i = 0; i < gpBand.Count; i++)
                     {
                         g.DrawPath(p, gpBand[i]);
@@ -941,11 +564,11 @@ namespace DamLKK._Model
                             g.DrawPath(p, gpTracking[i]);
                     }
                 ///////////////////////////////////////////////////////////feiying 09.3.22
-                using (Pen p1 = new Pen(Color.Red, size))
-                    foreach (GraphicsPath path in libratedTracking)
-                    {
-                        g.DrawPath(p1, path);
-                    }
+                //using (Pen p1 = new Pen(Color.Red, size))
+                //    foreach (GraphicsPath path in libratedTracking)
+                //    {
+                //        g.DrawPath(p1, path);
+                //    }
             }
         }
         public void DrawAnchor(Graphics g)
@@ -989,10 +612,6 @@ namespace DamLKK._Model
                 sf.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.NoWrap;
                 rc.Offset(10, 3);
                 //写实时点的击震力状态。feiying 09.3.20
-
-              
-                int i = GetCarIDIndex(_OwnerRoller.ID);
-                DateTime dtnow = DB.DateUtil.GetDate();
                 string libratedstring = string.Empty;
                 //if (VehicleControl.carLibratedStates[i] == -1 || !_OwnerRoller.Assignment.IsWorking()/*||this.owner.Assignment.DTEnd < lstLInfos.Last().Dt*/)
                 //    libratedstring = string.Empty;
@@ -1071,21 +690,29 @@ namespace DamLKK._Model
                 lst[i] = new GPSCoord(c, c3d.Z);
             }
         }
-        public int RollCount(PointF scrPoint)
+        public int[] RollCount(PointF scrPoint)
         {
             lock (sync)
             {
                 if (!this.scrBoundary.Contains(scrPoint))
-                    return 0;
-                int count = 0;
+                    return null;
+                int count = 0,countNo=0;
                 using (Pen p = WidthPen(Color.Black))
-                for (int i = 0; i < gpBand.Count; i++)
                 {
-                    if (gpBand[i].IsOutlineVisible(scrPoint, p))
-                        count++;
+                    for (int i = 0; i < gpBand.Count; i++)
+                    {
+                        if (gpBand[i].IsOutlineVisible(scrPoint, p))
+                            count++;
+                    }
+
+                    for (int i = 0; i < gpNoLib.Count; i++)
+                    {
+                        if (gpNoLib[i].IsOutlineVisible(scrPoint, p))
+                            countNo++;
+                    }
                 }
-              
-                return count;
+               
+                return new int[]{countNo,count-countNo};
             }
         }
         public void MaxMin(out double lo, out double hi)

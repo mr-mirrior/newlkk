@@ -143,7 +143,6 @@
             this.miRollingCount.ShortcutKeyDisplayString = "F6";
             this.miRollingCount.Size = new System.Drawing.Size(177, 22);
             this.miRollingCount.Text = "碾压遍数(&R)";
-            this.miRollingCount.Visible = false;
             this.miRollingCount.Click += new System.EventHandler(this.miRollingCount_Click);
             // 
             // miOverspeed

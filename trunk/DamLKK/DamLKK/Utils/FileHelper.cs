@@ -73,6 +73,7 @@ namespace DamLKK.Utils
                 StreamReader sr = new StreamReader(fs);
                 string line = sr.ReadLine();
                 double ZBase = double.PositiveInfinity;
+                Random rand = new Random(0);
                 while (line != null)
                 {
                     if (line.Length != 0)
@@ -84,7 +85,11 @@ namespace DamLKK.Utils
                             line = sr.ReadLine();
                             continue;
                         }
-                        tracking.Add(new Geo.GPSCoord(Convert.ToSingle(s[0].Trim()), Convert.ToSingle(s[3].Trim()), 1111));
+
+                        DamLKK.Geo.GPSCoord cd = new Geo.GPSCoord(Convert.ToSingle(s[0].Trim()), Convert.ToSingle(s[3].Trim()), 1111);
+                        cd.V = rand.Next(5);
+                        cd.LibratedStatus = rand.Next(3);
+                        tracking.Add(cd);
                         if (ZBase > tracking.Last().Z)
                             ZBase = tracking.Last().Z;
   ;
@@ -96,7 +101,10 @@ namespace DamLKK.Utils
 
                 for (int i = 0; i < tracking.Count; i++)
                 {
-                    tracking[i] = new Geo.GPSCoord(tracking[i].Plane, tracking[i].Z - ZBase);
+                    DamLKK.Geo.GPSCoord cd = new Geo.GPSCoord(tracking[i].Plane, tracking[i].Z - ZBase);
+                    cd.V = rand.Next(5);
+                    cd.LibratedStatus = rand.Next(3);
+                    tracking[i] = cd;
                 }
                 return tracking;
             }
