@@ -1667,6 +1667,48 @@ namespace DamLKK.Views
             CheckMenu(miArrows, _Model.DrawingComponent.ARROWS);
         }
 
+        private void 生成压实厚度图TToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dlg.Dispose();
+            dlg = new Forms.Waiting();
+            dlg.Start(this, "正在计算，请稍候……", ReportThicknest, 1000);
+        }
+
+        private void ReportThicknest()
+        {
+            //Bitmap[] bp=DB.datamap.DataMapManager.draw(layer.VisibleDeck.DeckInfo.BlockID, layer.VisibleDeck.DeckInfo.DesignZ, layer.VisibleDeck.DeckInfo.SegmentID);
+            Bitmap[] bp = DB.datamap.DataMapManager4.draw(_MyLayer.VisibleDeck.Unit.ID, _MyLayer.VisibleDeck.Elevation.Height, _MyLayer.VisibleDeck.ID);
+            if (bp == null)
+                Utils.MB.Warning("此仓面或者此仓面的下层仓面没有生成数据图，请确认这两个仓面都已在关仓状态出过图形报告！");
+            else
+            {
+                Image image = (Image)bp[0];
+                Image image2 = (Image)bp[1];
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name);
+                if (!di.Exists)
+                {
+                    di.Create();
+                }
+#if DEBUG
+                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
+                image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
+#else
+                image.Save(@"C:\OUTPUT\" + layer.VisibleDeck.DeckInfo.SegmentName.Trim() + @"\" + layer.VisibleDeck.Partition.Name + layer.VisibleDeck.Elevation.Height.ToString("0.0") + layer.VisibleDeck.ID.ToString() + "thickness.png");
+                image2.Save(@"C:\OUTPUT\" + layer.VisibleDeck.DeckInfo.SegmentName.Trim() + @"\" + layer.VisibleDeck.Partition.Name + layer.VisibleDeck.Elevation.Height.ToString("0.0") + layer.VisibleDeck.ID.ToString() + "elevation.png");
+#endif
+                image.Dispose();
+                image2.Dispose();
+                System.IO.FileInfo fi = new System.IO.FileInfo(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
+                if (fi.Exists)
+#if !DEBUG
+                Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
+#else
+                    Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png", null);
+#endif
+            }
+            dlg.Finished = true;
+        }
+
         private void ReportOK()
         {
             if (_MyLayer.VisibleDeck == null)
@@ -1839,6 +1881,8 @@ namespace DamLKK.Views
         }
 
         #endregion
+
+       
 
     }
 }
