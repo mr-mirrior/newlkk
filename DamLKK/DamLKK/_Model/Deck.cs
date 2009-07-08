@@ -53,6 +53,7 @@ namespace DamLKK._Model
             _Name = p_Deck.Name;
             _SpreadZ = p_Deck.SpreadZ;
             _StartZ = p_Deck.StartZ;
+            _WorkState = p_Deck._WorkState;
         }
 
         DrawingComponent drawingComponent = DrawingComponent.ALL;
@@ -422,6 +423,18 @@ namespace DamLKK._Model
         Geo.Coord _DamOrignCoord;
         string _OrignCoordString;
         public string _Rolladdress;
+        public string _Trackingaddress;
+
+        #region ------------------------实时轨迹图--------------------------        
+        public bool _IsOutTrackingMap = false;
+
+        public void CreateTrackMap()
+        {
+            _IsOutTrackingMap = true;
+            DrawPathMap();
+            _IsOutTrackingMap = false;
+        }
+#endregion
 
 #region  --------------------------------------碾压边数原图-------------------------------------
         /// <summary>
@@ -898,7 +911,7 @@ namespace DamLKK._Model
                 thisPf = new RectangleF(0, topBlank * 0.7f + s.Height, bitMp.Width * 0.98f, topBlank);
                 endG.DrawString(dateEndString, ftWord, Brushes.Black, thisPf, thisSf);
                 //输出分区，高程，名称，时间
-                string allString = this.Unit.Name + "分区   " + this.Elevation.Height.ToString() + "米高程   " + this.Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
+                string allString = this.MyLayer.MyUnit.Name + "单元   " + this.Elevation.Height.ToString() + "    " + this.Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
                 fa = 20f;
                 ftTime = new Font("微软雅黑", fa * factor);
                 s = newG.MeasureString(allString, ftTime);
@@ -939,12 +952,12 @@ namespace DamLKK._Model
 #if DEBUG
                     bitMp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png");
 #else
-                    DirectoryInfo dd = new DirectoryInfo(@"C:\OUTPUT\" + this.DeckInfo.SegmentName);
+                    DirectoryInfo dd = new DirectoryInfo(@"C:\OUTPUT\" + this.Name);
                     if (!dd.Exists)
                     {
                         dd.Create();
                     }
-                    bitMp.Save(rolladdres);
+                    bitMp.Save(_Rolladdress);
 #endif
                     _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
                 }
@@ -959,7 +972,7 @@ namespace DamLKK._Model
                 if (bmp != null)
                     bmp.Dispose();
 
-                this.DrawPathMap();
+                this.CreateTrackMap();
             }
             layer.RotateDegree = oldRotate;
             layer.Zoom = oldZoom;
@@ -972,6 +985,7 @@ namespace DamLKK._Model
 
 
 #region -------------------------------------碾压轨迹图---------------------------------------
+
         public void DrawPathMap()
         {
             TrackGPS gps;
@@ -993,7 +1007,8 @@ namespace DamLKK._Model
             foreach (Roller v in vCtrl.Rollers)
             {
                 gps = v.TrackGPSControl.Tracking;
- 
+
+                v.TrackGPSControl.Tracking.CreatTracking(0,0);
                 v.TrackGPSControl.Tracking.DrawSkeleton(g, false);
             }
             DirectoryInfo di = new DirectoryInfo(@"C:\OUTPUT");
@@ -1187,7 +1202,12 @@ namespace DamLKK._Model
             //振动不合格
             newG.FillRectangle(Brushes.Black, offset, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 * 0.3f + 2, w0 / 6f + 2);
             newG.FillRectangle(Brushes.Red, offset + 1, 1 + output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 * 0.3f, w0 / 6f);
-            newG.DrawString("振动不合格", _FtString, Brushes.Black, offset * 1.05f + w0 * 0.3f, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f);
+            newG.DrawString("静碾不合格", _FtString, Brushes.Black, offset * 1.05f + w0 * 0.3f, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f);
+
+            newG.FillRectangle(Brushes.Red, offset*3, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 * 0.3f + 2, w0 / 6f + 2);
+            newG.FillRectangle(Brushes.Black, offset * 3 + 1, 1 + output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 * 0.3f, w0 / 6f);
+            newG.DrawString("振碾不合格", _FtString, Brushes.Black, offset*3 * 1.05f + w0 * 0.3f, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f);
+
             Brush bs;
             s = g.MeasureString("超速", _FtString);
             for (int i = 0; i < vehicleName.Count && i < 8; i++)
@@ -1265,7 +1285,7 @@ namespace DamLKK._Model
             //输出分区，高程，名称，时间
 
 
-            string allString = this.Unit.Name + "分区   " + this._Elevation.Height.ToString() + "米高程   " + this._Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
+            string allString = this.MyLayer.MyUnit.Name + "分区   " + this._Elevation.Height.ToString() + "     " + this._Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
             fa = 50f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1296,7 +1316,7 @@ namespace DamLKK._Model
             s = endG.MeasureString("轴", _FtScale);
             endG.DrawString("轴(m)", _FtScale, Brushes.Black, offset * 0.9f, topBlank - s.Height * 0.9f + 2 * factor);
             endG.DrawString("碾压轨迹图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-            string address = @"C:\OUTPUT\" + this._Name.Trim() + @"\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png";
+            _Trackingaddress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png";
 
 #if DEBUG
             bitMp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png");
@@ -1458,13 +1478,24 @@ namespace DamLKK._Model
         }
 
         /// <summary>
-        /// 改仓面上的该点碾压边数
+        /// 
+        /// 改仓面上的该点静碾和振碾压边数
         /// </summary>
         public int[] RollCount(PointF pt)
         {
             if (!this.Polygon.IsScreenVisible(new Geo.Coord(pt)))
                 return null;
             return VehicleControl.RollCount(pt);
+        }
+
+        /// <summary>
+        /// 改仓面上的该点总碾压边数
+        /// </summary>
+        public int RollCountALL(PointF pt)
+        {
+            if (!this.Polygon.IsScreenVisible(new Geo.Coord(pt)))
+                return 0;
+            return VehicleControl.RollCountALL(pt);
         }
 
        

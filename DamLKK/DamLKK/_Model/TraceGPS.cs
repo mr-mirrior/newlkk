@@ -11,6 +11,24 @@ namespace DamLKK._Model
 {
     public class TrackGPS : ICloneable, IDisposable
     {
+        /// <summary>
+        /// 轨迹段状态标识
+        /// </summary>
+        private enum TrackingSatus
+        {
+            Right=0,
+            /// <summary>
+            /// 静碾错误报警
+            /// </summary>
+            NoLibWarn=1,
+            /// <summary>
+            /// 振碾错误报警
+            /// </summary>
+            LibratedWarn=2,
+            OverSpeed=3
+        }
+
+
         public TrackGPS(Roller v) { _OwnerRoller = v; origTP.Capacity = 1000000; }
         public TrackGPS() { origTP.Capacity = 1000000; }
 
@@ -29,13 +47,16 @@ namespace DamLKK._Model
         {
             lock (sync)
             {
-                gpLibrated.Clear();
+                gpTrackSatus.Clear();
                 gpOverspeed.Clear();
                 gpTracking.Clear();
-                gpBand.Clear();
                 gpNoLib.Clear();
+                gpBand.Clear();
+                gpBandNolib.Clear();
+                gpBandLib.Clear();
             }
             screenSeg.Clear();
+            screenSegLib.Clear();
             screenSegFiltered.Clear();
             filteredSeg.Clear();
             filteredTP.Clear();
@@ -57,6 +78,9 @@ namespace DamLKK._Model
         List<List<Geo.GPSCoord>> filteredSeg = new List<List<Geo.GPSCoord>>();    // 经过段内筛选的分段坐标，施工坐标
 
         List<List<Geo.GPSCoord>> screenSeg = new List<List<Geo.GPSCoord>>();     // 经过2次筛选的屏幕坐标
+
+        List<List<Geo.GPSCoord>> screenSegLib = new List<List<Geo.GPSCoord>>();     // 经过2次筛选振动的屏幕坐标
+
         List<List<Geo.GPSCoord>> screenSegFiltered = new List<List<Geo.GPSCoord>>();     // 经过2次筛选的屏幕坐标
 
         bool inCurve = true;
@@ -88,16 +112,19 @@ namespace DamLKK._Model
         public void CreateScreen()
         {
             if (origTP.Count == 0)
-                return;;
+                return;
             lock (adding)
                 CreatePath(0, 0);
         }
         List<GraphicsPath> gpTracking = new List<GraphicsPath>();
+        List<GraphicsPath> gpTrackingLib = new List<GraphicsPath>();
         List<GraphicsPath> gpBand = new List<GraphicsPath>();  //所有图形的GP
-        List<GraphicsPath> gpNoLib = new List<GraphicsPath>();  //未振动点图形的的GP
+        List<GraphicsPath> gpBandNolib = new List<GraphicsPath>();  //所有静碾图形的GP
+        List<GraphicsPath> gpBandLib = new List<GraphicsPath>();  //所有震碾图形的GP
       
         List<bool> gpOverspeed = new List<bool>();
-        List<bool> gpLibrated = new List<bool>();
+        List<bool> gpNoLib = new List<bool>();            //是否是不振动 true 不振; false振动
+        List<TrackingSatus> gpTrackSatus = new List<TrackingSatus>();
 
         public void SetTracking(List<Geo.GPSCoord> pts, double offScrX, double offScrY)
         {
@@ -154,6 +181,7 @@ namespace DamLKK._Model
             angle = Math.Abs(angle);
             return angle;
         }
+
         private void FilterVibrant()
         {
             for (int i = 1; i < filteredSeg.Count - 1; i++)
@@ -335,18 +363,22 @@ namespace DamLKK._Model
             scrBoundary.Bottom = Math.Max(scrBoundary.Bottom, c.Y);
         }
 
-        private void CreatePath(double offScrX, double offScrY)
+
+#region  -------------------------仅供出实时轨迹图计算用---------------------------
+        public void CreatTracking(double offScrX, double offScrY)
         {
-             if (filteredSeg.Count == 0)
+
+            if (filteredSeg.Count == 0)
                 return;
 
 
             gpTracking.Clear();
-            gpNoLib.Clear();
             gpBand.Clear();
+            gpBandNolib.Clear();
+            gpBandLib.Clear();
             gpOverspeed.Clear();
+            gpTrackSatus.Clear();
             screenSegFiltered.Clear();
-            gpLibrated.Clear();
 
 
             screenSeg = new List<List<GPSCoord>>(filteredSeg);
@@ -355,6 +387,7 @@ namespace DamLKK._Model
                 screenSeg[i] = new List<GPSCoord>(filteredSeg[i]);
             }
             Layer _OwnerLayer = _OwnerRoller.Owner.MyLayer;
+            Deck MyDeck = this.OwnerRoller.Owner;
 
             for (int i = 0; i < screenSeg.Count; i++)
             {
@@ -362,21 +395,32 @@ namespace DamLKK._Model
                 {
                     Coord c = new Coord(_OwnerLayer.DamToScreen(screenSeg[i][j].Plane));
                     c = c.Offset(offScrX, offScrY);
-                    screenSeg[i][j] = new GPSCoord(filteredSeg[i][j].RollerID, c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
+                    screenSeg[i][j] = new GPSCoord(c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
                 }
             }
+
             RectangleF rc = new RectangleF();
-        
+
 
             foreach (List<GPSCoord> lst in screenSeg)
             {
                 // 筛选超速点
-                //int count = 0;
+
                 List<GPSCoord> onelist = new List<GPSCoord>();
                 List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
 
+                TrackingSatus satus = TrackingSatus.Right;
+                int count = MyDeck.RollCountALL(lst[0].Plane.PF);
+
+                if (count < MyDeck.NOLibRollCount && lst[0].LibratedStatus != 0)
+                    satus = TrackingSatus.NoLibWarn;
+                else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[0].LibratedStatus == 0)
+                    satus = TrackingSatus.LibratedWarn;
+                else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
+                    satus = TrackingSatus.OverSpeed;
 
                 bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
+
                 onelist.Add(lst[0]);
                 lstoflst.Add(onelist);
 
@@ -384,8 +428,169 @@ namespace DamLKK._Model
 
                 for (int i = 1; i < lst.Count; i++)
                 {
-  
-                    if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
+
+                    if (count < MyDeck.NOLibRollCount && lst[i].LibratedStatus != 0)
+                    {
+                        if (satus != TrackingSatus.NoLibWarn)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        satus = TrackingSatus.NoLibWarn;
+                    }
+                    else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[i].LibratedStatus == 0)
+                    {
+                        if (satus != TrackingSatus.LibratedWarn)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        satus = TrackingSatus.LibratedWarn;
+                    }
+                    else if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
+                    {
+                        if (satus != TrackingSatus.OverSpeed)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        satus = TrackingSatus.OverSpeed;
+                    }
+                    else
+                    {
+                        if (satus != TrackingSatus.Right)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        satus = TrackingSatus.Right;
+                    }
+                    onelist.Add(lst[i]);
+                    previous = lst[i];
+                }
+                    //System.Diagnostics.Debug.Print("舍弃超速点{0}个", count);
+                    using (Pen p = WidthPen(Color.Black))
+                        for (int i = 0; i < lstoflst.Count; i++)
+                        {
+                            if (lstoflst[i].Count < 2)
+                                continue;
+                            GraphicsPath gp = new GraphicsPath();
+                            PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
+
+                            screenSegFiltered.Add(lstoflst[i]);
+                            gp.AddLines(plane);
+                            rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
+                            gpTracking.Add(gp);
+
+                            TrackingSatus sat = TrackingSatus.Right;
+                            if (count < MyDeck.NOLibRollCount && lstoflst[i].Last().LibratedStatus != 0)
+                                sat = TrackingSatus.NoLibWarn;
+                            else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lstoflst[i].Last().LibratedStatus == 0)
+                                sat = TrackingSatus.LibratedWarn;
+                            else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
+                                sat = TrackingSatus.OverSpeed;
+
+                            gpTrackSatus.Add(sat);
+                            gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
+                        }
+                    }
+
+            //// John, 2009-1-19
+            if (Config.I.IS_OVERSPEED_VALID)
+            {
+                foreach (List<GPSCoord> elem in screenSeg)
+                {
+                    GraphicsPath gp = new GraphicsPath();
+                    PointF[] lines = Geo.DamUtils.Translate(elem);
+                    gp.AddLines(lines);
+                    
+                }
+            }
+            else
+            {
+                for (int i = 0; i < gpTracking.Count; i++)
+                {
+                    GraphicsPath gp = gpTracking[i];
+
+                    if (gpTrackSatus[i] != TrackingSatus.OverSpeed)
+                        gpBand.Add(gp.Clone() as GraphicsPath);
+
+                    //if (!gpOverspeed[i])
+                    //    gpBand.Add(gp.Clone() as GraphicsPath);
+                }
+            }
+
+
+            // John, 2009-1-19
+
+            scrBoundary = new DMRectangle(rc);
+            //             }
+        }
+
+
+#endregion
+
+
+        private void CreatePath(double offScrX, double offScrY)
+        {
+             if (filteredSeg.Count == 0)
+                return;
+
+            gpNoLib.Clear();
+            gpBandNolib.Clear();
+            gpBandLib.Clear();
+            gpTracking.Clear();
+            gpBand.Clear();
+            gpOverspeed.Clear();
+            gpTrackSatus.Clear();
+            screenSegFiltered.Clear();
+
+
+            screenSeg = new List<List<GPSCoord>>(filteredSeg);
+           
+            for (int i = 0; i < filteredSeg.Count; i++)
+            {
+                screenSeg[i] = new List<GPSCoord>(filteredSeg[i]);
+                
+            }
+            Layer _OwnerLayer = _OwnerRoller.Owner.MyLayer;
+            Deck MyDeck=this.OwnerRoller.Owner;
+
+            for (int i = 0; i < screenSeg.Count; i++)
+            {
+                for (int j = 0; j < screenSeg[i].Count; j++)
+                {
+                    Coord c = new Coord(_OwnerLayer.DamToScreen(screenSeg[i][j].Plane));
+                    c = c.Offset(offScrX, offScrY);
+                    screenSeg[i][j] = new GPSCoord(c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
+
+                }
+            }
+
+            RectangleF rc = new RectangleF();
+            screenSegLib = screenSeg;
+            
+            foreach (List<GPSCoord> lst in screenSeg)
+            {
+                // 筛选超速点
+           
+                List<GPSCoord> onelist = new List<GPSCoord>();
+                List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
+
+                bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
+
+                onelist.Add(lst[0]);
+                lstoflst.Add(onelist);
+
+                GPSCoord previous = lst[0];
+
+                 for (int i = 1; i < lst.Count; i++)
+                {
+                    if (lst[i].V >= MyDeck.MaxSpeed)
                     {
                         if (!overspeeding)
                         {
@@ -411,24 +616,100 @@ namespace DamLKK._Model
                     }
                     onelist.Add(lst[i]);
                     previous = lst[i];
+
+                 }
+
+
+                    using (Pen p = WidthPen(Color.Black))
+                        for (int i = 0; i < lstoflst.Count; i++)
+                        {
+                            if (lstoflst[i].Count < 2)
+                                continue;
+                            GraphicsPath gp = new GraphicsPath();
+                            PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
+
+                            screenSegFiltered.Add(lstoflst[i]);
+                            gp.AddLines(plane);
+                            rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
+                            gpTracking.Add(gp);
+                            gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
+                        }
+                
                 }
-               
-                //System.Diagnostics.Debug.Print("舍弃超速点{0}个", count);
-                using (Pen p = WidthPen(Color.Black))
-                    for (int i = 0; i < lstoflst.Count; i++)
+
+
+            //////////////////////////////筛选振动点
+
+            foreach (List<GPSCoord> lst in screenSegLib)
+            {
+                // 筛选超速点
+
+                List<GPSCoord> onelist = new List<GPSCoord>();
+                List<List<GPSCoord>> lstoflstLib = new List<List<GPSCoord>>();
+
+                bool nolib = (lst[0].LibratedStatus == 0);
+
+
+                onelist.Add(lst[0]);
+                lstoflstLib.Add(onelist);
+
+                GPSCoord previous = lst[0];
+
+                for (int i = 1; i < lst.Count; i++)
+                {
+                    if (lst[i].LibratedStatus == 0)
                     {
-                        if (lstoflst[i].Count < 2)
+                        if (!nolib)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflstLib.Add(onelist);
+                        }
+                        nolib = true;
+                    }
+                    else
+                    {
+                        if (lst[i].LibratedStatus != 0)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflstLib.Add(onelist);
+                        }
+                        nolib = false;
+                    }
+                    onelist.Add(lst[i]);
+                    previous = lst[i];
+
+                }
+
+                using (Pen p = WidthPen(Color.Black))
+                    for (int i = 0; i < lstoflstLib.Count; i++)
+                    {
+                        if (lstoflstLib[i].Count < 2)
                             continue;
                         GraphicsPath gp = new GraphicsPath();
-                        PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
-        
-                        screenSegFiltered.Add(lstoflst[i]);
+                        PointF[] plane = Geo.DamUtils.Translate(lstoflstLib[i]);
                         gp.AddLines(plane);
                         rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
-                        gpTracking.Add(gp);
-                        gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
+                        gpTrackingLib.Add(gp);
+                        gpNoLib.Add(lstoflstLib[i].Last().LibratedStatus==0);
                     }
+
             }
+
+          
+
+                //把静碾和振碾的轨迹区分开
+                for(int i=0;i<screenSegLib.Count;i++)
+                {
+                    GraphicsPath gp = new GraphicsPath();
+                    PointF[] lines = Geo.DamUtils.Translate(screenSegLib[i]);
+                    gp.AddLines(lines);
+                    if (gpNoLib[i])
+                        gpBandNolib.Add(gp);
+                    else
+                        gpBandLib.Add(gp);
+                }
 
             //// John, 2009-1-19
             if (Config.I.IS_OVERSPEED_VALID)
@@ -446,11 +727,11 @@ namespace DamLKK._Model
                 for (int i = 0; i < gpTracking.Count; i++)
                 {
                     GraphicsPath gp = gpTracking[i];
+
                     if (!gpOverspeed[i])
                         gpBand.Add(gp.Clone() as GraphicsPath);
                 }
             }
-            //////////////////////////////////////////////////////////////////feiying
 
 
             // John, 2009-1-19
@@ -523,35 +804,37 @@ namespace DamLKK._Model
         {
             lock (sync)
             {
-                //                 foreach (List<GPSCoord> lst in screenSeg)
-                //                 {
-                //                     foreach (GPSCoord c in lst)
-                //                     {
-                //                         if (c.tag1 == 1)
-                //                         {
-                //                             g.FillEllipse(Brushes.PaleVioletRed, c.Plane.XF - 5, c.Plane.YF - 5, 10, 10);
-                //                         }
-                //                         else if (c.tag1 == 2)
-                //                         {
-                //                             g.FillEllipse(Brushes.Navy, c.Plane.XF - 5, c.Plane.YF - 5, 10, 10);
-                //                         }
-                //                     }
-                //                 }
-
                 float scrSize = (float)_OwnerRoller.Owner.MyLayer.ScreenSize(0.05);
                 scrSize = Math.Max(scrSize, 0.1f);
                 scrSize = Math.Min(scrSize, 0.8f);
                 float size = 1;// (float)owner.Owner.Owner.ScreenSize(.15f);
-                using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
-                    p1 = new Pen(Color.Yellow, 1.8f),
-                    p2 = new Pen(Color.Black, 2.7f))
+
+
+
+                if (_OwnerRoller.Owner._IsOutTrackingMap)
+                {
+                   using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
+                   p1 = new Pen(Color.Yellow, 1.8f),
+                   pblack = new Pen(Color.Black, 1.8f),
+                   pred = new Pen(Color.Red, 1.8f),
+                   p2 = new Pen(Color.Black, 2.7f))
+
                     for (int i = 0; i < gpTracking.Count; i++)
                     {
-      
+
                         if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
                             p.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
 
-                        if (gpOverspeed[i])
+
+                        if (gpTrackSatus[i] == TrackingSatus.NoLibWarn)
+                        {
+                            g.DrawPath(pred, gpTracking[i]);
+                        }
+                        else if (gpTrackSatus[i] == TrackingSatus.LibratedWarn)
+                        {
+                            g.DrawPath(pblack, gpTracking[i]);
+                        }
+                        else if (gpTrackSatus[i] == TrackingSatus.OverSpeed)//gpOverspeed[i]
                         {
                             if (drawOverspeed)
                             {
@@ -562,6 +845,32 @@ namespace DamLKK._Model
                         else
                             g.DrawPath(p, gpTracking[i]);
                     }
+                }
+                else
+                {
+                    using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
+                    p1 = new Pen(Color.Yellow, 1.8f),
+                    p2 = new Pen(Color.Black, 2.7f))
+
+                        for (int i = 0; i < gpTracking.Count; i++)
+                        {
+
+                            if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
+                                p.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+
+                            if (gpOverspeed[i])
+                            {
+                                if (drawOverspeed)
+                                {
+                                    g.DrawPath(p2, gpTracking[i]);
+                                    g.DrawPath(p1, gpTracking[i]);
+                                }
+                            }
+                            else
+                                g.DrawPath(p, gpTracking[i]);
+                        }
+                }
+               
                 ///////////////////////////////////////////////////////////feiying 09.3.22
                 //using (Pen p1 = new Pen(Color.Red, size))
                 //    foreach (GraphicsPath path in libratedTracking)
@@ -698,22 +1007,43 @@ namespace DamLKK._Model
                 int count = 0,countNo=0;
                 using (Pen p = WidthPen(Color.Black))
                 {
+                    for (int i = 0; i < gpBandNolib.Count; i++)
+                    {
+                        if (gpBandNolib[i].IsOutlineVisible(scrPoint, p))
+                            countNo++;
+                    }
+
+                    for (int i = 0; i < gpBandLib.Count; i++)
+                    {
+                        if (gpBandLib[i].IsOutlineVisible(scrPoint, p))
+                            count++;
+                    }
+                }
+               
+                return new int[]{countNo,count};
+            }
+        }
+
+        public int RollCountALL(PointF scrPoint)
+        {
+            lock (sync)
+            {
+                if (!this.scrBoundary.Contains(scrPoint))
+                    return 0;
+                int count = 0;
+                using (Pen p = WidthPen(Color.Black))
+                {
                     for (int i = 0; i < gpBand.Count; i++)
                     {
                         if (gpBand[i].IsOutlineVisible(scrPoint, p))
                             count++;
                     }
-
-                    for (int i = 0; i < gpNoLib.Count; i++)
-                    {
-                        if (gpNoLib[i].IsOutlineVisible(scrPoint, p))
-                            countNo++;
-                    }
                 }
-               
-                return new int[]{countNo,count-countNo};
+
+                return count;
             }
         }
+
         public void MaxMin(out double lo, out double hi)
         {
             lo = -1;

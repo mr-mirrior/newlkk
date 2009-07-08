@@ -360,7 +360,7 @@ namespace DamLKK.DB
             SqlConnection conn = null;
             SqlDataReader reader = null;
             String sqlTxt = "select * from cardistribute where unitid=" +unitid + " and segmentid=" + segmentid + " and designZ=" + designZ + " and DTEnd is null and DTStart is not null";
-            List<DamLKK._Model.Roller> all = RollerDAO.GetInstance().GetAllCarInfo();
+            List<DamLKK._Model.Roller> all =_Control.VehicleControl.vehiclesInfo;
             try
             {
                 conn = DBConnection.getSqlConnection();
@@ -512,7 +512,7 @@ namespace DamLKK.DB
             List<Roller> carinfos = new List<Roller>();
             SqlConnection connection = null;
             SqlDataReader reader = null;
-            List<Roller> all = RollerDAO.GetInstance().GetAllCarInfo();
+            List<Roller> all = _Control.VehicleControl.vehiclesInfo;
             String sqlTxt = "select * from cardistribute where DTEnd is null and DTStart is not null";
             try
             {
@@ -609,7 +609,7 @@ namespace DamLKK.DB
             List<Roller> inusedCars = null;
             try
             {
-                carinfos = RollerDAO.GetInstance().GetAllCarInfo();
+                carinfos = _Control.VehicleControl.vehiclesInfo;
             }
             catch (System.Exception e)
             {
@@ -716,7 +716,7 @@ namespace DamLKK.DB
 
             try
             {
-                carinfos = RollerDAO.GetInstance().GetAllCarInfo();
+                carinfos = _Control.VehicleControl.vehiclesInfo;
             }
             catch (System.Exception e)
             {
@@ -755,7 +755,7 @@ namespace DamLKK.DB
 
             try
             {
-                carinfos = RollerDAO.GetInstance().GetAllCarInfo();
+                carinfos = _Control.VehicleControl.vehiclesInfo;
             }
             catch (System.Exception e)
             {

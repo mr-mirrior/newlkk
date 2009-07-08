@@ -181,7 +181,7 @@ namespace DamLKK.DB
                     DateTime When = Convert.ToDateTime(reader["dttrace"]);
                     int LibratedStatus = Convert.ToInt32(reader["libratedsatus"]);
 
-                    tracePoint = new GPSCoord(RollerID,X,Y,Z,V,0,When,LibratedStatus);
+                    tracePoint = new GPSCoord(X,Y,Z,V,0,When,LibratedStatus);
                     tracepoints.Add(tracePoint);                
                 }
                 return tracepoints;

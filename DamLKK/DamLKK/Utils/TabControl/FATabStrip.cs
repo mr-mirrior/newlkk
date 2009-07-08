@@ -979,7 +979,7 @@ namespace FarsiLibrary.Win
         {
             foreach (FATabStripItem item in items)
             {
-                if (c.IsEqual(item.Tag as DamLKK.Views.LayerView))
+                if (c.IsEqual(item.Tag as DamLKK.Views.LayerView)&&c.MyLayer.Name==item.Title)
                     return item;
             }
             return null;

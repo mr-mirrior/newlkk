@@ -140,8 +140,11 @@ namespace DamLKK._Model
         {
             TrackGPSControl.Owner = this;
             this.ScrollWidth = 2.17;
+            _Timer.Interval = 1000 * 60 * 3;
+            _Timer.Elapsed += new System.Timers.ElapsedEventHandler(_Timer_Elapsed);
         }
 
+      
         public RollerDis Assignment
         {
             get { return _RollDis; }
@@ -173,6 +176,11 @@ namespace DamLKK._Model
             return TrackGPSControl.Tracking.RollCount(pt);
         }
 
+        public int RollCountALL(PointF pt)
+        {
+            return TrackGPSControl.Tracking.RollCountALL(pt);
+        }
+
         public void Draw(Graphics g, bool frameonly)
         {
             TrackGPSControl.Draw(g, frameonly);
@@ -193,6 +201,14 @@ namespace DamLKK._Model
         }
         object disposing = new object();
         bool isDisposed = false;
+        System.Timers.Timer _Timer = new System.Timers.Timer();
+        int[] Count; //每个点新点碾压边数
+        bool IsNoLib=false;//报警类型
+        void _Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            WaringLibrated();
+        }
+
         private void OnGPSData(object sender, _Control.GPSCoordEventArg e)
         {
             lock (disposing)
@@ -227,15 +243,29 @@ namespace DamLKK._Model
                     //2.边数和击震力状态是否符合要求
                     if (Owner.IsInThisDeck(e.gps.GPSCoord.Plane))
                     {
-                        int[] count=Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
+                        Count=Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
                         
-                        if(count!=null&&(count[0]+count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedSatus!=0)
+                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedSatus!=0)
                         {
-                            WaringLibrated(true,count);
+                            if(!_Timer.Enabled)
+                            {
+                                _Timer.Start();
+                                IsNoLib = true;
+                            }
+                            
                         }
-                        else if(count!=null&&(count[0]+count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedSatus==0)
+                        else if(Count!=null&&(Count[0]+Count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedSatus==0)
                         {
-                            WaringLibrated(false,count);
+                            if (!_Timer.Enabled)
+                            {
+                                _Timer.Start();
+                                IsNoLib = false;
+                            }
+                        }
+                        else
+                        {
+                            if (_Timer.Enabled)
+                            _Timer.Stop();
                         }
                     }
 
@@ -249,20 +279,20 @@ namespace DamLKK._Model
         /// <summary>
         /// 击震力不合格报警,
         /// </summary>
-        private void WaringLibrated(bool isNolib,int[] count)
+        private void WaringLibrated()
         {
             string warning;
             Forms.Warning warndlg = new DamLKK.Forms.Warning();
-            if (isNolib)
+            if (IsNoLib)
             {
                 warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为振动,设计应为不振。)",
-                                this.Name, count[0].ToString(), count[1].ToString());
+                                this.Name, Count[0].ToString(), Count[1].ToString());
                 warndlg.LibrateState = 1;
             }
             else
             {
                 warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为不振,设计应为振动。)",
-                               this.Name, count[0].ToString(), count[1].ToString());
+                               this.Name, Count[0].ToString(), Count[1].ToString());
                 warndlg.LibrateState = 0;
             }
 
