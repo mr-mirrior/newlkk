@@ -825,7 +825,7 @@ namespace DamLKK.Views
             int goodCount = 8;
             _Model.Deck deck = _MyLayer.VisibleDeck;
             if (deck != null) goodCount = deck.NOLibRollCount+deck.LibRollCount;
-            if ((count[0] + count[1]) >= goodCount)
+            if ((count[0] + count[1]) >= goodCount||count[0]>deck.NOLibRollCount||count[1]>deck.LibRollCount)
                 cl = Color.OliveDrab;
             rc.Location = DeScrollPoint(_CursorPos); 
 

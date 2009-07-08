@@ -50,6 +50,7 @@ namespace DamLKK._Model
                 gpTrackSatus.Clear();
                 gpOverspeed.Clear();
                 gpTracking.Clear();
+                gpTrackingLib.Clear();
                 gpNoLib.Clear();
                 gpBand.Clear();
                 gpBandNolib.Clear();
@@ -371,7 +372,7 @@ namespace DamLKK._Model
             if (filteredSeg.Count == 0)
                 return;
 
-
+            gpTrackingLib.Clear();
             gpTracking.Clear();
             gpBand.Clear();
             gpBandNolib.Clear();
@@ -544,11 +545,12 @@ namespace DamLKK._Model
             gpBandNolib.Clear();
             gpBandLib.Clear();
             gpTracking.Clear();
+            gpTrackingLib.Clear();
             gpBand.Clear();
             gpOverspeed.Clear();
             gpTrackSatus.Clear();
             screenSegFiltered.Clear();
-
+            
 
             screenSeg = new List<List<GPSCoord>>(filteredSeg);
            
@@ -669,7 +671,7 @@ namespace DamLKK._Model
                     }
                     else
                     {
-                        if (lst[i].LibratedStatus != 0)
+                        if (nolib)
                         {
                             onelist = new List<GPSCoord>();
                             onelist.Add(previous);
@@ -700,11 +702,10 @@ namespace DamLKK._Model
           
 
                 //把静碾和振碾的轨迹区分开
-                for(int i=0;i<screenSegLib.Count;i++)
+                for(int i=0;i<gpTrackingLib.Count;i++)
                 {
-                    GraphicsPath gp = new GraphicsPath();
-                    PointF[] lines = Geo.DamUtils.Translate(screenSegLib[i]);
-                    gp.AddLines(lines);
+                    GraphicsPath gp = gpTrackingLib[i];
+
                     if (gpNoLib[i])
                         gpBandNolib.Add(gp);
                     else
@@ -750,7 +751,11 @@ namespace DamLKK._Model
             return new Pen(cl, WidthPen());
         }
         object sync = new object();
-        public void Draw(Graphics g, bool frameonly)
+
+        /// <summary>
+        /// 画图  0:所有轨迹,1:静碾轨迹;2:振碾轨迹
+        /// </summary>
+        public void Draw(Graphics g, bool frameonly,int mapindex)
         {
             lock (sync)
             {
@@ -769,11 +774,28 @@ namespace DamLKK._Model
                 {
                     p.LineJoin = LineJoin.Round;
                     // 画碾压带
-                   
-                    for (int i = 0; i < gpBand.Count; i++)
+                    switch (mapindex)
                     {
-                        g.DrawPath(p, gpBand[i]);
+                        case 0:
+                                for (int i = 0; i < gpBand.Count; i++)
+                                {
+                                    g.DrawPath(p, gpBand[i]);
+                                }
+                	        break;
+                        case 1:
+                            for (int i = 0; i < gpBandNolib.Count; i++)
+                            {
+                                g.DrawPath(p, gpBandNolib[i]);
+                            }
+                            break;
+                        case 2:
+                            for (int i = 0; i < gpBandLib.Count; i++)
+                            {
+                                g.DrawPath(p, gpBandLib[i]);
+                            }
+                            break;
                     }
+                  
                 }
             }
         }

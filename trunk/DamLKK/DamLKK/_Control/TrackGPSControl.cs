@@ -79,7 +79,7 @@ namespace DamLKK._Control
         }
         public void Draw(Graphics g, bool frameonly)
         {
-            tracking.Draw(g, frameonly);
+            tracking.Draw(g, frameonly,0);
         }
 
         public void CheckOverThickness(Geo.GPSCoord c)
