@@ -194,7 +194,7 @@
             this.生成压实厚度图TToolStripMenuItem.Name = "生成压实厚度图TToolStripMenuItem";
             this.生成压实厚度图TToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.生成压实厚度图TToolStripMenuItem.Text = "生成压实厚度图(&T)";
-            this.生成压实厚度图TToolStripMenuItem.Visible = false;
+            this.生成压实厚度图TToolStripMenuItem.Click += new System.EventHandler(this.生成压实厚度图TToolStripMenuItem_Click);
             // 
             // 设置SToolStripMenuItem
             // 

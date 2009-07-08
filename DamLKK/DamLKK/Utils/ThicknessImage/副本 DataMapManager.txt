@@ -1,0 +1,718 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+namespace DM.DB.datamap
+{
+    class DataMapManager副本
+    {
+        //传入当地坐标
+        public static float WIDTH = 0.5f;//每个正方形网格的宽度	
+
+        public static double cos = -0.83452702271916488948079272306091;//
+        public static double sin = -0.5509670120356448784912018921605;
+
+        static List<Coordinate> getSegmentVertex(String vertex, int width, int height)
+        {
+            List<Coordinate> cs = new List<Coordinate>();
+            Coordinate o = getOriginOfCoordinate(vertex);//得到原点坐标
+            String[] points = vertex.Split(';');
+            float x = float.MaxValue;
+            float y = float.MaxValue;
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].Equals(""))
+                {
+                    break;
+                }
+                String[] xy = points[i].Split(',');
+                float thisx = float.Parse(xy[0]);
+                float thisy = float.Parse(xy[1]) * (-1);
+                int yy = (int)((thisy - o.getY()) / WIDTH); //原点坐标的y减去当前的y除以0.5米
+                int xx = (int)((thisx - o.getX()) / WIDTH);//减去原点坐标的x除以0.5米
+
+                double newx = (float)getNewX(xx, yy, width, height);
+                double newy = (float)getNewY(xx, yy, width, height);
+                cs.Add(new Coordinate(newx, newy));
+            }
+            return cs;
+        }
+
+        public static Pixel getPixel(String x, String y, List<Segment> segments)
+        {
+            //确定所属仓面
+            //System.out.println(blockid+" "+designz);		 
+            for (int i = 0; i < segments.Count; i++)
+            {
+                Segment segment = segments[i];
+                String vertex = segment.Vertex;
+                //System.out.println(vertex+" "+x+" "+y);
+                //byte[] bytes1 = getBytes(blockid,designz,segment.getSegmentID());
+                //DataMap.test(bytes1);
+                if (inThisSegment(vertex, x, y))
+                {
+                    //System.out.println("在此舱面内");
+                    //根据原点坐标来计算出他对应数据图中的哪行哪列
+                    float x_ = float.Parse(x);
+                    float y_ = float.Parse(y);
+                    Coordinate origin = getOriginOfCoordinate(vertex);
+                    int m = (int)((x_ - origin.getX()) / WIDTH);
+                    int n = (int)((y_ - origin.getY()) / WIDTH);
+                    if (m > 0 && n > 0)
+                    {
+                        byte[] bytes = segment.Datamap;
+                        Pixel p = (new DataMap(bytes)).getPixel(m, n);
+                        p.setSegmentid(segment.SegmentID);
+                        return p;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+
+        //判断x,y是不是在一个多边形里
+        private static bool inThisSegment(String vertex, String x, String y)
+        {
+            String[] points = vertex.Split(';');
+            //int[] x_points = new int[points.Length]; 
+            //int[] y_points = new int[points.Length];
+            Point[] point = new Point[points.Length - 1];//因为最后有个分号
+            double getX = 100 * double.Parse(x);
+            double getY = 100 * Double.Parse(y);
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                String[] xy = points[i].Split(',');
+                float thisx = float.Parse(xy[0]);
+                float thisy = float.Parse(xy[1]);
+                int xint = (int)(thisx * 100);
+                int yint = (int)(thisy * (-100));
+                point[i] = new Point(xint, yint);
+            }
+
+            System.Drawing.Drawing2D.GraphicsPath myGraphicsPath = new System.Drawing.Drawing2D.GraphicsPath();
+            myGraphicsPath.Reset();
+            myGraphicsPath.AddPolygon(point);
+            Point p = new Point((int)((float.Parse(x)) * 100), (int)((float.Parse(y)) * (100)));
+            return myGraphicsPath.IsVisible(p);
+        }
+        //得到原点坐标,因为vertex中的x坐标为正数，y坐标为负数.所以取vertex中的最小x，和绝对值最小y
+        static Coordinate getOriginOfCoordinate(String vertex)
+        {
+            String[] points = vertex.Split(';');
+            float x = float.MaxValue;
+            float y = float.MaxValue;
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].Equals(""))
+                {
+                    break;
+                }
+                String[] xy = points[i].Split(',');
+                float thisx = float.Parse(xy[0]);
+                float thisy = float.Parse(xy[1]) * (-1);
+                if (x > thisx)
+                {
+                    x = thisx;
+                }
+                if (y > thisy)
+                {
+                    y = thisy;
+                }
+            }
+            Coordinate c = new Coordinate(x, y);
+            return c;
+        }
+
+        static Point getOrigin(Point[] points)
+        {
+            float x = float.MaxValue;
+            float y = float.MaxValue;
+            for (int i = 0; i < points.Length; i++)
+            {
+                Point p = points[i];
+                int thisx = p.X;
+                int thisy = p.Y;
+                if (x > thisx)
+                {
+                    x = thisx;
+                }
+                if (y > thisy)
+                {
+                    y = thisy;
+                }
+            }
+            return new Point((int)x, (int)y);
+        }
+        //得到相对“原点”的新坐标值
+        static Point[] getRelatively(Point[] points)
+        {
+            Point[] newPoints = new Point[points.Length];
+            Point origin = getOrigin(points);
+            for (int i = 0; i < points.Length; i++)
+            {
+                Point p = points[i];
+                int thisx = p.X - origin.X;
+                int thisy = p.Y - origin.Y;
+                newPoints[i] = new Point(thisx, thisy);
+            }
+            return newPoints;
+        }
+
+
+        //得到大坝坐标下的边界点值
+        static List<PointF> getSegmentVertex_DAM(String vertex)
+        {
+            List<PointF> cs = new List<PointF>();
+            Coordinate o = getOriginOfCoordinate(vertex);//得到原点坐标
+            String[] points = vertex.Split(';');
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].Equals(""))
+                {
+                    break;
+                }
+                String[] xy = points[i].Split(',');
+                float thisx = float.Parse(xy[0]);
+                float thisy = float.Parse(xy[1]) * (-1);
+                cs.Add(toDAM(new PointF(thisx, thisy)));
+            }
+            return cs;
+        }
+
+        static PointF toDAM(PointF p)
+        {
+            double x0 = -cos * p.X - sin * p.Y + 46557.7811830799932563179112397188;
+            double y0 = +sin * p.X - cos * p.Y - 20616.2311146461071871455578251375;
+            return new PointF((float)x0, (float)y0);
+
+        }
+
+        static PointF toEarth(PointF p)
+        {
+            double x = -cos * p.X + sin * p.Y + 50212.59;
+            double y = -sin * p.X - cos * p.Y + 8447;
+            return new PointF((float)x, (float)y);
+        }
+
+        static List<Point> getPoints(String vertex, int top, int left, int grid, int height)
+        {
+            List<Point> cs = new List<Point>();
+            Coordinate o = getOriginOfCoordinate(vertex);//得到原点坐标
+            String[] points = vertex.Split(';');
+            float x = float.MaxValue;
+            float y = float.MaxValue;
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].Equals(""))
+                {
+                    break;
+                }
+                String[] xy = points[i].Split(',');
+                float thisx = float.Parse(xy[0]);
+                float thisy = float.Parse(xy[1]) * (-1);
+                int yy = height - (int)((thisy - o.getY()) / WIDTH); //原点坐标的y减去当前的y除以0.5米
+                int xx = (int)((thisx - o.getX()) / WIDTH);//减去原点坐标的x除以0.5米
+
+                cs.Add(new Point((xx + 2) * grid + left, yy * grid + top));
+            }
+            return cs;
+        }
+
+
+        static Point getLeft(List<Coordinate> cs)
+        {
+            Point p = new Point();
+            double minx = double.MaxValue;
+            foreach (Coordinate c in cs)
+            {
+                if (minx > c.getX())
+                {
+                    minx = c.getX();
+                }
+            }
+            foreach (Coordinate c in cs)
+            {
+                if (minx == c.getX())
+                {
+                    p = new Point((int)c.getX(), (int)c.getY());
+                }
+            }
+            return p;
+        }
+
+        static Point getRight(List<Coordinate> cs)
+        {
+            Point p = new Point();
+            double maxx = double.MinValue;
+            foreach (Coordinate c in cs)
+            {
+                if (maxx < c.getX())
+                {
+                    maxx = c.getX();
+                }
+            }
+            foreach (Coordinate c in cs)
+            {
+                if (maxx == c.getX())
+                {
+                    p = new Point((int)c.getX(), (int)c.getY());
+                }
+            }
+            return p;
+        }
+
+        static Point getBottom(List<Coordinate> cs)
+        {
+            Point p = new Point();
+            double maxy = double.MinValue;
+            foreach (Coordinate c in cs)
+            {
+                if (maxy < c.getY())
+                {
+                    maxy = c.getY();
+                }
+            }
+            foreach (Coordinate c in cs)
+            {
+                if (maxy == c.getY())
+                {
+                    p = new Point((int)c.getX(), (int)c.getY());
+                }
+            }
+            return p;
+        }
+
+        static Point getTop(List<Coordinate> cs)
+        {
+            Point p = new Point();
+            double miny = double.MaxValue;
+            foreach (Coordinate c in cs)
+            {
+                if (miny > c.getY())
+                {
+                    miny = c.getY();
+                }
+            }
+            foreach (Coordinate c in cs)
+            {
+                if (miny == c.getY())
+                {
+                    p = new Point((int)c.getX(), (int)c.getY());
+                }
+            }
+            return p;
+        }
+
+
+        static int getLeftIndex(List<Coordinate> cs)
+        {
+            int i = -1;
+            double minx = double.MaxValue;
+            foreach (Coordinate c in cs)
+            {
+                if (minx > c.getX())
+                {
+                    minx = c.getX();
+                }
+            }
+            i = 0;
+            foreach (Coordinate c in cs)
+            {
+                if (minx == c.getX())
+                {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+
+        static int getRightIndex(List<Coordinate> cs)
+        {
+            int i = -1;
+            double maxx = double.MinValue;
+            foreach (Coordinate c in cs)
+            {
+                if (maxx < c.getX())
+                {
+                    maxx = c.getX();
+                }
+            }
+            i = 0;
+            foreach (Coordinate c in cs)
+            {
+                if (maxx == c.getX())
+                {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+
+        static int getBottomIndex(List<Coordinate> cs)
+        {
+            int i = -1;
+            double maxy = double.MinValue;
+            foreach (Coordinate c in cs)
+            {
+                if (maxy < c.getY())
+                {
+                    maxy = c.getY();
+                }
+            }
+            i = 0;
+            foreach (Coordinate c in cs)
+            {
+                if (maxy == c.getY())
+                {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+
+        static int getTopIndex(List<Coordinate> cs)
+        {
+            int i = -1;
+            double miny = double.MaxValue;
+            foreach (Coordinate c in cs)
+            {
+                if (miny > c.getY())
+                {
+                    miny = c.getY();
+                }
+            }
+            i = 0;
+            foreach (Coordinate c in cs)
+            {
+                if (miny == c.getY())
+                {
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+        //此方法为了测试inThisSegment方法
+        public static void testC()
+        {
+            String vertex = "49817.02,-8518.47;49816.85,-8518.55;49808.20,-8514.73;49798.80,-8510.18;49791.13,-8506.32;49787.72,-8503.13;49785.61,-8499.47;49785.52,-8495.85;49786.58,-8493.31;49786.57,-8493.07;49814.32,-8444.68;49827.60,-8421.23;49871.14,-8451.44;49871.82,-8451.15;49848.12,-8471.88;49817.02,-8518.47;";
+            Coordinate c = getOriginOfCoordinate(vertex);
+            if (DataMapManager.inThisSegment(vertex, "49840.34", "8477.14"))
+            {
+                Console.Write("done");
+                //System.debu
+            }
+            //System.out.println(inThisSegment(vertex,c.getX()+"",c.getY()+""));
+        }
+
+
+        public static void draw(int blockid, float designz, int segmentid)
+        {
+            //         int left = 100;//主图形左侧
+            //         int bottom = 100;//主图形下侧
+            //         int right = 50;//右侧
+            //         int top = 50;//上侧
+            int left = 500;//主图形左侧
+            int bottom = 500;//主图形下侧
+            int right = 500;//右侧
+            int top = 500;//上侧
+
+            int grid = 10;//每个单元格的像素数
+            Segment segment = DAO.getInstance().getSegment(blockid, designz, segmentid);
+            if (segment == null)
+                return;
+
+            float lastDesignz = DAO.getInstance().getLastDesignZ(blockid, designz);
+            //得到上一层的所有仓面信息
+            List<Segment> segments = SegmentDAO.getInstance().getSegments(blockid, lastDesignz);
+            for (int ii = 0; ii < segments.Count; ii++)
+            {
+                Segment tsegment = segments[ii];
+                byte[] datamap = DAO.getInstance().getDatamap(blockid, lastDesignz, segment.SegmentID);
+                tsegment.Datamap = datamap;
+            }
+            String vertex = segment.Vertex;
+            Coordinate c = getOriginOfCoordinate(vertex);
+            double c_x = c.getX();//当前x
+            double c_y = c.getY();//当前y	
+
+            byte[] bytes = DAO.getInstance().getDatamap(blockid, designz, segmentid);
+            //  StringBuilder sb = new StringBuilder();
+            //  StringBuilder black = new StringBuilder();
+            DataMap dm = new DataMap(bytes);
+            //sb.Append(dm.getWidth() + " " + dm.getHeight() + "\r\n");
+            int x = dm.getWidth();
+            int y = dm.getHeight();
+
+            List<PointF> dam_points = getSegmentVertex_DAM(vertex);
+
+
+            //得到转换为大坝坐标的vertex,为了画横轴纵轴
+            List<Coordinate> coods = getSegmentVertex(vertex, x, y);
+            //得到转换为行号列号的边界点
+            List<Point> points = getPoints(vertex, top, left, grid, y);
+            //得到转换之后最左边界点在points中的坐标
+            int left_index = getLeftIndex(coods);
+            //得到转换之后最右有边界点在points中的坐标
+            int right_index = getRightIndex(coods);
+            //得到转换之后最下边界点在points中的坐标
+            int bottom_index = getBottomIndex(coods);
+            //得到转换之后最上有边界点在points中的坐标
+            int top_index = getTopIndex(coods);
+
+
+
+            Bitmap map = new Bitmap(x * grid + left + right, y * grid + top + bottom);
+
+            Graphics g = Graphics.FromImage(map);
+
+            g.Clear(Color.White);
+
+            Font f = new Font("微软雅黑", 10f);
+
+            Coordinate left_co = coods[left_index];
+            Coordinate right_co = coods[right_index];
+            Coordinate top_co = coods[top_index];
+            Coordinate bottom_co = coods[bottom_index];
+
+            double dam_x = left_co.getX();
+            double dam_y = left_co.getY();
+            //  X = － COS *X0 ＋ SIN *Y0 ＋ 50212.59
+            //  Y = － SIN *X0 － COS *Y0 ＋ 8447
+            double o_x = -cos * dam_x + sin * dam_y + 50212.59;
+            double o_y = -sin * dam_y + cos * dam_y + 8447;
+
+            Coordinate origin_ = getOriginOfCoordinate(vertex);
+            int o_m = (int)((o_x - origin_.getX()) / WIDTH);
+            int o_n = (int)((o_y - origin_.getY()) / WIDTH);
+
+            Point leftp = points[left_index];
+            Point rightp = points[right_index];
+            Point topp = points[top_index];
+            Point bottomp = points[bottom_index];
+
+            Point[] border = { leftp, topp, rightp, bottomp, leftp };
+
+
+
+            //横轴.最大的y,
+            //         Point h_start = new Point(leftp.X + left, bottomp.Y + top);
+            //         Point h_endd = new Point(rightp.X+ left, bottomp.Y + top);
+            //         Point v_start = new Point(leftp.X+ left, topp.Y + top);
+            //         Point v_endd = new Point(leftp.X + left, bottomp.Y + top);
+
+
+            Point h_start = new Point(leftp.X, bottomp.Y);
+            Point h_endd = new Point(rightp.X, bottomp.Y);
+
+            Point v_start = new Point(leftp.X, topp.Y);
+            Point v_endd = new Point(leftp.X, bottomp.Y);
+
+
+
+
+
+            //         //纵轴
+            //             //轴线
+            //             int h_x = 20;//纵轴x坐标
+            //             Point start = new Point(h_x,top);
+            //             Point end = new Point(h_x,top+y*grid);
+            //             g.DrawLine(Pens.Black,start, end);
+            //             //刻度和文字
+            //             //多少个网格一个刻度
+            //             int gridnum = 20;//间隔网格数
+            //             int line = 20;// 刻度线长度
+            //             
+            //             int str = 0;
+            //             for (int thisy = end.Y; thisy > start.Y; thisy -= grid * gridnum)
+            //             {
+            //                
+            //                 Point this_start = new Point(end.X,thisy);
+            //                 Point this_end = new Point(end.X+line,thisy);
+            //                 g.DrawLine(Pens.Black, this_start, this_end);
+            //                 g.DrawString(str.ToString(), f, new SolidBrush(Color.Black), new Point(end.X + 25, thisy));
+            //                 str += gridnum;
+            //             }
+            //         //横轴
+            //             //轴线
+            //             int v_y = 20;//横轴y坐标
+            //             start = new Point(left, top + y * grid + v_y);
+            //             end = new Point(left+x*grid, top + y * grid + v_y);
+            //             g.DrawLine(Pens.Black, start, end);
+            //             //刻度和文字
+            //             //多少个网格一个刻度
+            //             gridnum = 20;//间隔网格数
+            //             line = 20;// 刻度线长度
+            //             str = 0;
+            //             for (int thisx = start.X; thisx <end.X; thisx += grid * gridnum)
+            //             {
+            //               
+            //                 Point this_start = new Point(thisx, end.Y);
+            //                 Point this_end = new Point(thisx, end.Y+line);
+            //                 g.DrawLine(Pens.Black, this_start, this_end);
+            //                 g.DrawString(str.ToString(), f, new SolidBrush(Color.Black), new Point(thisx, end.Y+line+25));
+            //                 str += gridnum;
+            //             }
+
+            /*test to dam points
+        
+                    //文字
+
+                    //取得最大的厚度.最小的厚度.
+                        float max = float.MinValue;
+                        float min = float.MaxValue;
+                        Pixel lastp;
+                        float difference;
+                        Pixel p = null;
+                        int i = 0;//行号
+                        int m = 0;//列号			
+                        for (i = 0; i < y; i++)
+                        {
+                            c_y += WIDTH;//y值加
+                            c_x = c.getX();//置为原点x值
+                            //sb.append(i+"列: ");
+                            for (m = 0; m < x; m++)
+                            {
+                                c_x += WIDTH;//x值加
+                                p = dm.getPixel(m, i);
+                                if (p.getRollcount() != 255 && p.getRollthickness() != 0)//是否为仓面上的点
+                                {
+                                    lastp = DataMapManager.getPixel(blockid, lastDesignz, "" + c_x, "" + c_y, segments);//得到上一点的数据					
+                                    if (lastp != null && lastp.getRollthickness() != 0 && lastp.getRollcount() != 255)
+                                    {//
+                                        difference = p.getRollthickness() - lastp.getRollthickness();
+                                        if (max < difference){max=difference;};
+                                        if (min > difference) { min = difference; };
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                
+                        }
+
+
+                     p = null;
+                     i = 0;//行号
+                     m = 0;//列号
+                     c_x = c.getX();//当前x
+                     c_y = c.getY();//当前y		
+
+       
+                     float red ;
+                     float blue ;
+                     float green ;
+                     Color tc ;
+
+
+                     float m_t;
+                     float i_t;
+
+                    for (i = 0; i < y; i++)
+                    {
+                        c_y += WIDTH;//y值加
+                        c_x = c.getX();//置为原点x值
+                        //sb.append(i+"列: ");
+                        for (m = 0; m < x; m++)
+                        {
+                            c_x += WIDTH;//x值加
+                            p = dm.getPixel(m, i);
+                            if (p.getRollcount() != 255 && p.getRollthickness() != 0)//是否为仓面上的点
+                            {
+                                lastp = DataMapManager.getPixel(blockid, lastDesignz, "" + c_x, "" + c_y, segments);//得到上一点的数据					
+                                if (lastp != null && lastp.getRollthickness() != 0 && lastp.getRollcount() != 255)
+                                {//
+                                    difference = p.getRollthickness() - lastp.getRollthickness();
+                                    // sb.Append(c_x + "," + c_y + "," + (p.getRollcount()) + "," + difference + "\r\n");
+                                    // sb.Append("<" + difference + ">");
+                                    //sb.Append("a");
+                                    //根据不同厚度值.体现不同的颜色
+                                    red = (difference - min) / (max - min) * 255;
+                                    blue = (difference - min) / (max - min) * 255;
+                                    green = (difference - min) / (max - min) * 255;
+                                    tc = Color.FromArgb((int)red, (int)green, (int)blue);
+                                    m_t = m;// (float)getNewX(m, i, x, y);
+                                    i_t = i;//(float)getNewY(m, i, x, y);
+                                    //float i_t = (float)(-0.707 * (m +i - x/ 2 - y / 2) + y / 2);
+                                    g.FillRectangle(new SolidBrush(tc), m_t * grid+left, i_t * grid+top, grid, grid);//增加他的大小，看看能否填上空白
+                                }
+                                else
+                                {
+                                    m_t = m;// (float)getNewX(m, i, x, y);
+                                    i_t = i;//(float)getNewY(m, i, x, y);
+                                    g.FillRectangle(new SolidBrush(Color.White), m_t * grid + left, i_t * grid + top, grid, grid);
+
+                                   // sb.Append("+");
+                                   // black.Append(m.ToString() + " " + i.ToString() + "\r\n");
+                                }
+                            }
+                            else
+                            {
+                                m_t = m;// (float)getNewX(m, i, x, y);
+                                i_t = i;//(float)getNewY(m, i, x, y);
+                                g.FillRectangle(new SolidBrush(Color.White), m_t * grid + left, i_t * grid + top, grid, grid);
+
+                              //  sb.Append("-");
+                            }
+                        }
+                       // sb.Append("\r\n");
+                    }
+                    */
+            //g.DrawLines(Pens.Black, points.ToArray());
+            g.DrawLines(Pens.Blue, border);
+
+            List<Point> dampoints = new List<Point>();
+
+            foreach (PointF pf in dam_points)
+            {
+                dampoints.Add(new Point((int)pf.X, (int)pf.Y));
+            }
+
+            g.DrawLines(Pens.Red, getRelatively(dampoints.ToArray()));
+            /*
+                    g.DrawLine(Pens.Red, h_start, h_endd);
+                    g.DrawLine(Pens.Red, v_start, v_endd);
+                    g.DrawString("最左", f, new SolidBrush(Color.Black), leftp);
+                    g.DrawString("最上", f, new SolidBrush(Color.Black), topp);
+                    g.DrawString("最右", f, new SolidBrush(Color.Black), rightp);
+                    g.DrawString("最下", f, new SolidBrush(Color.Black), bottomp);
+            */
+            //        g.FillRectangle(new SolidBrush(Color.Red), o_m * grid + left, o_n * grid + top, 20, 20);
+
+            // Point[] rect = {v_start,v_endd,h_start,h_endd};
+            // g.DrawLines(Pens.Red,rect);
+            try
+            {
+
+                // DebugUtil.fileLog(sb.ToString());
+                map.Save("c:/test.png", ImageFormat.Gif);
+
+                Console.WriteLine("导出数据成功！");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("导出数据失败！");
+                //e.printStackTrace();
+            }
+
+        }
+
+
+
+    }
+}

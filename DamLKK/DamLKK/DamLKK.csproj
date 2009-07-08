@@ -178,6 +178,15 @@
     <Compile Include="Utils\TabControl\FATabStripItemDesigner.cs" />
     <Compile Include="Utils\TabControl\FATabStripMenuGlyph.cs" />
     <Compile Include="Utils\TabControl\ICaptionSupport.cs" />
+    <Compile Include="Utils\ThicknessImage\BitAccess.cs" />
+    <Compile Include="Utils\ThicknessImage\Coordinate.cs" />
+    <Compile Include="Utils\ThicknessImage\DAO.cs" />
+    <Compile Include="Utils\ThicknessImage\DataMap.cs" />
+    <Compile Include="Utils\ThicknessImage\DataMapManager.cs" />
+    <Compile Include="Utils\ThicknessImage\DataMapManager4.cs" />
+    <Compile Include="Utils\ThicknessImage\PieChart.cs" />
+    <Compile Include="Utils\ThicknessImage\Pixel.cs" />
+    <Compile Include="Utils\ThicknessImage\Segment.cs" />
     <Compile Include="Views\Compass.cs" />
     <Compile Include="Views\LayerView.cs">
       <SubType>UserControl</SubType>
@@ -331,6 +340,7 @@
     <Content Include="Doc\旋转坐标+.txt" />
     <Content Include="Doc\软件重用修改目录.txt" />
     <Content Include="Pictures\Locks.png" />
+    <Content Include="Utils\ThicknessImage\副本 DataMapManager.txt" />
     <None Include="Doc\Chinese.isl" />
     <None Include="Resources\warning.png" />
     <EmbeddedResource Include="Forms\AssignVehicle.resx">
