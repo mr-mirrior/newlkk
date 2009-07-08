@@ -21,7 +21,7 @@ namespace DamLKK.Forms
         RollerDAO carInfoDAO = RollerDAO.GetInstance();
         DamLKK._Model.RollerDis carDis = new DamLKK._Model.RollerDis();
         List<int> Cars = new List<int>();
-        List<DamLKK._Model.Roller> _AllCars = RollerDAO.GetInstance().GetAllCarInfo();
+        List<DamLKK._Model.Roller> _AllCars = _Control.VehicleControl.vehiclesInfo;
 
 
         DamLKK._Model.Deck _Deck = new DamLKK._Model.Deck();

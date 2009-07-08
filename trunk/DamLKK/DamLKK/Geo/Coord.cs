@@ -235,20 +235,10 @@ namespace DamLKK.Geo
             set { _LibratedStatus = value; }
         }
 
-        int _RollerID;
-
-        public int RollerID
-        {
-            get { return _RollerID; }
-            set { _RollerID = value; }
-        }
-
-
         public GPSCoord(double xx, double yy, double zz)
         {
             _When = DateTime.MinValue;
             _Tag = 0;
-            _RollerID = 0;
 
             _V = 0;
             _Plane = new DamLKK.Geo.Coord(xx, yy);
@@ -269,7 +259,6 @@ namespace DamLKK.Geo
             this._V = c._V;
             this._Tag = t1;
             this._LibratedStatus = c._LibratedStatus;
-            this._RollerID = c.RollerID;
         }
 
         public GPSCoord(double xx, double yy, double zz, double vv, byte t1)
@@ -281,7 +270,6 @@ namespace DamLKK.Geo
             _Z = zz;
             _V = vv;
             _LibratedStatus = 0;
-            _RollerID = 0;
         }
         /// <summary>
         /// 初始化
@@ -289,11 +277,10 @@ namespace DamLKK.Geo
         /// <param name="vv">速度</param>
         /// <param name="t1">gps状态字节</param>
         /// <param name="dt">gps时间</param>
-        public GPSCoord(int carid,double xx, double yy, double zz, double vv, byte t1, DateTime dt,int librated)
+        public GPSCoord(double xx, double yy, double zz, double vv, byte t1, DateTime dt,int librated)
         {
             _When = dt;
             _Tag = t1;
-            _RollerID = carid;
             _Plane = new DamLKK.Geo.Coord(xx, yy);
             _Z = zz;
             _V = vv;
@@ -308,7 +295,6 @@ namespace DamLKK.Geo
             _Plane = c;
             _Z = zz;
             _LibratedStatus = 0;
-            _RollerID = 0;
         }
 
         public override string ToString()

@@ -984,12 +984,7 @@ namespace DamLKK.Views
                     tsReport_Click(null, null);
                     return true;
                 case Keys.F10:
-                    //if (e.Control)
-                    //{
-                    //    tmiNotRolling_Click(null, null);
-                    //}
-                    //else
-                        miProperties_Click(null, null);
+                    miDatTrackMap_Click(null, null);
                     return true;
                 case Keys.F11:
                     miAssignment_Click(null, null);
@@ -1343,7 +1338,7 @@ namespace DamLKK.Views
             miArrows.Checked = _MyLayer.CurrentDeck.IsDrawing(_Model.DrawingComponent.ARROWS);
             if (_Control.LoginControl.User.Authority != DamLKK._Control.LoginResult.ADMIN)
             {
-                this.miDataMap.Enabled = false;
+                this.miDatTrackMap.Enabled = false;
             }
             if (_Control.LoginControl.User.Authority == DamLKK._Control.LoginResult.VIEW)
             {
@@ -1676,13 +1671,7 @@ namespace DamLKK.Views
         {
             if (_MyLayer.VisibleDeck == null)
                 return;
-            if (_MyLayer.VisibleDeck.WorkState == DeckWorkState.END)
-            {
-                lock (_UpdateLock)
-                {
-                    //_MyLayer.CreateDataMap();
-                }
-            }
+           
             bool result;
             lock (_UpdateLock)
             {
@@ -1749,21 +1738,22 @@ namespace DamLKK.Views
             List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
             //_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
             t.SetTracking(trackingAnother, 0, 0);
+            t.Color = Color.Blue;
             v.ID = 100;
             v.Name = "test1";
 
             ////origin = origin.Offset(5, 2);
-            //List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
-           
-            ////_Model.TrackGPS.SetOrigin(ref trackingYetAnother, origin);
-            //_Model.Roller v2 = new _Model.Roller(dk);
-            //dk.VehicleControl.AddVehicle(v2);
-            //_Model.TrackGPS t2 = new _Model.TrackGPS(v2);
-            //v2.TrackGPSControl.Tracking = t2;
-            //t2.SetTracking(trackingYetAnother, 0, 0);
-            //t2.Color = Color.OrangeRed;
-            //v2.ID = 101;
-            //v2.Name = "test2";
+            List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
+
+            //_Model.TrackGPS.SetOrigin(ref trackingYetAnother, origin);
+            _Model.Roller v2 = new _Model.Roller(dk);
+            dk.VehicleControl.AddVehicle(v2);
+            _Model.TrackGPS t2 = new _Model.TrackGPS(v2);
+            v2.TrackGPSControl.Tracking = t2;
+            t2.SetTracking(trackingYetAnother, 0, 0);
+            t2.Color = Color.OrangeRed;
+            v2.ID = 101;
+            v2.Name = "test2";
 
             _Model.Roller vInstant = new _Model.Roller(dk);
             dk.VehicleControl.AddVehicle(vInstant);
@@ -1809,6 +1799,46 @@ namespace DamLKK.Views
             MyRefresh();
         }
 #endregion
-        
+
+        #region -------------------------------出实时轨迹图-----------------------------
+
+        private void miDatTrackMap_Click(object sender, EventArgs e)
+        {
+            _IsMenuDeckOn = false;
+            if (_MyLayer.VisibleDeck == null)
+                return;
+
+            if (!Utils.MB.OKCancelQ("您确定生成碾压轨迹图吗？"))
+            {
+                return;
+            }
+            dlg.Dispose();
+            dlg = new Forms.Waiting();
+            dlg.Start(this, "正在计算，请稍候……", ReportTrackMap, 1000);
+        }
+
+        private void ReportTrackMap()
+        {
+            if (_MyLayer.VisibleDeck == null)
+                return;
+
+            lock (_UpdateLock)
+            {
+                _MyLayer.VisibleDeck.CreateTrackMap();
+            }
+            dlg.Finished = true;
+
+            System.IO.FileInfo fi = new System.IO.FileInfo(@"C:\output\" + this._MyLayer.CurrentDeck.Name + @"\" + this._MyLayer.CurrentDeck._Trackingaddress);
+
+#if !DEBUG
+                Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
+#else
+                Utils.Sys.SysUtils.StartProgram(@"C:\output\" + this._MyLayer.CurrentDeck._Trackingaddress, null);
+#endif
+            
+        }
+
+        #endregion
+
     }
 }

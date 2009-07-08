@@ -44,7 +44,7 @@
             this.miArrows = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsReport = new System.Windows.Forms.ToolStripMenuItem();
-            this.miDataMap = new System.Windows.Forms.ToolStripMenuItem();
+            this.miDatTrackMap = new System.Windows.Forms.ToolStripMenuItem();
             this.生成压实厚度图TToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.miAssignment = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,7 +123,7 @@
             this.miArrows,
             this.toolStripMenuItem3,
             this.tsReport,
-            this.miDataMap,
+            this.miDatTrackMap,
             this.生成压实厚度图TToolStripMenuItem});
             视图VToolStripMenuItem.Name = "视图VToolStripMenuItem";
             视图VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
@@ -181,13 +181,13 @@
             this.tsReport.Text = "生成图形报告(&R)";
             this.tsReport.Click += new System.EventHandler(this.tsReport_Click);
             // 
-            // miDataMap
+            // miDatTrackMap
             // 
-            this.miDataMap.Name = "miDataMap";
-            this.miDataMap.ShortcutKeyDisplayString = "";
-            this.miDataMap.Size = new System.Drawing.Size(177, 22);
-            this.miDataMap.Text = "生成数据图(&D)";
-            this.miDataMap.Visible = false;
+            this.miDatTrackMap.Name = "miDatTrackMap";
+            this.miDatTrackMap.ShortcutKeyDisplayString = "F10";
+            this.miDatTrackMap.Size = new System.Drawing.Size(177, 22);
+            this.miDatTrackMap.Text = "生成轨迹图(&D)";
+            this.miDatTrackMap.Click += new System.EventHandler(this.miDatTrackMap_Click);
             // 
             // 生成压实厚度图TToolStripMenuItem
             // 
@@ -209,7 +209,7 @@
             // miProperties
             // 
             this.miProperties.Name = "miProperties";
-            this.miProperties.ShortcutKeyDisplayString = "F10";
+            this.miProperties.ShortcutKeyDisplayString = "";
             this.miProperties.Size = new System.Drawing.Size(160, 22);
             this.miProperties.Text = "修改属性(&P)";
             this.miProperties.Click += new System.EventHandler(this.miProperties_Click);
@@ -217,7 +217,7 @@
             // miAssignment
             // 
             this.miAssignment.Name = "miAssignment";
-            this.miAssignment.ShortcutKeyDisplayString = "F11";
+            this.miAssignment.ShortcutKeyDisplayString = "";
             this.miAssignment.Size = new System.Drawing.Size(160, 22);
             this.miAssignment.Text = "车辆派遣(&V)";
             this.miAssignment.Click += new System.EventHandler(this.miAssignment_Click);
@@ -342,7 +342,7 @@
         private System.Windows.Forms.ToolStripMenuItem miArrows;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem tsReport;
-        private System.Windows.Forms.ToolStripMenuItem miDataMap;
+        private System.Windows.Forms.ToolStripMenuItem miDatTrackMap;
         private System.Windows.Forms.ToolStripMenuItem 生成压实厚度图TToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem miProperties;

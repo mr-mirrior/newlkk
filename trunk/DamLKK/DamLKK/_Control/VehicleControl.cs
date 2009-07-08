@@ -12,7 +12,7 @@ namespace DamLKK._Control
     public class VehicleControl: IDisposable
     {
         #region - 静态 -
-        static List<Roller> vehiclesInfo = new List<Roller>();
+        public static List<Roller> vehiclesInfo = new List<Roller>();
         //最后一条击震力数据的字典 feiying 09.3.20
         public static int[] carIDs ;
         public static int[] carLibratedStates;
@@ -158,6 +158,8 @@ namespace DamLKK._Control
             }
             vehicles.Clear();
         }
+
+
         public int[] RollCount(PointF pt)
         {
             int count = 0,countNo=0;
@@ -171,6 +173,19 @@ namespace DamLKK._Control
             }
             return new int[]{countNo,count};
         }
+
+
+        public int RollCountALL(PointF pt)
+        {
+            int count = 0;
+            foreach (Roller vk in vehicles)
+            {
+                count+= vk.RollCountALL(pt);
+            }
+            return count;
+        }
+
+
         private List<Roller> Translate(List<RollerDis> lst)
         {
             Color[] cls = new Color[]{
