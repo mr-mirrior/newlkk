@@ -87,7 +87,7 @@ namespace DamLKK._Control
             _IsStoppingDeck = false;
 
             int[] areas = null;
-            Bitmap bmp = dk.CreateRollCountImage(out areas);
+            Bitmap bmp = dk.CreateRollCountImage(out areas,0);
             bmp.Dispose();
 
             int expected = dk.NOLibRollCount+dk.LibRollCount;

@@ -438,11 +438,11 @@ namespace DamLKK._Model
 
 #region  --------------------------------------碾压边数原图-------------------------------------
         /// <summary>
-        /// 绘制碾压编数效果图，放大率等数据取屏幕当前设置值
+        /// 绘制碾压编数效果图，放大率等数据取屏幕当前设置值   0:所有轨迹,1:静碾轨迹;2:振碾轨迹
         /// </summary>
         /// <param name="areas">返回不同碾压编数的总和点（面积）</param>
         /// <returns>返回图形，用完后必须bmp.Dispose();</returns>
-        public Bitmap CreateRollCountImage(out int[] areas)
+        public Bitmap CreateRollCountImage(out int[] areas,int mapindex)
         {
             Layer layer = this.MyLayer;
             Polygon pl = this.Polygon;
@@ -484,7 +484,7 @@ namespace DamLKK._Model
                 TrackGPS gps = v.TrackGPSControl.Tracking;
                 Color oldcl = gps.Color;
                 gps.Color = Color.Navy;
-                gps.Draw(g, false);
+                gps.Draw(g, false,mapindex);
                 gps.Color = oldcl;
             }
 
@@ -646,7 +646,7 @@ namespace DamLKK._Model
                     return false;
 
                 int[] areas;
-                Bitmap output = CreateRollCountImage(out areas);
+                Bitmap output = CreateRollCountImage(out areas,0);
 
                 DB.DeckDAO.GetInstance().UpdateRollBitMap(this.Unit.ID, this.Elevation.Height, this._ID, DB.DeckDAO.GetInstance().ToByte(output));
 #if DEBUG
@@ -655,315 +655,19 @@ namespace DamLKK._Model
                 layer.Zoom = oldZoom;
 
                 layer.CreateScreen();
-                pl = this.Polygon;
-                if (pl.ScreenBoundary.Width > 5000 || pl.ScreenBoundary.Height > 5000)
+
+                for (int i = 0; i < 3;i++ )
                 {
-                    layer.RotateDegree = oldRotate;
-                    layer.Zoom = oldZoom;
-                    layer.CreateScreen();
-                    Utils.MB.Warning("放大率过大，请缩小图形后再试一次");
-                    return false;
+                    output = CreateRollCountImage(out areas, i);
+                    MachRollMap(output, areas, i,bs);
                 }
-                output = CreateRollCountImage(out areas);
-;
-                _AreaScale = new double[areas.Length];
+                
 
-                float factor;
-                factor = GetMultipleFactor(layer, 3.56);
+                
+               
+               
 
-
-                //求原点坐标
-                Geo.Coord screenOriginCoord = pl.ScreenBoundary.LeftBottom;
-                Geo.Coord earthOriginCoord = layer.ScreenToDam(screenOriginCoord.PF);
-                _DamOrignCoord = earthOriginCoord.ToDamAxisCoord();
-                _OrignCoordString = "(" + _DamOrignCoord.X.ToString("0.00") + ", " + _DamOrignCoord.Y.ToString("0.00") + ")";
-
-                float offsetx;
-                float offsety;
-                float offset;
-
-                offsetx = output.Width * 1.2f;
-                offsety = output.Width / 6 * 0.5f * 0.5f * 7f + output.Height; //output.Height + 120 * (int)Math.Ceiling(factor);
-                offset = (offsetx - output.Width) / 2;
-
-
-                Bitmap newBmp = new Bitmap((int)offsetx, (int)offsety);//output.Height + 120 * (int)Math.Ceiling(factor));//60,80                
-                Graphics newG = Graphics.FromImage(newBmp);
-
-                float newH = output.Width / 6 * 0.5f * 0.5f;
-
-                newG.Clear(Color.White);
-
-                newG.SmoothingMode = SmoothingMode.AntiAlias;
-                newG.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                newG.TranslateTransform((float)-pl.ScreenBoundary.Left + (offsetx - output.Width) / 2, (float)-pl.ScreenBoundary.Top + newH);
-                this.ResetStyles();
-                pl.Draw(newG);
-                newG.ResetTransform();
-                newG.DrawImageUnscaled(output, (int)offset, (int)newH);
-
-                Pen newPen = new Pen(Brushes.Black, 1);
-                newPen.CustomEndCap = new AdjustableArrowCap(2, 8, true);
-                ft = new Font("微软雅黑", 7.5f * factor, GraphicsUnit.Pixel);
-                _FtScale = new Font("微软雅黑", 5.5f * factor);
-
-                _FtString = new Font("微软雅黑", 7.5f * factor, FontStyle.Bold, GraphicsUnit.Pixel);
-
-
-                float multiple = output.Width / 6;
-                float w0 = multiple * 0.5f;
-                float fa = 10f;
-
-                SizeF s = newG.MeasureString("100.00%", _FtScale);
-
-                while (s.Width > (multiple - w0) * 0.9f)
-                {
-                    if (fa * factor < 0)
-                        return false;
-
-                    _FtScale = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString("100.99%", _FtScale);
-                    fa = fa - 0.1f;
-                }
-                s = newG.MeasureString("未碾压", ft);
-                fa = 10f;
-                while (s.Width > (multiple - w0) * 0.9f)
-                {
-                    ft = new Font("微软雅黑", fa * factor);
-                    _FtString = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString("未碾压", _FtString);
-                    fa = fa - 0.1f;
-                }
-
-                //横轴
-                newG.DrawLine(newPen, new PointF(offset - 4, (float)this.Polygon.ScreenBoundary.Height + newH), new PointF((float)this.Polygon.ScreenBoundary.Width + offset, (float)this.Polygon.ScreenBoundary.Height + newH));
-                newG.DrawString("坝(m)", _FtScale, Brushes.Black, (float)this.Polygon.ScreenBoundary.Width + offset * 1f, (float)this.Polygon.ScreenBoundary.Height + newH);
-
-                //纵轴
-                newG.DrawLine(newPen, new PointF(offset, (float)this.Polygon.ScreenBoundary.Height + newH + 4), new PointF(offset, 2 * factor));
-                //newG.DrawString("轴(m)", ftScale, Brushes.Black, offset * 0.9f, 0 * factor);
-
-                //原点坐标
-                newG.DrawString(_OrignCoordString, _FtScale, Brushes.Black, offset * 0.8f, (float)this.Polygon.ScreenBoundary.Height + newH + 2);
-                newPen.Dispose();
-
-                int okcount = this.NOLibRollCount+this.LibRollCount;
-                double[] area_ratio = AreaRatio(areas, this);
-
-                for (int i = 0; i < 6; i++)
-                {
-                    if (i > okcount)
-                        continue;
-                    newG.FillRectangle(bs[i], offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2, w0 / 2.2f, w0 / 2.2f);
-                    newG.DrawRectangle(Pens.Black, offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2, w0 / 2.2f, w0 / 2.2f);
-                    if (i == 0)
-                    {
-                        newG.DrawString("未碾压", _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + w0, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
-                        newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + w0, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
-                        continue;
-                    }
-                    newG.DrawString(i.ToString() + "遍", _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
-                    newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
-                }
-
-                for (int i = 0; i < 6; i++)
-                {
-                    if (i + 6 > okcount)
-                        continue;
-                    newG.FillRectangle(bs[6 + i], offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 / 2.2f, w0 / 2.2f);
-                    newG.DrawRectangle(Pens.Black, offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 / 2.2f, w0 / 2.2f);
-                  
-                    newG.DrawString((6 + i).ToString() + "遍" + (((i + 6) == okcount) ? "及以上" : ""), _FtString, /*bs[6 + i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f);
-                    newG.DrawString(area_ratio[6 + i].ToString("0.00%"), _FtScale, /*bs[6 + i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f);
-                }
-
-                //备注
-                RectangleF remarkPf = new RectangleF(offset - 4, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f + s.Height, newBmp.Width - 2 * (offset - 4), newBmp.Height - (output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f) - s.Height);
-                StringFormat remarkSf = new StringFormat();
-                remarkSf.LineAlignment = StringAlignment.Near;
-                remarkSf.Alignment = StringAlignment.Near;
-
-                string remark = DB.DeckDAO.GetInstance().ReadSegmentRemark(this.Unit.ID, this.Elevation.Height, this.ID);
-
-                if (remark != String.Empty)
-                {
-                    remark = "(" + remark + ")";
-                    s = newG.MeasureString(remark, _FtString);
-                    float height = s.Height;
-                    fa = 10f;
-                    while (s.Width > (newBmp.Width - 2 * (offset - 4)) || s.Height >= height)
-                    {
-                        _FtString = new Font("微软雅黑", fa * factor);
-                        s = newG.MeasureString(remark, _FtString);
-                        fa = fa - 0.1f;
-                    }
-
-                }
-                newG.DrawString(remark, _FtString, Brushes.Black, remarkPf, remarkSf);
-
-                //刻度
-                float meterPrePoint = GetMultipleFactor(layer, 50);
-                PointF pf;
-                PointF pf5;
-                PointF pfWord;
-                Pen p2p = new Pen(Brushes.Black, 2);
-                RectangleF rf;
-                PointF pf1;
-                SizeF sz;
-                StringFormat sf = new StringFormat(); ;
-                sf.LineAlignment = StringAlignment.Center;
-                sf.Alignment = StringAlignment.Center;
-
-
-                newG.SmoothingMode = SmoothingMode.None;
-                //横轴刻度
-                for (float i = 1; i < (float)(pl.ScreenBoundary.Width - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
-                {
-                    pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
-                    pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                    if (i % 5 == 0)
-                    {
-                        pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
-                        pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                        pfWord = new PointF(offset - 8 + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
-                        newG.DrawLine(Pens.Black, pf, pf5);
-
-                        pf1 = new PointF(offset + (i - 1) * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                        sz = new SizeF(2 * meterPrePoint, offset * 0.4f);
-                        rf = new RectangleF(pf1, sz);
-                        newG.DrawString((_DamOrignCoord.X + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
-                        continue;
-                    }
-                    newG.DrawLine(Pens.Gray, pf, pf5);
-                }
-                //纵轴刻度
-
-                for (float i = 1; i < (float)(pl.ScreenBoundary.Height - 2) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
-                {
-                    pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    pf5 = new PointF(offset + 5, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    if (i % 5 == 0)
-                    {
-                        pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                        pf5 = new PointF(offset + 10, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                        newG.DrawLine(Pens.Black, pf, pf5);
-                        pf1 = new PointF(offset * 0.2f, -(i + 1) * meterPrePoint + (float)pl.ScreenBoundary.Height + newH);
-                        sz = new SizeF(offset * 0.8f, 2 * meterPrePoint);
-                        rf = new RectangleF(pf1, sz);
-
-                        newG.DrawString((_DamOrignCoord.Y + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
-
-                        continue;
-                    }
-                    newG.DrawLine(Pens.Gray, pf, pf5);
-                }
-                newG.SmoothingMode = SmoothingMode.AntiAlias;
-                //输出放大倍数和面积
-                RectangleF thisPf = new RectangleF(0, offset * 0.1f, newBmp.Width - offset * 0.1f, newBmp.Height);
-                StringFormat thisSf = new StringFormat();
-                thisSf.Alignment = StringAlignment.Far;
-
-
-                string dateStartString = "开始：" + this._DTStart.Year.ToString("00-") + this._DTStart.Month.ToString("00-") + this._DTStart.Day.ToString("00 ")
-                    + this._DTStart.Hour.ToString("00:") + this._DTStart.Minute.ToString("00:") + this._DTStart.Second.ToString("00");
-                string dateEndString = "结束：" + this._DTEnd.Year.ToString("00-") + this._DTEnd.Month.ToString("00-") + this._DTEnd.Day.ToString("00 ")
-                    + this._DTEnd.Hour.ToString("00:") + this._DTEnd.Minute.ToString("00:") + this._DTEnd.Second.ToString("00");
-                if (this.WorkState == DeckWorkState.WORK)
-                    dateEndString = "结束：" + "尚未收仓";
-                string dateNow = DB.DateUtil.GetDate().Year.ToString("00-") + DB.DateUtil.GetDate().Month.ToString("00-") + DB.DateUtil.GetDate().Day.ToString("00 ")
-                    + DB.DateUtil.GetDate().Hour.ToString("00:") + DB.DateUtil.GetDate().Minute.ToString("00:") + DB.DateUtil.GetDate().Second.ToString("00");
-
-                //
-                float topBlank = newBmp.Height * 0.1f;
-                Font ftTime = new Font("微软雅黑", 7.5f * factor, GraphicsUnit.Pixel);
-                s = newG.MeasureString("出图时间", ftTime);
-                fa = 10f;
-                while (s.Height > topBlank * 0.2f)
-                {
-                    ftTime = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString("出图时间", ftTime);
-                    fa = fa - 0.1f;
-                }
-
-                Bitmap bitMp = new Bitmap((int)newBmp.Width, (int)(newBmp.Height + topBlank));
-                Graphics endG = Graphics.FromImage(bitMp);
-                thisPf = new RectangleF(0, 0, bitMp.Width * 0.98f, bitMp.Height);
-                thisSf.LineAlignment = StringAlignment.Far;
-                thisSf.Alignment = StringAlignment.Far;
-                fa = 50f;
-                Font ftWord = new Font("微软雅黑", ft.Size, GraphicsUnit.Pixel);
-                s = newG.MeasureString("出图时间：" + dateNow, ftWord);
-                while (s.Height * 2 > topBlank * 0.29f)
-                {
-                    fa = fa - 0.1f;
-                    ftWord = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString("出图时间：" + dateNow, ftWord);
-                }
-                endG.Clear(Color.White);
-                endG.DrawImageUnscaled(newBmp, 0, (int)topBlank);
-                endG.DrawString("出图时间：" + dateNow, ftWord, Brushes.Black, thisPf, thisSf);
-                Font ftTitle = new Font("微软雅黑", 15 * factor);
-
-                thisPf = new RectangleF(0, topBlank * 0.7f, bitMp.Width * 0.98f, topBlank);
-                thisSf.LineAlignment = StringAlignment.Near;
-                thisSf.Alignment = StringAlignment.Far;
-                endG.DrawString(dateStartString, ftWord, Brushes.Black, thisPf, thisSf);
-                thisPf = new RectangleF(0, topBlank * 0.7f + s.Height, bitMp.Width * 0.98f, topBlank);
-                endG.DrawString(dateEndString, ftWord, Brushes.Black, thisPf, thisSf);
-                //输出分区，高程，名称，时间
-                string allString = this.MyLayer.MyUnit.Name + "单元   " + this.Elevation.Height.ToString() + "    " + this.Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
-                fa = 20f;
-                ftTime = new Font("微软雅黑", fa * factor);
-                s = newG.MeasureString(allString, ftTime);
-                while (s.Height > topBlank * 0.29f || s.Width > (bitMp.Width * 0.98f - newG.MeasureString(dateEndString, ftWord).Width - offset * 3))
-                {
-                    fa = fa - 0.1f;
-                    ftTime = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString(allString, ftTime);
-                }
-                endG.DrawString(allString, ftTime, Brushes.Black, offset * 2, topBlank * 0.71f);
-
-                thisPf = new RectangleF(0f, topBlank * 0.25f, bitMp.Width, topBlank * 0.4f);
-                thisSf.LineAlignment = StringAlignment.Center;
-                thisSf.Alignment = StringAlignment.Center;
-
-                endG.DrawLine(Pens.Black, offset * 0.6f, topBlank * 0.7f, newBmp.Width - offset * 0.6f, topBlank * 0.7f);
-
-
-                s = newG.MeasureString("碾压遍数图形报告", ftTitle);
-                fa = 10f;
-                while (s.Height > topBlank * 0.4f || s.Width > newBmp.Width)
-                {
-                    ftTitle = new Font("微软雅黑", fa * factor);
-                    s = newG.MeasureString("碾压遍数图形报告", ftTitle);
-                    fa = fa - 0.1f;
-                }
-                s = newG.MeasureString("轴(m)", _FtScale);
-
-
-
-                endG.DrawString("轴(m)", _FtScale, Brushes.Black, offset * 0.9f, topBlank - s.Height * 0.9f + 2 * factor);
-                endG.DrawString("碾压遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-
-                if (!datamap)
-                {
-                    _Rolladdress = @"C:\OUTPUT\" + this.Name.Trim() + @"\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
-
-#if DEBUG
-                    bitMp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png");
-#else
-                    DirectoryInfo dd = new DirectoryInfo(@"C:\OUTPUT\" + this.Name);
-                    if (!dd.Exists)
-                    {
-                        dd.Create();
-                    }
-                    bitMp.Save(_Rolladdress);
-#endif
-                    _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
-                }
-                output.Dispose();
-                endG.Dispose();
-                newG.Dispose();
+                _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
             }
 
             if (this.WorkState == DeckWorkState.END)
@@ -980,6 +684,323 @@ namespace DamLKK._Model
 
 
             return true;
+        }
+
+
+        /// <summary>
+        /// 加工轨迹图
+        /// </summary>
+        private void MachRollMap(Bitmap output,int[] areas,int mapindex,Brush[] bs)
+        {
+            
+            _AreaScale = new double[areas.Length];
+
+            float factor;
+            factor = GetMultipleFactor(_MyLayer, 3.56);
+
+
+            //求原点坐标
+            Geo.Coord screenOriginCoord = this.Polygon.ScreenBoundary.LeftBottom;
+            Geo.Coord earthOriginCoord = _MyLayer.ScreenToDam(screenOriginCoord.PF);
+            _DamOrignCoord = earthOriginCoord.ToDamAxisCoord();
+            _OrignCoordString = "(" + _DamOrignCoord.X.ToString("0.00") + ", " + _DamOrignCoord.Y.ToString("0.00") + ")";
+
+            float offsetx;
+            float offsety;
+            float offset;
+
+            offsetx = output.Width * 1.2f;
+            offsety = output.Width / 6 * 0.5f * 0.5f * 7f + output.Height; //output.Height + 120 * (int)Math.Ceiling(factor);
+            offset = (offsetx - output.Width) / 2;
+
+
+            Bitmap newBmp = new Bitmap((int)offsetx, (int)offsety);//output.Height + 120 * (int)Math.Ceiling(factor));//60,80                
+            Graphics newG = Graphics.FromImage(newBmp);
+
+            float newH = output.Width / 6 * 0.5f * 0.5f;
+
+            newG.Clear(Color.White);
+
+            newG.SmoothingMode = SmoothingMode.AntiAlias;
+            newG.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            newG.TranslateTransform((float)-this.Polygon.ScreenBoundary.Left + (offsetx - output.Width) / 2, (float)-this.Polygon.ScreenBoundary.Top + newH);
+            this.ResetStyles();
+            this.Polygon.Draw(newG);
+            newG.ResetTransform();
+            newG.DrawImageUnscaled(output, (int)offset, (int)newH);
+
+            Pen newPen = new Pen(Brushes.Black, 1);
+            newPen.CustomEndCap = new AdjustableArrowCap(2, 8, true);
+            ft = new Font("微软雅黑", 7.5f * factor, GraphicsUnit.Pixel);
+            _FtScale = new Font("微软雅黑", 5.5f * factor);
+
+            _FtString = new Font("微软雅黑", 7.5f * factor, FontStyle.Bold, GraphicsUnit.Pixel);
+
+
+            float multiple = output.Width / 6;
+            float w0 = multiple * 0.5f;
+            float fa = 10f;
+
+            SizeF s = newG.MeasureString("100.00%", _FtScale);
+
+            while (s.Width > (multiple - w0) * 0.9f)
+            {
+                if (fa * factor < 0)
+                    return;
+
+                _FtScale = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString("100.99%", _FtScale);
+                fa = fa - 0.1f;
+            }
+            s = newG.MeasureString("未碾压", ft);
+            fa = 10f;
+            while (s.Width > (multiple - w0) * 0.9f)
+            {
+                ft = new Font("微软雅黑", fa * factor);
+                _FtString = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString("未碾压", _FtString);
+                fa = fa - 0.1f;
+            }
+
+            //横轴
+            newG.DrawLine(newPen, new PointF(offset - 4, (float)this.Polygon.ScreenBoundary.Height + newH), new PointF((float)this.Polygon.ScreenBoundary.Width + offset, (float)this.Polygon.ScreenBoundary.Height + newH));
+            newG.DrawString("坝(m)", _FtScale, Brushes.Black, (float)this.Polygon.ScreenBoundary.Width + offset * 1f, (float)this.Polygon.ScreenBoundary.Height + newH);
+
+            //纵轴
+            newG.DrawLine(newPen, new PointF(offset, (float)this.Polygon.ScreenBoundary.Height + newH + 4), new PointF(offset, 2 * factor));
+            //newG.DrawString("轴(m)", ftScale, Brushes.Black, offset * 0.9f, 0 * factor);
+
+            //原点坐标
+            newG.DrawString(_OrignCoordString, _FtScale, Brushes.Black, offset * 0.8f, (float)this.Polygon.ScreenBoundary.Height + newH + 2);
+            newPen.Dispose();
+
+            int okcount = this.NOLibRollCount + this.LibRollCount;
+            double[] area_ratio = AreaRatio(areas, this);
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (i > okcount)
+                    continue;
+                newG.FillRectangle(bs[i], offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2, w0 / 2.2f, w0 / 2.2f);
+                newG.DrawRectangle(Pens.Black, offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2, w0 / 2.2f, w0 / 2.2f);
+                if (i == 0)
+                {
+                    newG.DrawString("未碾压", _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + w0, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
+                    newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + w0, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
+                    continue;
+                }
+                newG.DrawString(i.ToString() + "遍", _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
+                newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (i + 6 > okcount)
+                    continue;
+                newG.FillRectangle(bs[6 + i], offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 / 2.2f, w0 / 2.2f);
+                newG.DrawRectangle(Pens.Black, offset + i * multiple + w0 - w0 / 2.2f, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f, w0 / 2.2f, w0 / 2.2f);
+
+                newG.DrawString((6 + i).ToString() + "遍" + (((i + 6) == okcount) ? "及以上" : ""), _FtString, /*bs[6 + i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f);
+                newG.DrawString(area_ratio[6 + i].ToString("0.00%"), _FtScale, /*bs[6 + i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f);
+            }
+
+            //备注
+            RectangleF remarkPf = new RectangleF(offset - 4, output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f + s.Height, newBmp.Width - 2 * (offset - 4), newBmp.Height - (output.Height + newH + output.Width / 6 * 0.5f * 0.5f * 3.5f + w0 / 3.5f) - s.Height);
+            StringFormat remarkSf = new StringFormat();
+            remarkSf.LineAlignment = StringAlignment.Near;
+            remarkSf.Alignment = StringAlignment.Near;
+
+            string remark = DB.DeckDAO.GetInstance().ReadSegmentRemark(this.Unit.ID, this.Elevation.Height, this.ID);
+
+            if (remark != String.Empty)
+            {
+                remark = "(" + remark + ")";
+                s = newG.MeasureString(remark, _FtString);
+                float height = s.Height;
+                fa = 10f;
+                while (s.Width > (newBmp.Width - 2 * (offset - 4)) || s.Height >= height)
+                {
+                    _FtString = new Font("微软雅黑", fa * factor);
+                    s = newG.MeasureString(remark, _FtString);
+                    fa = fa - 0.1f;
+                }
+
+            }
+            newG.DrawString(remark, _FtString, Brushes.Black, remarkPf, remarkSf);
+
+            //刻度
+            float meterPrePoint = GetMultipleFactor(_MyLayer, 50);
+            PointF pf;
+            PointF pf5;
+            PointF pfWord;
+            Pen p2p = new Pen(Brushes.Black, 2);
+            RectangleF rf;
+            PointF pf1;
+            SizeF sz;
+            StringFormat sf = new StringFormat(); ;
+            sf.LineAlignment = StringAlignment.Center;
+            sf.Alignment = StringAlignment.Center;
+
+
+            newG.SmoothingMode = SmoothingMode.None;
+            //横轴刻度
+            for (float i = 1; i < (float)(this.Polygon.ScreenBoundary.Width - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            {
+                pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
+                pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+                if (i % 5 == 0)
+                {
+                    pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
+                    pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+                    pfWord = new PointF(offset - 8 + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
+                    newG.DrawLine(Pens.Black, pf, pf5);
+
+                    pf1 = new PointF(offset + (i - 1) * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+                    sz = new SizeF(2 * meterPrePoint, offset * 0.4f);
+                    rf = new RectangleF(pf1, sz);
+                    newG.DrawString((_DamOrignCoord.X + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+                    continue;
+                }
+                newG.DrawLine(Pens.Gray, pf, pf5);
+            }
+            //纵轴刻度
+
+            for (float i = 1; i < (float)(this.Polygon.ScreenBoundary.Height - 2) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            {
+                pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf5 = new PointF(offset + 5, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                if (i % 5 == 0)
+                {
+                    pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                    pf5 = new PointF(offset + 10, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                    newG.DrawLine(Pens.Black, pf, pf5);
+                    pf1 = new PointF(offset * 0.2f, -(i + 1) * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                    sz = new SizeF(offset * 0.8f, 2 * meterPrePoint);
+                    rf = new RectangleF(pf1, sz);
+
+                    newG.DrawString((_DamOrignCoord.Y + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+
+                    continue;
+                }
+                newG.DrawLine(Pens.Gray, pf, pf5);
+            }
+            newG.SmoothingMode = SmoothingMode.AntiAlias;
+            //输出放大倍数和面积
+            RectangleF thisPf = new RectangleF(0, offset * 0.1f, newBmp.Width - offset * 0.1f, newBmp.Height);
+            StringFormat thisSf = new StringFormat();
+            thisSf.Alignment = StringAlignment.Far;
+
+
+            string dateStartString = "开始：" + this._DTStart.Year.ToString("00-") + this._DTStart.Month.ToString("00-") + this._DTStart.Day.ToString("00 ")
+                + this._DTStart.Hour.ToString("00:") + this._DTStart.Minute.ToString("00:") + this._DTStart.Second.ToString("00");
+            string dateEndString = "结束：" + this._DTEnd.Year.ToString("00-") + this._DTEnd.Month.ToString("00-") + this._DTEnd.Day.ToString("00 ")
+                + this._DTEnd.Hour.ToString("00:") + this._DTEnd.Minute.ToString("00:") + this._DTEnd.Second.ToString("00");
+            if (this.WorkState == DeckWorkState.WORK)
+                dateEndString = "结束：" + "尚未收仓";
+            string dateNow = DB.DateUtil.GetDate().Year.ToString("00-") + DB.DateUtil.GetDate().Month.ToString("00-") + DB.DateUtil.GetDate().Day.ToString("00 ")
+                + DB.DateUtil.GetDate().Hour.ToString("00:") + DB.DateUtil.GetDate().Minute.ToString("00:") + DB.DateUtil.GetDate().Second.ToString("00");
+
+            //
+            float topBlank = newBmp.Height * 0.1f;
+            Font ftTime = new Font("微软雅黑", 7.5f * factor, GraphicsUnit.Pixel);
+            s = newG.MeasureString("出图时间", ftTime);
+            fa = 10f;
+            while (s.Height > topBlank * 0.2f)
+            {
+                ftTime = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString("出图时间", ftTime);
+                fa = fa - 0.1f;
+            }
+
+            Bitmap bitMp = new Bitmap((int)newBmp.Width, (int)(newBmp.Height + topBlank));
+            Graphics endG = Graphics.FromImage(bitMp);
+            thisPf = new RectangleF(0, 0, bitMp.Width * 0.98f, bitMp.Height);
+            thisSf.LineAlignment = StringAlignment.Far;
+            thisSf.Alignment = StringAlignment.Far;
+            fa = 50f;
+            Font ftWord = new Font("微软雅黑", ft.Size, GraphicsUnit.Pixel);
+            s = newG.MeasureString("出图时间：" + dateNow, ftWord);
+            while (s.Height * 2 > topBlank * 0.29f)
+            {
+                fa = fa - 0.1f;
+                ftWord = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString("出图时间：" + dateNow, ftWord);
+            }
+            endG.Clear(Color.White);
+            endG.DrawImageUnscaled(newBmp, 0, (int)topBlank);
+            endG.DrawString("出图时间：" + dateNow, ftWord, Brushes.Black, thisPf, thisSf);
+            Font ftTitle = new Font("微软雅黑", 15 * factor);
+
+            thisPf = new RectangleF(0, topBlank * 0.7f, bitMp.Width * 0.98f, topBlank);
+            thisSf.LineAlignment = StringAlignment.Near;
+            thisSf.Alignment = StringAlignment.Far;
+            endG.DrawString(dateStartString, ftWord, Brushes.Black, thisPf, thisSf);
+            thisPf = new RectangleF(0, topBlank * 0.7f + s.Height, bitMp.Width * 0.98f, topBlank);
+            endG.DrawString(dateEndString, ftWord, Brushes.Black, thisPf, thisSf);
+            //输出分区，高程，名称，时间
+            string allString = this.MyLayer.MyUnit.Name + "单元   " + this.Elevation.Height.ToString() + "    " + this.Name + "仓面" + this.Polygon.ActualArea.ToString("（0.00 米²）");
+            fa = 20f;
+            ftTime = new Font("微软雅黑", fa * factor);
+            s = newG.MeasureString(allString, ftTime);
+            while (s.Height > topBlank * 0.29f || s.Width > (bitMp.Width * 0.98f - newG.MeasureString(dateEndString, ftWord).Width - offset * 3))
+            {
+                fa = fa - 0.1f;
+                ftTime = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString(allString, ftTime);
+            }
+            endG.DrawString(allString, ftTime, Brushes.Black, offset * 2, topBlank * 0.71f);
+
+            thisPf = new RectangleF(0f, topBlank * 0.25f, bitMp.Width, topBlank * 0.4f);
+            thisSf.LineAlignment = StringAlignment.Center;
+            thisSf.Alignment = StringAlignment.Center;
+
+            endG.DrawLine(Pens.Black, offset * 0.6f, topBlank * 0.7f, newBmp.Width - offset * 0.6f, topBlank * 0.7f);
+
+        
+
+
+            s = newG.MeasureString("碾压遍数图形报告", ftTitle);
+            fa = 10f;
+            while (s.Height > topBlank * 0.4f || s.Width > newBmp.Width)
+            {
+                ftTitle = new Font("微软雅黑", fa * factor);
+                s = newG.MeasureString("碾压遍数图形报告", ftTitle);
+                fa = fa - 0.1f;
+            }
+            s = newG.MeasureString("轴(m)", _FtScale);
+
+            endG.DrawString("轴(m)", _FtScale, Brushes.Black, offset * 0.9f, topBlank - s.Height * 0.9f + 2 * factor);
+
+            string mapname=string.Empty;
+            switch (mapindex)
+            {
+                case 0:
+                    endG.DrawString("碾压遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
+                    mapname=this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
+                    break;
+                case 1:
+                    endG.DrawString("静碾遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
+                    mapname=this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "NoLibroll.png";
+                    break;
+                case 2:
+                    endG.DrawString("振碾遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
+                    mapname = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "Libroll.png";
+                    break;
+            }       
+            
+#if DEBUG
+            bitMp.Save(@"C:\OUTPUT\" + mapname);
+#else
+                DirectoryInfo dd = new DirectoryInfo(@"C:\OUTPUT\" + this.Name);
+                if (!dd.Exists)
+                {
+                    dd.Create();
+                }
+                bitMp.Save(_Rolladdress);
+#endif
+            output.Dispose();
+            endG.Dispose();
+            newG.Dispose();
         }
 #endregion
 
