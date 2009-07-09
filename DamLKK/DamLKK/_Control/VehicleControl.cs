@@ -15,21 +15,18 @@ namespace DamLKK._Control
         public static List<Roller> vehiclesInfo = new List<Roller>();
         //最后一条击震力数据的字典 feiying 09.3.20
         public static int[] carIDs ;
-        public static int[] carLibratedStates;
-        public static DateTime[] carLibratedTimes;
+
         public static void ReadVehicleInfo()
         {
             DB.RollerDAO dao = DB.RollerDAO.GetInstance();
             vehiclesInfo = dao.GetAllCarInfo();
 
             carIDs=new int[vehiclesInfo.Count];
-            carLibratedStates= new int[carIDs.Length];
-            carLibratedTimes = new DateTime[carIDs.Length];
+
             for (int i = 0; i < vehiclesInfo.Count; i++)
             {
                 carIDs[i] = vehiclesInfo[i].ID;
-                carLibratedStates[i] = -1;
-                carLibratedTimes[i] = DateTime.MinValue;
+
             }
         }
         public static Roller FindVechicle(int id)

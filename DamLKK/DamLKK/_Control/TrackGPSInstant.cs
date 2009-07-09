@@ -521,29 +521,29 @@ namespace DamLKK._Control
         unsafe private static void OnSaveLibrated()
         {
             //DM.Models.TrackGPS.hasReadCar.Clear();//清空列表重新查库
-            LibratedError* warningLibrated = null;
-            fixed (byte* p = coords)
-            {
-                try
-                {
-                    warningLibrated = (LibratedError*)p;
-                    if (warningLibrated == null)
-                        return;
-                    for (int i = 0; i < VehicleControl.carIDs.Length;i++ )
-                    {
-                       if (VehicleControl.carIDs[i]==warningLibrated->CarID)
-                       {
-                           VehicleControl.carLibratedStates[i] = warningLibrated->SenseOrgan;
-                           VehicleControl.carLibratedTimes[i] = DB.DateUtil.GetDate();
-                       }
-                    }
+            //LibratedError* warningLibrated = null;
+            //fixed (byte* p = coords)
+            //{
+            //    try
+            //    {
+            //        warningLibrated = (LibratedError*)p;
+            //        if (warningLibrated == null)
+            //            return;
+            //        for (int i = 0; i < VehicleControl.carIDs.Length;i++ )
+            //        {
+            //           if (VehicleControl.carIDs[i]==warningLibrated->CarID)
+            //           {
+            //               VehicleControl.carLibratedStates[i] = warningLibrated->SenseOrgan;
+            //               VehicleControl.carLibratedTimes[i] = DB.DateUtil.GetDate();
+            //           }
+            //        }
                    
-                }
-                catch (Exception e)
-                {
-                    DamLKK.Utils.DebugUtil.log(e);
-                }
-            }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        DamLKK.Utils.DebugUtil.log(e);
+            //    }
+            //}
         }
         public static void Stop()
         {

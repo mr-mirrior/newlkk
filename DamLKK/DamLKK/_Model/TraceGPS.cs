@@ -892,13 +892,7 @@ namespace DamLKK._Model
                                 g.DrawPath(p, gpTracking[i]);
                         }
                 }
-               
-                ///////////////////////////////////////////////////////////feiying 09.3.22
-                //using (Pen p1 = new Pen(Color.Red, size))
-                //    foreach (GraphicsPath path in libratedTracking)
-                //    {
-                //        g.DrawPath(p1, path);
-                //    }
+
             }
         }
         public void DrawAnchor(Graphics g)
@@ -943,12 +937,10 @@ namespace DamLKK._Model
                 rc.Offset(10, 3);
                 //写实时点的击震力状态。feiying 09.3.20
                 string libratedstring = string.Empty;
-                //if (VehicleControl.carLibratedStates[i] == -1 || !_OwnerRoller.Assignment.IsWorking()/*||this.owner.Assignment.DTEnd < lstLInfos.Last().Dt*/)
-                //    libratedstring = string.Empty;
-                //else if (dtnow > VehicleControl.carLibratedTimes[i] && (dtnow - VehicleControl.carLibratedTimes[i]) > TimeSpan.FromSeconds(240))
-                //    libratedstring = string.Empty;
-                //else
-                //    libratedstring = "（" + Forms.Warning.GetLibratedString(VehicleControl.carLibratedStates[i]) + "）";
+                if (!_OwnerRoller.Assignment.IsWorking())
+                    libratedstring = string.Empty;
+                else
+                    libratedstring = "（" + Forms.Warning.GetLibratedString((int)OwnerRoller.LibratedState) + "）";
 
                 string strInfo = string.Format("{0}", OwnerRoller.Name + libratedstring, lastpt.Plane.ToString());
                 string strVelocity = string.Format("{0:0.00} km/h", lastpt.V);
