@@ -441,6 +441,8 @@ namespace DamLKK._Control
                 distCount++;
                 foreach (Roller inf in info)
                 {
+                    if (inf== null)
+                        continue;
                     if (cd.RollerID == inf.ID)
                     {
                         Utils.MB.Warning("开仓失败：车辆已被占用：\"" + inf.Name + "\"");
@@ -535,9 +537,11 @@ namespace DamLKK._Control
             _Control.LayerControl.Instance.LoadWorkingLayer();
             VehicleControl.LoadCarDistribute();
             LoadDB(dk);
-            //GPSServer.CloseDeck();
+
+            GPSServer.CloseDeck();
 
             Utils.MB.OKI("\"" + dk.Name + "\"" + "关仓完毕！");
+
             return true;
         }
 

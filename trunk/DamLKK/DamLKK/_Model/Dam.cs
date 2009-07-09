@@ -200,7 +200,7 @@ namespace DamLKK._Model
                     }
                 }
 
-                if (HasBlock && (p <u.StartZ+2 && p>u.StartZ-2))
+                if (HasBlock && (p <u.StartZ+5 && p>u.StartZ-5))
                 {
                     return u;
                 }

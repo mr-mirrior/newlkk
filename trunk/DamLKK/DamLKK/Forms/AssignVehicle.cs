@@ -492,6 +492,8 @@ namespace DamLKK.Forms
             foreach (Roller ci in allInUsedCars)
             {
                 add = false;
+                if (ci == null)
+                    continue;
                 foreach (RollerDis cI in allDistributeCars)
                 {
                     if (ci.ID == (cI.RollerID))
@@ -500,6 +502,7 @@ namespace DamLKK.Forms
                         break;
                     }
                 }
+
                 if (!add)
                 {
                     lstVehicle.Items.Add(ci.Name);

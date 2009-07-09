@@ -662,27 +662,23 @@ namespace DamLKK._Model
                     MachRollMap(output, areas, i,bs);
                 }
                 
-
-                
-               
-               
-
                 _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
             }
 
+            
+            
+            
             if (this.WorkState == DeckWorkState.END)
             {
+                this.CreateTrackMap();
                 Bitmap bmp = CreateElevationImage();
                 if (bmp != null)
                     bmp.Dispose();
-
-                this.CreateTrackMap();
             }
+
             layer.RotateDegree = oldRotate;
             layer.Zoom = oldZoom;
             layer.CreateScreen();
-
-
             return true;
         }
 
@@ -1005,7 +1001,7 @@ namespace DamLKK._Model
 #endregion
 
 
-#region -------------------------------------碾压轨迹图---------------------------------------
+        #region -------------------------------------碾压轨迹图---------------------------------------
 
         public void DrawPathMap()
         {
@@ -1401,6 +1397,7 @@ namespace DamLKK._Model
             double lo, hi;
             double zoomold = this.MyLayer.Zoom;
             this.MyLayer.Zoom = 5;
+            //this.MyLayer.CreateScreen();
             Bitmap bmp = ElevationImage(out lo, out hi);
             //无高程原图
             if (bmp == null)
@@ -1409,6 +1406,7 @@ namespace DamLKK._Model
             DB.DeckDAO.GetInstance().UpdateElevationBitMap(this._Unit.ID, this._Elevation.Height, this._ID,DamLKK.DB.DeckDAO.GetInstance().ToByte(bmp), lo.ToString("0.00") + "," + hi.ToString("0.00"));
             this.MyLayer.Zoom = zoomold;
             bmp = ElevationImage(out lo, out hi);
+            this.MyLayer.CreateScreen();
             // 1、决定车辆轨迹时间上的先后次序
             // 2、计算相对高度
             // 3、渐变画图

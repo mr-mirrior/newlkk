@@ -29,8 +29,8 @@ namespace DamLKK._Model
         }
 
 
-        public TrackGPS(Roller v) { _OwnerRoller = v; origTP.Capacity = 1000000; }
-        public TrackGPS() { origTP.Capacity = 1000000; }
+        public TrackGPS(Roller v) { _OwnerRoller = v; origTP.Capacity = 100000; }
+        public TrackGPS() { origTP.Capacity = 100000; }
 
         public object Clone()
         {
@@ -508,7 +508,7 @@ namespace DamLKK._Model
                     GraphicsPath gp = new GraphicsPath();
                     PointF[] lines = Geo.DamUtils.Translate(elem);
                     gp.AddLines(lines);
-                    
+                    gpBand.Add(gp);
                 }
             }
             else
@@ -520,8 +520,6 @@ namespace DamLKK._Model
                     if (gpTrackSatus[i] != TrackingSatus.OverSpeed)
                         gpBand.Add(gp.Clone() as GraphicsPath);
 
-                    //if (!gpOverspeed[i])
-                    //    gpBand.Add(gp.Clone() as GraphicsPath);
                 }
             }
 
@@ -837,8 +835,8 @@ namespace DamLKK._Model
                 {
                    using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
                    p1 = new Pen(Color.Yellow, 1.8f),
-                   pblack = new Pen(Color.Black, 1.8f),
-                   pred = new Pen(Color.Red, 1.8f),
+                   pblack = new Pen(Color.Black, p.Width),
+                   pred = new Pen(Color.Red, p.Width),
                    p2 = new Pen(Color.Black, 2.7f))
 
                     for (int i = 0; i < gpTracking.Count; i++)
