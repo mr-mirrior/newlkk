@@ -112,6 +112,15 @@ namespace DamLKK._Model
             get { return _Speed; }
             set { _Speed = value; }
         }
+
+        LibratedState _LibratedState;
+
+        public LibratedState LibratedState
+        {
+            get { return _LibratedState; }
+            set { _LibratedState = value; }
+        }
+
         #endregion
 
         public Roller(RollerDis car)
@@ -119,6 +128,8 @@ namespace DamLKK._Model
             Init();
             this.Assignment = car;
         }
+
+
         public Roller(){  Init(); }
         
         public Roller(Deck o) { _OwnerDeck = o; Init(); }
@@ -229,6 +240,7 @@ namespace DamLKK._Model
                         return;
                     SoundControl.BeepIII();
 
+                    this._LibratedState = (LibratedState)e.gps.LibratedSatus;
                     // John, 2009-1-20
                     if (TrackGPSControl.Tracking.Count != 0)
                     {
