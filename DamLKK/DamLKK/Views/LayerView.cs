@@ -1776,7 +1776,7 @@ namespace DamLKK.Views
             dk.VehicleControl.AddVehicle(v);
             _Model.TrackGPS t = new _Model.TrackGPS(v);
             v.TrackGPSControl.Tracking = t;
-            v.ScrollWidth = 1f;
+            v.ScrollWidth = 10f;
             List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
             //_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
             t.SetTracking(trackingAnother, 0, 0);
@@ -1786,31 +1786,50 @@ namespace DamLKK.Views
 
             ////origin = origin.Offset(5, 2);
             List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
-
-            //_Model.TrackGPS.SetOrigin(ref trackingYetAnother, origin);
             _Model.Roller v2 = new _Model.Roller(dk);
             dk.VehicleControl.AddVehicle(v2);
             _Model.TrackGPS t2 = new _Model.TrackGPS(v2);
             v2.TrackGPSControl.Tracking = t2;
-            t2.SetTracking(trackingYetAnother, 0, 0);
-            t2.Color = Color.OrangeRed;
+            t2.SetTracking(trackingYetAnother, 5, 2);
+            t2.Color = Color.Orange;
+            v.ScrollWidth = 10f;
             v2.ID = 101;
             v2.Name = "test2";
 
-            _Model.Roller vInstant = new _Model.Roller(dk);
-            dk.VehicleControl.AddVehicle(vInstant);
-            _Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
-            vInstant.TrackGPSControl.Tracking = tInstant;
-            tInstant.Color = Color.Black;
-            vInstant.ID = 101;
-            vInstant.Name = "实时测试";
-            vInstant.ListenGPS();
+            //List<GPSCoord> trackingYetAnother1 = new List<GPSCoord>(tracking);
+            //_Model.Roller v3 = new _Model.Roller(dk);
+            //dk.VehicleControl.AddVehicle(v3);
+            //_Model.TrackGPS t3 = new _Model.TrackGPS(v3);
+            //v3.TrackGPSControl.Tracking = t3;
+            //t3.SetTracking(trackingYetAnother1, 10, 4);
+            //t3.Color = Color.DarkBlue;
+            //v3.ID = 102;
+            //v3.Name = "test2";
+
+            //List<GPSCoord> trackingYetAnother2 = new List<GPSCoord>(tracking);
+            //_Model.Roller v4 = new _Model.Roller(dk);
+            //dk.VehicleControl.AddVehicle(v4);
+            //_Model.TrackGPS t4 = new _Model.TrackGPS(v4);
+            //v4.TrackGPSControl.Tracking = t4;
+            //t4.SetTracking(trackingYetAnother2, 15, 6);
+            //t4.Color = Color.YellowGreen;
+            //v4.ID = 103;
+            //v4.Name = "test4";
+
+            //_Model.Roller vInstant = new _Model.Roller(dk);
+            //dk.VehicleControl.AddVehicle(vInstant);
+            //_Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
+            //vInstant.TrackGPSControl.Tracking = tInstant;
+            //tInstant.Color = Color.Black;
+            //vInstant.ID = 101;
+            //vInstant.Name = "实时测试";
+            //vInstant.ListenGPS();
 
             trackingCount = 0;
             timerTracking.Interval = 50;
             timerTracking.Tick -= OnTickTracking;
             timerTracking.Tick += OnTickTracking;
-            timerTracking.Start();
+            //timerTracking.Start();
             ExperimentAtOnce(zm);
         }
 

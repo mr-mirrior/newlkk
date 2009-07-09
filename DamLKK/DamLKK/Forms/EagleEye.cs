@@ -433,24 +433,28 @@ namespace DamLKK.Forms
             if (_Current == -1)
                 return;
 
-            _Model.Unit unit = DamLKK._Model.Dam.GetInstance().WorkUnitFromName(_Current,YToElevation(e.Location.Y));
-            
+            _Model.Unit unit = DamLKK._Model.Dam.GetInstance().WorkUnitFromName(_Current+1,YToElevation(e.Location.Y));
+
             if (unit == null)
+            {
+                Utils.MB.OK("抱歉，该分区未发现正在工作的仓面。");
                 return;
+            }  
 
             string confirm = string.Format("目前单元{0}正在工作的起始高程为{1}米，现在打开吗？", unit.Name, unit.StartZ.ToString("0.0"));
             if (Utils.MB.OKCancelQ(confirm))
             {
-               List<double> tags= DB.UnitDAO.GetInstance().GetTagsInUnit(unit.ID,true);
-               foreach (double tag in tags)
-               {
-                ToolsWindow.GetInstance().OpenLayer(unit, tag);
-                CheckFullscr(false);
-               }
-               return;
+                List<double> tags = DB.UnitDAO.GetInstance().GetTagsInUnit(unit.ID, true);
+                foreach (double tag in tags)
+                {
+                    ToolsWindow.GetInstance().OpenLayer(unit, tag);
+                    CheckFullscr(false);
+                }
+                return;
             }
-           
-            Utils.MB.OK("抱歉，该分区未发现正在工作的仓面。");
+            else
+                return;
+            
 
         }
 

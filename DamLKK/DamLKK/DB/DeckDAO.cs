@@ -95,7 +95,7 @@ namespace DamLKK.DB
                 }
 
                 sqlTxt = string.Format("insert into segment  (SegmentID, WorkState, UnitID, DesignZ, Vertex, DTStart, DTEnd, MaxSpeed, DesignRollCount, ErrorParam, SpreadZ, DesignDepth, SegmentName,StartZ,pop) values(" +
-                    "{0},{1},{2},{3},'{4}',{5},{6},{7},'{8}',{9},{10},'{11}','{12}','{13}','{14}'"
+                    "{0},{1},{2},'{3}','{4}',{5},{6},{7},'{8}',{9},{10},'{11}','{12}','{13}','{14}'"
                     + ")", segmentID, (int)workState, unitID, designZ, vertext, startDateStr, endDateStr, maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop);
                 
                  try
@@ -123,7 +123,7 @@ namespace DamLKK.DB
             /// </summary>
             public bool DeleteDeck(int p_unitid, double p_designz, int p_deckid)
             {
-                String sqlTxt = "delete from segment where unitid = " + p_unitid + " and designz=" + p_designz + "and segmentid=" + p_deckid;
+                String sqlTxt = "delete from segment where unitid = " + p_unitid + " and designz='" + p_designz + "' and segmentid=" + p_deckid;
                 try
                 {
                     int updateCount = DBConnection.executeUpdate(sqlTxt);
@@ -174,7 +174,7 @@ namespace DamLKK.DB
                 {
                     endDateStr = "NULL";
                 }
-                string sqlTxt = string.Format("update segment set SegmentID={0}, WorkState={1}, unitID={2}, DesignZ={3}, Vertex='{4}', DTStart={5}, DTEnd={6}, MaxSpeed='{7}', DesignRollCount='{8}', ErrorParam='{9}', SpreadZ='{10}', DesignDepth='{11}', SegmentName='{12}',StartZ='{13}',pop='{14}',SenseOrganState='{15}',NotRolling='{16}',CommentNR='{17}' where unitid={18} and designz={19} and segmentid={20}",
+                string sqlTxt = string.Format("update segment set SegmentID={0}, WorkState={1}, unitID={2}, DesignZ='{3}', Vertex='{4}', DTStart={5}, DTEnd={6}, MaxSpeed='{7}', DesignRollCount='{8}', ErrorParam='{9}', SpreadZ='{10}', DesignDepth='{11}', SegmentName='{12}',StartZ='{13}',pop='{14}',SenseOrganState='{15}',NotRolling='{16}',CommentNR='{17}' where unitid={18} and designz={19} and segmentid={20}",
                    segmentID, (int)workState, unitID, designZ, vertext, startDateStr, endDateStr, maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop, 0, 0, 0, unitID, designZ, segmentID);
                 try
                 {
@@ -224,7 +224,7 @@ namespace DamLKK.DB
                 List<Deck> segments = new List<Deck>();
                 SqlConnection connection = null;
                 SqlDataReader reader = null;
-                string sqlTxt = "select * from segment where (unitid=" + unitid+ ") and (designZ=" + designZ + ")";
+                string sqlTxt = "select * from segment where (unitid=" + unitid+ ") and (designZ='" + designZ + "')";
                 try
                 {
                     connection = DBConnection.getSqlConnection();
@@ -305,8 +305,8 @@ namespace DamLKK.DB
                 Deck segment = null;
                 SqlConnection connection = null;
                 SqlDataReader reader = null;
-                string sqlTxt = "select * from segment where (unitid=" + unitID + ") and (designZ=" + designZ +
-                    ") and (segmentid=" + segmentid + ")";
+                string sqlTxt = "select * from segment where (unitid=" + unitID + ") and (designZ='" + designZ +
+                    "') and (segmentid=" + segmentid + ")";
                 try
                 {
                     connection = DBConnection.getSqlConnection();
@@ -337,8 +337,8 @@ namespace DamLKK.DB
             public Boolean StartAllDecks(int blockid, double designz)
             {
                 string sqlTxt = "update segment set workstate=" + (int)DeckWorkState.WORK +
-                    ",dtstart=getdate() where blockid=" + blockid + " and designz=" + designz +
-                    " and wrokstate =" + (int)DeckWorkState.WAIT;
+                    ",dtstart=getdate() where blockid=" + blockid + " and designz='" + designz +
+                    "' and wrokstate =" + (int)DeckWorkState.WAIT;
                 try
                 {
                     int updateCount = DBConnection.executeUpdate(sqlTxt);
@@ -364,13 +364,13 @@ namespace DamLKK.DB
             {
                 string sqlTxt = "update segment set workstate=" + (int)DeckWorkState.WORK +
                     ",dtstart=getdate() where unitid=" + unitid + " and segmentid=" + segmentid +
-                    " and designz=" + designZ + " and workstate<>" + (int)DeckWorkState.WORK;
+                    " and designz='" + designZ + "' and workstate<>" + (int)DeckWorkState.WORK;
 
                 if (state == DeckWorkState.END)
                 {
                     sqlTxt = "update segment set workstate=" + (int)DeckWorkState.WORK +
                     ",dtend=null where unitid=" + unitid + " and segmentid=" + segmentid +
-                    " and designz=" + designZ + " and workstate<>" + (int)DeckWorkState.WORK;
+                    " and designz='" + designZ + "' and workstate<>" + (int)DeckWorkState.WORK;
                 }
 
                 try
@@ -401,7 +401,7 @@ namespace DamLKK.DB
                 SqlDataReader reader = null;
                 string sqlTxt = "update segment set workstate=" + (int)DeckWorkState.END +
                     ",dtend=getdate() where unitid=" +unitid + " and segmentid=" + segmentid +
-                    " and designZ=" + designZ ;
+                    " and designZ='" + designZ+"'" ;
                 try
                 {
                     int updateCount = DBConnection.executeUpdate(sqlTxt);
@@ -490,7 +490,7 @@ namespace DamLKK.DB
             /// </summary>
             public bool SetDeckPOP(int unitid, double designz, int segmentid, double pop)
             {
-                string sqlTxt = "update segment set pop  = '" + pop + "'  where unitid = " + unitid + " and designz=" + designz + " and segmentid=" + segmentid;
+                string sqlTxt = "update segment set pop  = '" + pop + "'  where unitid = " + unitid + " and designz='" + designz + "' and segmentid=" + segmentid;
                 try
                 {
                     return (DBConnection.executeUpdate(sqlTxt) == 1);
@@ -507,7 +507,7 @@ namespace DamLKK.DB
             /// </summary>
             public bool UpdateDeckAreaAndRollingPercentages(int unitid, double designz, int segmentid, double area, string perent)
             {
-                string sqlTxt = "update segment set SegmentArea = '" + area + "',RollingPercentages='" + perent + "'  where unitid = " + unitid + " and designz=" + designz + " and segmentid=" + segmentid;
+                string sqlTxt = "update segment set SegmentArea = '" + area + "',RollingPercentages='" + perent + "'  where unitid = " + unitid + " and designz='" + designz + "' and segmentid=" + segmentid;
                 try
                 {
                     return (DBConnection.executeUpdate(sqlTxt) == 1);
@@ -524,7 +524,7 @@ namespace DamLKK.DB
             /// </summary>
             public int UpdateElevationBitMap(int unitid, double designz, int segmentid, byte[] elevationImage, string values)
             {
-                string sqlTxt = "update segment set elevationImage  = @elevationImage,elevationValues='" + values + "'  where unitid = " + unitid + " and designz=" + designz + " and segmentid=" + segmentid;
+                string sqlTxt = "update segment set elevationImage  = @elevationImage,elevationValues='" + values + "'  where unitid = " + unitid + " and designz='" + designz + "' and segmentid=" + segmentid;
 
                 SqlConnection conn = null;
                 SqlCommand cmd = null;
@@ -555,7 +555,7 @@ namespace DamLKK.DB
             /// </summary>
             public int UpdateRollBitMap(int unitid, double designz,int segmentid, byte[] rollImage)
             {
-                string sqlTxt = "update segment set rollImage  = @rollImage where unitid = " + unitid + " and designz=" + designz + " and segmentid=" + segmentid;
+                string sqlTxt = "update segment set rollImage  = @rollImage where unitid = " + unitid + " and designz='" + designz + "' and segmentid=" + segmentid;
 
                 SqlConnection conn = null;
                 SqlCommand cmd = null;
@@ -605,8 +605,8 @@ namespace DamLKK.DB
             {
                 string sqlTxt = "select remark from Segment" +
                     "  where unitid = " + unitid +
-                    " and designz=" + designz +
-                    " and segmentid=" + segmentid;
+                    " and designz='" + designz +
+                    "' and segmentid=" + segmentid;
                 try
                 {
                     SqlDataReader dr = DBConnection.executeQuery(DBConnection.getSqlConnection(), sqlTxt);

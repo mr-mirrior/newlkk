@@ -274,7 +274,7 @@ namespace DamLKK.DB
                     return false;
                 }
 
-                sqlTxt = "update carinfo set unitid=" + carDistribute.UnitID + ",maxspeed='" + maxspeed + "',segmentid=" + carDistribute.SegmentID + ",SenseOrganState='" + librate + "',DesignZ='" + designz + "' where carid in (select carid from cardistribute  where  unitid=" + carDistribute.UnitID +
+                sqlTxt = "update carinfo set unitid=" + carDistribute.UnitID + ",maxspeed='" + maxspeed + "',segmentid=" + carDistribute.SegmentID + ",SenseOrganState='" + "0" + "',DesignZ='" + designz + "' where carid in (select carid from cardistribute  where  unitid=" + carDistribute.UnitID +
                     " and segmentid=" + carDistribute.SegmentID+
                     " and designz= '" + carDistribute.DesignZ +
                     "' and  dtstart is not null and dtend is null)";
