@@ -84,10 +84,18 @@ namespace DamLKK.Forms
                     }
                     coords.Add(coords.First());
 
-                   DamLKK.Geo.BorderShapeII b2;
+                   DamLKK.Geo.BorderShapeII b2=null;
                     foreach (DamLKK.Geo.Coord c in coords)
                     {
                         bool at = false;
+
+                        if (Blocks.First() > 0)
+                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() - 1].Polygon.Vertex);
+                        if (Blocks.Last() < DamLKK._Model.Dam.GetInstance().Blocks.Count-1)
+                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() + 1].Polygon.Vertex);
+                        if (b2!=null&&b2.IsInsideIII(c))
+                            at = true;
+
                         foreach (int i in Blocks)
                         {
                             b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex);
@@ -99,7 +107,7 @@ namespace DamLKK.Forms
                         }
                         if(!at)
                         {
-                            Utils.MB.Error(c.ToString() + "不再所选坝段范围之内,请检查重新输入!");
+                            Utils.MB.Warning(c.ToString() + "不再所选坝段范围之内,请检查重新输入!");
                             return;
                         }
                     }

@@ -71,14 +71,14 @@ namespace DamLKK
             {
                 Utils.MB.OKI("登录成功！");
 
-                Application.Run(Forms.Main.MyInstance());
+                Application.Run(Forms.Main.GetInstance());
             }
 #else
             dlg = new DamLKK.Forms.Waiting();
             dlg.Start(null, "请稍候，正在读取数据库……", Init, 2000);
 #endif
 #if DEBUG
-            Application.Run(Forms.Main.MyInstance());
+            Application.Run(Forms.Main.GetInstance());
 #endif
 
         }

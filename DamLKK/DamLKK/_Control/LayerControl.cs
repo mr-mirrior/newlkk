@@ -23,6 +23,7 @@ namespace DamLKK._Control
             get { return workingLayers; }
         }
 
+
         public void LoadWorkingLayer()
         {
             WorkingLayers.Clear();
@@ -125,7 +126,7 @@ namespace DamLKK._Control
                 return null;
             }
 
-            view = Forms.Main.MyInstance().OpenLayer(unit, elevation);
+            view = Forms.Main.GetInstance().OpenLayer(unit, elevation);
             if (view == null)
                 return null;
 

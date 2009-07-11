@@ -340,8 +340,8 @@ namespace DamLKK._Model
 
         public void Dispose()
         {
-            _MyUnit = null;
-            _MyElevation = null;
+            _Dkcontrol.Dispose();
+            GC.SuppressFinalize(this);
         }
       
         /// <大坝转屏幕>
