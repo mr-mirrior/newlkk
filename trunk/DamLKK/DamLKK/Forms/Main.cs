@@ -18,7 +18,7 @@ namespace DamLKK.Forms
 
         static Main _FrmMain=null;
 
-        public static Main MyInstance()
+        public static Main GetInstance()
         {
             if (_FrmMain==null)
             {

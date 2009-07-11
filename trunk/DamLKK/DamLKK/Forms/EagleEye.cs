@@ -460,7 +460,7 @@ namespace DamLKK.Forms
 
         private void EagleEye_KeyDown(object sender, KeyEventArgs e)
         {
-            Main.MyInstance().ProcessKeys(sender, e);
+            Main.GetInstance().ProcessKeys(sender, e);
         }
     }
 }

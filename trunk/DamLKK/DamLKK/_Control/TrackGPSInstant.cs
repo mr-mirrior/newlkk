@@ -381,7 +381,7 @@ namespace DamLKK._Control
                     dlg.CarName = ci.Name;
                     dlg.UnitName = unit.Name;
                     dlg.FillForms();
-                    Forms.Main.MyInstance().ShowWarningDlg(dlg);
+                    Forms.Main.GetInstance().ShowWarningDlg(dlg);
                 }
                 catch(Exception e)
                 {
@@ -430,7 +430,7 @@ namespace DamLKK._Control
                     dlg.LibrateState = (int)warningLibrated->SenseOrgan;
                     dlg.CarName = VehicleControl.FindVechicle(warningLibrated->CarID).Name;
                     dlg.FillForms();
-                    Forms.Main.MyInstance().ShowWarningDlg(dlg);
+                    Forms.Main.GetInstance().ShowWarningDlg(dlg);
                 }
                 catch (Exception e)
                 {
@@ -468,7 +468,7 @@ namespace DamLKK._Control
                 dlg.Position = wot.Position;
                 dlg.UnitName = wot.Unit;
                 dlg.FillForms();
-                Forms.Main.MyInstance().ShowWarningDlg(dlg);  
+                Forms.Main.GetInstance().ShowWarningDlg(dlg);  
             }
 
 

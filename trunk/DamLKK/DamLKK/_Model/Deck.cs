@@ -32,7 +32,7 @@ namespace DamLKK._Model
 
     }
 
-    public class Deck
+    public class Deck:IDisposable
     {
 
         public Deck()
@@ -54,6 +54,12 @@ namespace DamLKK._Model
             _SpreadZ = p_Deck.SpreadZ;
             _StartZ = p_Deck.StartZ;
             _WorkState = p_Deck._WorkState;
+        }
+
+        public void Dispose()
+        {
+            this.VehicleControl.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         DrawingComponent drawingComponent = DrawingComponent.ALL;

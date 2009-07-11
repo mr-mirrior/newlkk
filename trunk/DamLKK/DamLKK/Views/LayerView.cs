@@ -25,6 +25,7 @@ namespace DamLKK.Views
             _MyLayer = p_Layer;
         }
 
+        public new void Dispose() { _MyLayer.Dispose(); _Landscape.Close(); this.Dispose(true); GC.SuppressFinalize(this); }
 
         Layer _MyLayer=new Layer();
         /// <summary>
@@ -126,7 +127,7 @@ namespace DamLKK.Views
         RectSelector _Selector = new RectSelector();
 
         Operations _CurrentOp = Operations.OBSERVE;
-        public List<Coord> _DeckSelectPolygon = new List<Coord>();
+        public List<Coord> _DeckSelectPolygon = new List<Coord>();   //点选仓面的点列表
 
 
         HScrollBar hscr = new HScrollBar();
@@ -994,7 +995,7 @@ namespace DamLKK.Views
                     return true;
             }
 
-            return Forms.Main.MyInstance().ProcessKeys(this, e);
+            return Forms.Main.GetInstance().ProcessKeys(this, e);
         }
 
         /// <summary>
@@ -1179,7 +1180,7 @@ namespace DamLKK.Views
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (OnKeyDown(e)) return;
-            if (Forms.Main.MyInstance().ProcessKeys(this, e)) return;
+            if (Forms.Main.GetInstance().ProcessKeys(this, e)) return;
         }
         private void OnKeyUp(object sender, KeyEventArgs e) { }
         //        private void OnMouseMove(object sender, MouseEventArgs e) { cursorPos = ScrollPoint(e.Location);  OnMouseMove(e); }

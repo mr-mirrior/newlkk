@@ -135,10 +135,10 @@ namespace DamLKK._Model
         /// <param name="view"></param>
         public void GoLayer(Views.LayerView view)
         {
-            FarsiLibrary.Win.FATabStripItem item = DamLKK.Forms.Main.MyInstance()._FATabStrip.Exist(view);
+            FarsiLibrary.Win.FATabStripItem item = DamLKK.Forms.Main.GetInstance()._FATabStrip.Exist(view);
             if (item == null)
                 return;
-            DamLKK.Forms.Main.MyInstance()._FATabStrip.SelectedItem = item;
+            DamLKK.Forms.Main.GetInstance()._FATabStrip.SelectedItem = item;
             DamLKK._Control.LayerControl.Instance.ChangeCurrentLayer(view);
         }
 
@@ -153,7 +153,7 @@ namespace DamLKK._Model
             }
             if (!Utils.MB.OKCancelQ("您确定要关闭窗口吗？" + "\n\n" + view.MyLayer.Name))
                 return false;
-            DamLKK.Forms.Main.MyInstance()._FATabStrip.CloseWindow(view);
+            DamLKK.Forms.Main.GetInstance()._FATabStrip.CloseWindow(view);
             return true;
         }
 

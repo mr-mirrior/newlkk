@@ -8,14 +8,21 @@ using System.Drawing;
 
 namespace DamLKK._Control
 {
-    public class DeckControl
+    public class DeckControl :IDisposable
     {
         public DeckControl(){}
         public DeckControl(Layer _owner) { _Layer = _owner; if (_Layer != null) { unit = _Layer.MyUnit; elevation = _Layer.MyElevation; } }
 
         List<DamLKK._Model.Deck> _Decks = new List<DamLKK._Model.Deck>();
-        
-      
+
+        public void Dispose()
+        {
+            foreach (Deck dk in _Decks)
+            {
+                dk.Dispose();
+            }
+            GC.SuppressFinalize(this);
+        }
 
         public List<DamLKK._Model.Deck> Decks
         {
@@ -40,7 +47,7 @@ namespace DamLKK._Control
         {
             _Tobesetvisible = deck;
             _DlgWaiting = new Forms.Waiting();
-            _DlgWaiting.Start(Forms.Main.MyInstance(), "正在计算轨迹，请稍候……", thrdSetVisibleDeck, 1000);
+            _DlgWaiting.Start(Forms.Main.GetInstance(), "正在计算轨迹，请稍候……", thrdSetVisibleDeck, 1000);
         }
 
         public Deck GetVisibleDeck()
@@ -133,7 +140,7 @@ namespace DamLKK._Control
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
             warndlg.WarningType = WarningType.ROLLINGLESS;
             warndlg.FillForms();
-            Forms.Main.MyInstance().ShowWarningDlg(warndlg);
+            Forms.Main.GetInstance().ShowWarningDlg(warndlg);
         }
 
         public static void UnvisibleDeck(DamLKK._Model.Deck dk)

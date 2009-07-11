@@ -318,7 +318,7 @@ namespace DamLKK._Model
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
             warndlg.WarningType = WarningType.LIBRATED;
             warndlg.FillForms();
-            Forms.Main.MyInstance().ShowWarningDlg(warndlg);
+            Forms.Main.GetInstance().ShowWarningDlg(warndlg);
         }
 #endregion
     }
