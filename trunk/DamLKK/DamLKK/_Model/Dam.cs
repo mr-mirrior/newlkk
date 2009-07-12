@@ -140,7 +140,7 @@ namespace DamLKK._Model
 
             foreach (int idx in p_BlockIdxs)
             {
-                blocks.Add(_Blocks[idx]);
+                blocks.Add(Blocks[idx]);
             }
 
             Unit unit = new Unit(p_Name,blocks,p_Vertex,p_StartZ,p_EndZ);
