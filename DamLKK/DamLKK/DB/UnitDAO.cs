@@ -36,10 +36,10 @@ namespace DamLKK.DB
 
             foreach (_Model.Block b in p_Unit.Blocks)
             {
-                Blocks += b.BlockID.ToString() + ",";
+                Blocks += (","+b.BlockID.ToString() + ",");
             }
 
-            Blocks = Blocks.Substring(0, Blocks.Length - 1);
+            //Blocks = Blocks.Substring(0, Blocks.Length - 1);
 
             try
             {
@@ -258,7 +258,11 @@ namespace DamLKK.DB
             string[] blockIDs=p_Blocks.Trim().Split(',');
 
             foreach (string i in blockIDs)
+            {
+                if (i == string.Empty)
+                    continue;
                 Blocks.Add(new _Model.Block(Convert.ToInt32(i), Convert.ToInt32(i).ToString("0号坝段")));
+            }
 
             return Blocks;
         }
