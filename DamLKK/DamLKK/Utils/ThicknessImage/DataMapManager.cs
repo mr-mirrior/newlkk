@@ -583,7 +583,7 @@ namespace DamLKK.DB.datamap
             String thickness_title = "压实厚度图形报告";
             String elevation_title = "碾压高程图形报告";
 
-            String sub_title = "分区   " + segment.SegmentName + "     仓面名称   " + segment.SegmentName + "      高程   " + segment.DesignZ + "m";
+            String sub_title = "单元   " + segment.SegmentName + "     仓面名称   " + segment.SegmentName + "      高程   " + segment.DesignZ + "m";
             StringFormat fmt = new StringFormat();
             fmt.Alignment = StringAlignment.Center;
             fmt.LineAlignment = StringAlignment.Near;

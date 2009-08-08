@@ -338,7 +338,7 @@ Normal：震动	//此值只适用于只有两种状态的碾压机*/
                 //proportion = (this.thisSpeed - this.maxSpeed) / this.maxSpeed * 100;
                 lbProportion.Text = this.thisSpeed.ToString("0.00") + "Km/h"; /*proportion.ToString("0.00") + "%";*/
 
-                string toolVehicle = "分区：" + this._UnitName + ",高程：" + this.designZ.ToString() + ",仓面：" + this.deckName;
+                string toolVehicle = "单元：" + this._UnitName + ",高程：" + this.designZ.ToString() + ",仓面：" + this.deckName;
                 string toolProportion = "限速：" + this.maxSpeed.ToString("0.00") + "千米/小时,实际：" + this.thisSpeed.ToString("0.00") + "千米/小时";
                 toolTip1.SetToolTip(lbVehicleName, toolVehicle);
                 toolTip1.SetToolTip(lbProportion, toolProportion);
@@ -354,7 +354,7 @@ Normal：震动	//此值只适用于只有两种状态的碾压机*/
                 proportion = (this.totalAreaRatio - this.shortRollerArea) /*/ totalAreaRatio*/ * 100;
                 lbProportion.Text = proportion.ToString("0.00") + "%";
 
-                string toolVehicle = "分区：" + this._UnitName + ",高程：" + this.designZ.ToString();
+                string toolVehicle = "单元：" + this._UnitName + ",高程：" + this.designZ.ToString();
                 string toolProportion = "碾压合格面积：" + ((this.totalAreaRatio - this.shortRollerArea) * this.ActualArea).ToString("0.00") +
                     "平方千米，总面积：" + this.ActualArea.ToString("0.00") + "平方千米";
                 lbVehicleName.Text = this.deckName;

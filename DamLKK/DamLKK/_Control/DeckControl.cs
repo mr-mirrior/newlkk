@@ -91,6 +91,7 @@ namespace DamLKK._Control
             if (!_IsStoppingDeck)
                 return;
             Forms.Warning warndlg = new Forms.Warning();
+            warndlg.UnitName = dk.Unit.Name;
             _IsStoppingDeck = false;
 
             int[] areas = null;
@@ -528,9 +529,9 @@ namespace DamLKK._Control
             {
                 DeckVehicleResult result = dao.EndDeck(unit.ID, elevation.Height, dk.ID);
                 if (result == DeckVehicleResult.CARS_FAIL)
-                    Utils.MB.Warning("开仓失败：车辆错误");
+                    Utils.MB.Warning("关仓失败：车辆错误");
                 if (result == DeckVehicleResult.SEGMENT_FAIL)
-                    Utils.MB.Warning("开仓失败：仓面错误");
+                    Utils.MB.Warning("关仓失败：仓面错误");
                 if (result != DeckVehicleResult.SUCCESS)
                     return false;
             }

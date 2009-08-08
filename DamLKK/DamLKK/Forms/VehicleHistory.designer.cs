@@ -46,9 +46,8 @@
             this.lbDeckName.AutoSize = true;
             this.lbDeckName.Location = new System.Drawing.Point(309, 14);
             this.lbDeckName.Name = "lbDeckName";
-            this.lbDeckName.Size = new System.Drawing.Size(83, 17);
+            this.lbDeckName.Size = new System.Drawing.Size(0, 17);
             this.lbDeckName.TabIndex = 21;
-            this.lbDeckName.Text = "lbDeckName";
             // 
             // dada
             // 
@@ -64,9 +63,8 @@
             this.lbPastion.AutoSize = true;
             this.lbPastion.Location = new System.Drawing.Point(189, 14);
             this.lbPastion.Name = "lbPastion";
-            this.lbPastion.Size = new System.Drawing.Size(61, 17);
+            this.lbPastion.Size = new System.Drawing.Size(0, 17);
             this.lbPastion.TabIndex = 19;
-            this.lbPastion.Text = "lbPastion";
             // 
             // lbPastiondsa
             // 
@@ -82,9 +80,8 @@
             this.lbBlockname.AutoSize = true;
             this.lbBlockname.Location = new System.Drawing.Point(79, 14);
             this.lbBlockname.Name = "lbBlockname";
-            this.lbBlockname.Size = new System.Drawing.Size(64, 17);
+            this.lbBlockname.Size = new System.Drawing.Size(0, 17);
             this.lbBlockname.TabIndex = 17;
-            this.lbBlockname.Text = "lbBlockID";
             // 
             // label1
             // 
@@ -93,7 +90,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 17);
             this.label1.TabIndex = 16;
-            this.label1.Text = "分区：";
+            this.label1.Text = "单元：";
             // 
             // lstVehicle
             // 

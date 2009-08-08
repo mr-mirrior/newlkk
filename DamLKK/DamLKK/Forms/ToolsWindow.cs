@@ -422,16 +422,17 @@ namespace DamLKK.Forms
             }
         }
 
-        Forms.DeckCoordInput _FrmCoordInput;
+       
         private void btnInputCoord_Click(object sender, EventArgs e)
         {
-            if (_FrmCoordInput != null)
-                return;
-            _FrmCoordInput = new DeckCoordInput();
             if (CurrentLayer == null)
                 return;
-            _FrmCoordInput.Show(this.Owner);
+            DeckCoordInput _FrmCoordInput = DeckCoordInput.GetInstance();
+       
             _FrmCoordInput.tbCoords.Text = string.Empty;
+            if (_FrmCoordInput.Visible==false)
+               _FrmCoordInput.Show(this.Owner);
+           
         }
 
         /// <summary>

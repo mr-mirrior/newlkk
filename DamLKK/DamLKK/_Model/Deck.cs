@@ -436,9 +436,9 @@ namespace DamLKK._Model
 
         public void CreateTrackMap()
         {
-            _IsOutTrackingMap = true;
+            //_IsOutTrackingMap = true;
             DrawPathMap();
-            _IsOutTrackingMap = false;
+            //_IsOutTrackingMap = false;
         }
 #endregion
 
@@ -671,12 +671,12 @@ namespace DamLKK._Model
                 _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
             }
 
-            
-            
-            
+
+
+            this.DrawPathMap();
             if (this.WorkState == DeckWorkState.END)
             {
-                this.CreateTrackMap();
+               
                 Bitmap bmp = CreateElevationImage();
                 if (bmp != null)
                     bmp.Dispose();
@@ -690,7 +690,7 @@ namespace DamLKK._Model
 
 
         /// <summary>
-        /// 加工轨迹图
+        /// 加工边数图
         /// </summary>
         private void MachRollMap(Bitmap output,int[] areas,int mapindex,Brush[] bs)
         {
@@ -1010,6 +1010,7 @@ namespace DamLKK._Model
         #region -------------------------------------碾压轨迹图---------------------------------------
 
         public void DrawPathMap()
+        
         {
             TrackGPS gps;
             Polygon pl = this.Polygon;
@@ -1031,7 +1032,7 @@ namespace DamLKK._Model
             {
                 gps = v.TrackGPSControl.Tracking;
 
-                v.TrackGPSControl.Tracking.CreatTracking(0,0);
+                v.TrackGPSControl.Tracking.CreatePath(0,0);
                 v.TrackGPSControl.Tracking.DrawSkeleton(g, false);
             }
             DirectoryInfo di = new DirectoryInfo(@"C:\OUTPUT");
@@ -1308,7 +1309,7 @@ namespace DamLKK._Model
             //输出分区，高程，名称，时间
 
 
-            string allString = this.MyLayer.MyUnit.Name + "分区   " + this._Elevation.Height.ToString() + "     " + this._Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
+            string allString = this.MyLayer.MyUnit.Name + "单元   " + this._Elevation.Height.ToString() + "     " + this._Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
             fa = 50f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1450,7 +1451,7 @@ namespace DamLKK._Model
             {
                 Geo.Coord c = c3d.Plane.ToDamAxisCoord();
                 string position = string.Format("{{{0:0.00},{1:0.00}}}", c.X, c.Y);
-                string warning = string.Format("碾压超厚告警！分区 {0}，高程 {1}米，仓面 {2}，超厚 {3:0.00}米，桩号 {4}",
+                string warning = string.Format("碾压超厚告警！单元 {0}，高程 {1}米，仓面 {2}，超厚 {3:0.00}米，桩号 {4}",
                     this.Unit.Name,
                     this.Elevation.Height,
                     this.Name,

@@ -972,9 +972,9 @@ namespace DamLKK.Views
                 case Keys.F5:
                     miSkeleton_Click(null, null);
                     return true;
-                //case Keys.F6:
-                //    miRollingCount_Click(null, null);
-                //    return true;
+                case Keys.F6:
+                    miRollingCount_Click(null, null);
+                    return true;
                 case Keys.F7:
                     miOverspeed_Click(null, null);
                     return true;
@@ -984,9 +984,9 @@ namespace DamLKK.Views
                 case Keys.F9:
                     tsReport_Click(null, null);
                     return true;
-                case Keys.F10:
-                    miDatTrackMap_Click(null, null);
-                    return true;
+                //case Keys.F10:
+                //    miDatTrackMap_Click(null, null);
+                //    return true;
                 case Keys.F11:
                     miAssignment_Click(null, null);
                     return true;
@@ -1774,28 +1774,28 @@ namespace DamLKK.Views
             _Model.TrackGPS.PreFilter(ref tracking);
             _Model.Roller v = new _Model.Roller(dk);
 
-            dk.VehicleControl.AddVehicle(v);
-            _Model.TrackGPS t = new _Model.TrackGPS(v);
-            v.TrackGPSControl.Tracking = t;
-            v.ScrollWidth = 10f;
-            List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
-            //_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
-            t.SetTracking(trackingAnother, 0, 0);
-            t.Color = Color.Blue;
-            v.ID = 100;
-            v.Name = "test1";
+            //dk.VehicleControl.AddVehicle(v);
+            //_Model.TrackGPS t = new _Model.TrackGPS(v);
+            //v.TrackGPSControl.Tracking = t;
+            //v.ScrollWidth = 2.17f;
+            //List<GPSCoord> trackingAnother = new List<GPSCoord>(tracking);
+            ////_Model.TrackGPS.SetOrigin(ref trackingAnother,origin);
+            //t.SetTracking(trackingAnother, 0, 0);
+            //t.Color = Color.Blue;
+            //v.ID = 100;
+            //v.Name = "test1";
 
-            ////origin = origin.Offset(5, 2);
-            List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
-            _Model.Roller v2 = new _Model.Roller(dk);
-            dk.VehicleControl.AddVehicle(v2);
-            _Model.TrackGPS t2 = new _Model.TrackGPS(v2);
-            v2.TrackGPSControl.Tracking = t2;
-            t2.SetTracking(trackingYetAnother, 5, 2);
-            t2.Color = Color.Orange;
-            v.ScrollWidth = 10f;
-            v2.ID = 101;
-            v2.Name = "test2";
+            //////origin = origin.Offset(5, 2);
+            //List<GPSCoord> trackingYetAnother = new List<GPSCoord>(tracking);
+            //_Model.Roller v2 = new _Model.Roller(dk);
+            //dk.VehicleControl.AddVehicle(v2);
+            //_Model.TrackGPS t2 = new _Model.TrackGPS(v2);
+            //v2.TrackGPSControl.Tracking = t2;
+            //t2.SetTracking(trackingYetAnother, 5, 2);
+            //t2.Color = Color.Orange;
+            //v.ScrollWidth = 2.17f;
+            //v2.ID = 101;
+            //v2.Name = "test2";
 
             //List<GPSCoord> trackingYetAnother1 = new List<GPSCoord>(tracking);
             //_Model.Roller v3 = new _Model.Roller(dk);
@@ -1817,20 +1817,20 @@ namespace DamLKK.Views
             //v4.ID = 103;
             //v4.Name = "test4";
 
-            //_Model.Roller vInstant = new _Model.Roller(dk);
-            //dk.VehicleControl.AddVehicle(vInstant);
-            //_Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
-            //vInstant.TrackGPSControl.Tracking = tInstant;
-            //tInstant.Color = Color.Black;
-            //vInstant.ID = 101;
-            //vInstant.Name = "实时测试";
-            //vInstant.ListenGPS();
+            _Model.Roller vInstant = new _Model.Roller(dk);
+            dk.VehicleControl.AddVehicle(vInstant);
+            _Model.TrackGPS tInstant = new _Model.TrackGPS(vInstant);
+            vInstant.TrackGPSControl.Tracking = tInstant;
+            tInstant.Color = Color.Blue;
+            vInstant.ID = 101;
+            vInstant.Name = "实时测试";
+            vInstant.ListenGPS();
 
             trackingCount = 0;
-            timerTracking.Interval = 50;
+            timerTracking.Interval = 10;
             timerTracking.Tick -= OnTickTracking;
             timerTracking.Tick += OnTickTracking;
-            //timerTracking.Start();
+            timerTracking.Start();
             ExperimentAtOnce(zm);
         }
 
