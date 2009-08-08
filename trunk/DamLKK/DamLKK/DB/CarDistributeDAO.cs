@@ -108,7 +108,7 @@ namespace DamLKK.DB
                  }
                  DBConnection.closeDataReader(reader);
                  //分配车辆
-                 sqlTxt = "insert cardistribute (carid,unitid,segmentid,designz,DTStart) values(" + carDistribute.RollerID + "," + carDistribute.UnitID + "," + carDistribute.SegmentID + "," + carDistribute.DesignZ + "," + "getDate())";
+                 sqlTxt = "insert cardistribute (carid,unitid,segmentid,designz,DTStart) values(" + carDistribute.RollerID + "," + carDistribute.UnitID + "," + carDistribute.SegmentID + "," + carDistribute.Elevation + "," + "getDate())";
                  int updateCount = DBConnection.executeUpdate(sqlTxt);
 
                  if (updateCount <= 0)

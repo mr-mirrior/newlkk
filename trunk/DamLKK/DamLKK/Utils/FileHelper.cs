@@ -65,7 +65,7 @@ namespace DamLKK.Utils
         }
 
         public static List<Geo.GPSCoord> ReadTracking(string file)
-        {
+            {
             List<Geo.GPSCoord> tracking = new List<Geo.GPSCoord>();
             try
             {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2CA26348-7E5D-4506-9BB4-61AE64510942}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -12,7 +12,7 @@
     <AssemblyName>DamLKK</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>DM21.ico</ApplicationIcon>
+    <ApplicationIcon>图标.ico</ApplicationIcon>
     <PublishUrl>http://localhost/DamLKK/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -341,6 +341,7 @@
     <Content Include="Doc\软件重用修改目录.txt" />
     <Content Include="Pictures\Locks.png" />
     <Content Include="Utils\ThicknessImage\副本 DataMapManager.txt" />
+    <Content Include="图标.ico" />
     <None Include="Doc\Chinese.isl" />
     <None Include="Resources\warning.png" />
     <EmbeddedResource Include="Forms\AssignVehicle.resx">

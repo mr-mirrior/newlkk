@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DamLKK.Geo;
 
 namespace DamLKK.Forms
 {
@@ -66,6 +67,7 @@ namespace DamLKK.Forms
                 Blocks.Add(i);
 
             //////////////////////////////////控制输入坐标必须准确必须在指定坝段坐标范围之内/////////////////////////
+            string coordtxt = string.Empty;
             List<DamLKK.Geo.Coord> coords;
             if (tbCoords.Text==string.Empty)
             {
@@ -76,6 +78,7 @@ namespace DamLKK.Forms
             {
                 try
                 {
+                   
                    coords= Utils.FileHelper.ChangeToCoords(tbCoords.Text);
                     if (coords.Count<3)
                     {
@@ -87,18 +90,32 @@ namespace DamLKK.Forms
                    DamLKK.Geo.BorderShapeII b2=null;
                     foreach (DamLKK.Geo.Coord c in coords)
                     {
+                        coordtxt += c.XF.ToString() + "," + c.YF.ToString()+";";
                         bool at = false;
 
                         if (Blocks.First() > 0)
                             b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() - 1].Polygon.Vertex);
-                        if (Blocks.Last() < DamLKK._Model.Dam.GetInstance().Blocks.Count-1)
+                        if (Blocks.Last() < DamLKK._Model.Dam.GetInstance().Blocks.Count - 1)
                             b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() + 1].Polygon.Vertex);
-                        if (b2!=null&&b2.IsInsideIII(c))
+                        if (b2 != null && b2.IsInsideIII(c))
                             at = true;
 
+//341524.0398   2936662.6486
+//342326.4075   2936734.8466
+//342332.5773   2936664.6449
+//341951.2937   2936443.1657
+//341529.9343   2936582.5707
+//341524.0398   2936662.6486
+                        //List<DamLKK.Geo.Coord> ver = new List<DamLKK.Geo.Coord>();
+                        //ver.Add(new Coord(341524.0398,2936662.6486));
+                        //ver.Add(new Coord(342326.4075,2936734.8466));
+                        //ver.Add(new Coord(342332.5773,2936664.6449));
+                        //ver.Add(new Coord(341951.2937,2936443.1657));
+                        //ver.Add(new Coord(341529.9343,2936582.5707));
+                        //ver.Add(new Coord(341524.0398, 2936662.6486));
                         foreach (int i in Blocks)
                         {
-                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex);
+                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex);//DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex
                             if (b2.IsInsideIII(c))
                             {
                                 at = true;
@@ -119,11 +136,11 @@ namespace DamLKK.Forms
                 }
             }
 
-
-
+            coordtxt = coordtxt.Substring(0,coordtxt.Length - 1);
+            
           
 
-            if (DamLKK._Model.Dam.GetInstance().NewOneUnit(Blocks,tbName.Text, tbCoords.Text, float.Parse(tbStartZ.Text), float.Parse(tbEndZ.Text)))
+            if (DamLKK._Model.Dam.GetInstance().NewOneUnit(Blocks,tbName.Text, coordtxt, float.Parse(tbStartZ.Text), float.Parse(tbEndZ.Text)))
             {
                 Utils.MB.OK("添加单元成功!");
                 Forms.ToolsWindow.GetInstance().cbWorkUnit.Items.Add(tbName.Text);

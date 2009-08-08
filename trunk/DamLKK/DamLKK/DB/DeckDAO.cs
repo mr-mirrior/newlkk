@@ -411,7 +411,7 @@ namespace DamLKK.DB
                         return EndSegmengResult.END_ERROR;
                     }
                     //结束仓面更新unit
-                    sqlTxt = "update unit set endtime=getdate() where unitid=" + unitid ;
+                    sqlTxt = "update unit set endtime=getdate() where id=" + unitid ;
 
                     updateCount = DBConnection.executeUpdate(sqlTxt);
 

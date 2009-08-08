@@ -34,9 +34,10 @@ namespace DamLKK.DB
             SqlDataReader reader = null;
             string CmdText = null, Blocks = string.Empty;
 
+            Blocks += ",";
             foreach (_Model.Block b in p_Unit.Blocks)
             {
-                Blocks += (","+b.BlockID.ToString() + ",");
+                Blocks += (b.BlockID.ToString() + ",");
             }
 
             //Blocks = Blocks.Substring(0, Blocks.Length - 1);
@@ -44,7 +45,7 @@ namespace DamLKK.DB
             try
             {
                 conn = DBConnection.getSqlConnection();
-                CmdText = "insert into unit Values('" + Blocks + "','" + p_Unit.Name + "','" + p_Unit.StartZ + "','" + p_Unit.EndZ + "','" + p_Unit.Vertex + "')";
+                CmdText = "insert into unit(BlockID,UnitName,StartZ,EndZ,Vertex) Values('" + Blocks + "','" + p_Unit.Name + "','" + p_Unit.StartZ + "','" + p_Unit.EndZ + "','" + p_Unit.Vertex + "')";
                 reader = DBConnection.executeQuery(conn, CmdText);
 
                 return true;
@@ -142,7 +143,7 @@ namespace DamLKK.DB
             try
             {
                 conn = DBConnection.getSqlConnection();
-                reader = DBConnection.executeQuery(conn, "select * from unit");
+                reader = DBConnection.executeQuery(conn, "select * from unit order by ID desc");
                 List<_Model.Unit> units = new List<_Model.Unit>();
                 while (reader.Read())
                 {
@@ -265,6 +266,34 @@ namespace DamLKK.DB
             }
 
             return Blocks;
+        }
+
+        internal string GetName(int p)
+        {
+            SqlConnection conn = null;
+            SqlDataReader reader = null;
+            try
+            {
+                conn = DBConnection.getSqlConnection();
+                string sqltxt = "select unitname from unit where id=" + p;
+                reader = DBConnection.executeQuery(conn, sqltxt);
+
+               if(reader.Read())
+                {
+                    return reader[0].ToString();
+                }
+               return string.Empty;
+            }
+            catch (System.Exception e)
+            {
+                Utils.DebugUtil.log(e);
+                return string.Empty;
+            }
+            finally
+            {
+                DBConnection.closeDataReader(reader);
+                DBConnection.closeSqlConnection(conn);
+            }
         }
     }
 }

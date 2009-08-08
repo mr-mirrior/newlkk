@@ -11,13 +11,23 @@ namespace DamLKK.Forms
 {
     public partial class DeckCoordInput : Form
     {
-        public DeckCoordInput()
+        static Forms.DeckCoordInput _FrmCoordInput;
+        private DeckCoordInput()
         {
             InitializeComponent();
         }
 
+        public static DeckCoordInput GetInstance()
+        {
+            if (_FrmCoordInput == null)
+                _FrmCoordInput = new DeckCoordInput();
+           
+            return _FrmCoordInput;
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            _FrmCoordInput = null;
             this.Close();
         }
 

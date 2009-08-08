@@ -167,7 +167,6 @@
             this.cbWorkUnit.Location = new System.Drawing.Point(9, 439);
             this.cbWorkUnit.Name = "cbWorkUnit";
             this.cbWorkUnit.Size = new System.Drawing.Size(77, 25);
-            this.cbWorkUnit.Sorted = true;
             this.cbWorkUnit.TabIndex = 38;
             this.cbWorkUnit.SelectedIndexChanged += new System.EventHandler(this.cbWorkUnit_SelectedIndexChanged);
             // 
@@ -482,7 +481,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Lavender;
-            this.ClientSize = new System.Drawing.Size(94, 578);
+            this.ClientSize = new System.Drawing.Size(94, 576);
             this.ControlBox = false;
             this.Controls.Add(this.cbSyncline);
             this.Controls.Add(this.label13);

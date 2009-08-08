@@ -16,16 +16,18 @@ namespace DamLKK._Model
         /// </summary>
         private enum TrackingSatus
         {
-            Right=0,
+            NoInfo=0,
             /// <summary>
-            /// 静碾错误报警
+            /// 静碾
             /// </summary>
-            NoLibWarn=1,
+            NoLibrated=1,
             /// <summary>
-            /// 振碾错误报警
+            /// 振碾
             /// </summary>
-            LibratedWarn=2,
-            OverSpeed=3
+            Librated=2,
+            NoInfoOverSpeed=3,
+            NoLibratedOverSpeed = 4,
+            LibratedOverSpeed=5
         }
 
 
@@ -366,175 +368,175 @@ namespace DamLKK._Model
 
 
 #region  -------------------------仅供出实时轨迹图计算用---------------------------
-        public void CreatTracking(double offScrX, double offScrY)
-        {
+        //public void CreatTracking(double offScrX, double offScrY)
+        //{
+           
+        //    if (filteredSeg.Count == 0)
+        //        return;
 
-            if (filteredSeg.Count == 0)
-                return;
-
-            gpTrackingLib.Clear();
-            gpTracking.Clear();
-            gpBand.Clear();
-            gpBandNolib.Clear();
-            gpBandLib.Clear();
-            gpOverspeed.Clear();
-            gpTrackSatus.Clear();
-            screenSegFiltered.Clear();
-
-
-            screenSeg = new List<List<GPSCoord>>(filteredSeg);
-            for (int i = 0; i < filteredSeg.Count; i++)
-            {
-                screenSeg[i] = new List<GPSCoord>(filteredSeg[i]);
-            }
-            Layer _OwnerLayer = _OwnerRoller.Owner.MyLayer;
-            Deck MyDeck = this.OwnerRoller.Owner;
-
-            for (int i = 0; i < screenSeg.Count; i++)
-            {
-                for (int j = 0; j < screenSeg[i].Count; j++)
-                {
-                    Coord c = new Coord(_OwnerLayer.DamToScreen(screenSeg[i][j].Plane));
-                    c = c.Offset(offScrX, offScrY);
-                    screenSeg[i][j] = new GPSCoord(c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
-                }
-            }
-
-            RectangleF rc = new RectangleF();
+        //    gpTrackingLib.Clear();
+        //    gpTracking.Clear();
+        //    gpBand.Clear();
+        //    gpBandNolib.Clear();
+        //    gpBandLib.Clear();
+        //    gpOverspeed.Clear();
+        //    gpTrackSatus.Clear();
+        //    screenSegFiltered.Clear();
 
 
-            foreach (List<GPSCoord> lst in screenSeg)
-            {
-                // 筛选超速点
+        //    screenSeg = new List<List<GPSCoord>>(filteredSeg);
+        //    for (int i = 0; i < filteredSeg.Count; i++)
+        //    {
+        //        screenSeg[i] = new List<GPSCoord>(filteredSeg[i]);
+        //    }
+        //    Layer _OwnerLayer = _OwnerRoller.Owner.MyLayer;
+        //    Deck MyDeck = this.OwnerRoller.Owner;
 
-                List<GPSCoord> onelist = new List<GPSCoord>();
-                List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
+        //    for (int i = 0; i < screenSeg.Count; i++)
+        //    {
+        //        for (int j = 0; j < screenSeg[i].Count; j++)
+        //        {
+        //            Coord c = new Coord(_OwnerLayer.DamToScreen(screenSeg[i][j].Plane));
+        //            c = c.Offset(offScrX, offScrY);
+        //            screenSeg[i][j] = new GPSCoord(c.X, c.Y, screenSeg[i][j].Z, screenSeg[i][j].V, screenSeg[i][j].Tag, filteredSeg[i][j].When, filteredSeg[i][j].LibratedStatus);
+        //        }
+        //    }
 
-                TrackingSatus satus = TrackingSatus.Right;
-                int count = MyDeck.RollCountALL(lst[0].Plane.PF);
-
-                if (count < MyDeck.NOLibRollCount && lst[0].LibratedStatus != 0)
-                    satus = TrackingSatus.NoLibWarn;
-                else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[0].LibratedStatus == 0)
-                    satus = TrackingSatus.LibratedWarn;
-                else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
-                    satus = TrackingSatus.OverSpeed;
-
-                bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
-
-                onelist.Add(lst[0]);
-                lstoflst.Add(onelist);
-
-                GPSCoord previous = lst[0];
-
-                for (int i = 1; i < lst.Count; i++)
-                {
-
-                    if (count < MyDeck.NOLibRollCount && lst[i].LibratedStatus != 0)
-                    {
-                        if (satus != TrackingSatus.NoLibWarn)
-                        {
-                            onelist = new List<GPSCoord>();
-                            onelist.Add(previous);
-                            lstoflst.Add(onelist);
-                        }
-                        satus = TrackingSatus.NoLibWarn;
-                    }
-                    else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[i].LibratedStatus == 0)
-                    {
-                        if (satus != TrackingSatus.LibratedWarn)
-                        {
-                            onelist = new List<GPSCoord>();
-                            onelist.Add(previous);
-                            lstoflst.Add(onelist);
-                        }
-                        satus = TrackingSatus.LibratedWarn;
-                    }
-                    else if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
-                    {
-                        if (satus != TrackingSatus.OverSpeed)
-                        {
-                            onelist = new List<GPSCoord>();
-                            onelist.Add(previous);
-                            lstoflst.Add(onelist);
-                        }
-                        satus = TrackingSatus.OverSpeed;
-                    }
-                    else
-                    {
-                        if (satus != TrackingSatus.Right)
-                        {
-                            onelist = new List<GPSCoord>();
-                            onelist.Add(previous);
-                            lstoflst.Add(onelist);
-                        }
-                        satus = TrackingSatus.Right;
-                    }
-                    onelist.Add(lst[i]);
-                    previous = lst[i];
-                }
-                    //System.Diagnostics.Debug.Print("舍弃超速点{0}个", count);
-                    using (Pen p = WidthPen(Color.Black))
-                        for (int i = 0; i < lstoflst.Count; i++)
-                        {
-                            if (lstoflst[i].Count < 2)
-                                continue;
-                            GraphicsPath gp = new GraphicsPath();
-                            PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
-
-                            screenSegFiltered.Add(lstoflst[i]);
-                            gp.AddLines(plane);
-                            rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
-                            gpTracking.Add(gp);
-
-                            TrackingSatus sat = TrackingSatus.Right;
-                            if (count < MyDeck.NOLibRollCount && lstoflst[i].Last().LibratedStatus != 0)
-                                sat = TrackingSatus.NoLibWarn;
-                            else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lstoflst[i].Last().LibratedStatus == 0)
-                                sat = TrackingSatus.LibratedWarn;
-                            else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
-                                sat = TrackingSatus.OverSpeed;
-
-                            gpTrackSatus.Add(sat);
-                            gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
-                        }
-                    }
-
-            //// John, 2009-1-19
-            if (Config.I.IS_OVERSPEED_VALID)
-            {
-                foreach (List<GPSCoord> elem in screenSeg)
-                {
-                    GraphicsPath gp = new GraphicsPath();
-                    PointF[] lines = Geo.DamUtils.Translate(elem);
-                    gp.AddLines(lines);
-                    gpBand.Add(gp);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < gpTracking.Count; i++)
-                {
-                    GraphicsPath gp = gpTracking[i];
-
-                    if (gpTrackSatus[i] != TrackingSatus.OverSpeed)
-                        gpBand.Add(gp.Clone() as GraphicsPath);
-
-                }
-            }
+        //    RectangleF rc = new RectangleF();
 
 
-            // John, 2009-1-19
+        //    foreach (List<GPSCoord> lst in screenSeg)
+        //    {
+        //        // 筛选超速点
 
-            scrBoundary = new DMRectangle(rc);
-            //             }
-        }
+        //        List<GPSCoord> onelist = new List<GPSCoord>();
+        //        List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
+
+        //        TrackingSatus satus = TrackingSatus.Right;
+        //        int count = MyDeck.RollCountALL(lst[0].Plane.PF);
+
+        //        if (count < MyDeck.NOLibRollCount && lst[0].LibratedStatus != 0)
+        //            satus = TrackingSatus.NoLibWarn;
+        //        else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[0].LibratedStatus == 0)
+        //            satus = TrackingSatus.LibratedWarn;
+        //        else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
+        //            satus = TrackingSatus.OverSpeed;
+
+        //        bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
+
+        //        onelist.Add(lst[0]);
+        //        lstoflst.Add(onelist);
+
+        //        GPSCoord previous = lst[0];
+
+        //        for (int i = 1; i < lst.Count; i++)
+        //        {
+        //            count = MyDeck.RollCountALL(lst[i].Plane.PF);
+        //            if (count < MyDeck.NOLibRollCount && lst[i].LibratedStatus != 0)
+        //            {
+        //                if (satus != TrackingSatus.NoLibWarn)
+        //                {
+        //                    onelist = new List<GPSCoord>();
+        //                    onelist.Add(previous);
+        //                    lstoflst.Add(onelist);
+        //                }
+        //                satus = TrackingSatus.NoLibWarn;
+        //            }
+        //            else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lst[i].LibratedStatus == 0)
+        //            {
+        //                if (satus != TrackingSatus.LibratedWarn)
+        //                {
+        //                    onelist = new List<GPSCoord>();
+        //                    onelist.Add(previous);
+        //                    lstoflst.Add(onelist);
+        //                }
+        //                satus = TrackingSatus.LibratedWarn;
+        //            }
+        //            else if (lst[i].V >= _OwnerRoller.Owner.MaxSpeed)
+        //            {
+        //                if (satus != TrackingSatus.OverSpeed)
+        //                {
+        //                    onelist = new List<GPSCoord>();
+        //                    onelist.Add(previous);
+        //                    lstoflst.Add(onelist);
+        //                }
+        //                satus = TrackingSatus.OverSpeed;
+        //            }
+        //            else
+        //            {
+        //                if (satus != TrackingSatus.Right)
+        //                {
+        //                    onelist = new List<GPSCoord>();
+        //                    onelist.Add(previous);
+        //                    lstoflst.Add(onelist);
+        //                }
+        //                satus = TrackingSatus.Right;
+        //            }
+        //            onelist.Add(lst[i]);
+        //            previous = lst[i];
+        //        }
+        //            //System.Diagnostics.Debug.Print("舍弃超速点{0}个", count);
+        //            using (Pen p = WidthPen(Color.Black))
+        //                for (int i = 0; i < lstoflst.Count; i++)
+        //                {
+        //                    if (lstoflst[i].Count < 2)
+        //                        continue;
+        //                    GraphicsPath gp = new GraphicsPath();
+        //                    PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
+
+        //                    screenSegFiltered.Add(lstoflst[i]);
+        //                    gp.AddLines(plane);
+        //                    rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
+        //                    gpTracking.Add(gp);
+
+        //                    TrackingSatus sat = TrackingSatus.Right;
+        //                    if (count < MyDeck.NOLibRollCount && lstoflst[i].Last().LibratedStatus != 0)
+        //                        sat = TrackingSatus.NoLibWarn;
+        //                    else if (count > MyDeck.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM && lstoflst[i].Last().LibratedStatus == 0)
+        //                        sat = TrackingSatus.LibratedWarn;
+        //                    else if (lst[0].V >= _OwnerRoller.Owner.MaxSpeed)
+        //                        sat = TrackingSatus.OverSpeed;
+
+        //                    gpTrackSatus.Add(sat);
+        //                    gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
+        //                }
+        //            }
+
+        //    //// John, 2009-1-19
+        //    if (Config.I.IS_OVERSPEED_VALID)
+        //    {
+        //        foreach (List<GPSCoord> elem in screenSeg)
+        //        {
+        //            GraphicsPath gp = new GraphicsPath();
+        //            PointF[] lines = Geo.DamUtils.Translate(elem);
+        //            gp.AddLines(lines);
+        //            gpBand.Add(gp);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < gpTracking.Count; i++)
+        //        {
+        //            GraphicsPath gp = gpTracking[i];
+
+        //            if (gpTrackSatus[i] != TrackingSatus.OverSpeed)
+        //                gpBand.Add(gp.Clone() as GraphicsPath);
+
+        //        }
+        //    }
+
+
+        //    // John, 2009-1-19
+
+        //    scrBoundary = new DMRectangle(rc);
+        //    //             }
+        //}
 
 
 #endregion
 
 
-        private void CreatePath(double offScrX, double offScrY)
+        public void CreatePath(double offScrX, double offScrY)
         {
              if (filteredSeg.Count == 0)
                 return;
@@ -581,7 +583,21 @@ namespace DamLKK._Model
                 List<GPSCoord> onelist = new List<GPSCoord>();
                 List<List<GPSCoord>> lstoflst = new List<List<GPSCoord>>();
 
-                bool overspeeding = (lst[0].V >= _OwnerRoller.Owner.MaxSpeed);
+                TrackingSatus overspeeding;
+
+                 if (lst[0].LibratedStatus == -1 && lst[0].V >= this._OwnerRoller.Owner.MaxSpeed)
+                    overspeeding = TrackingSatus.NoInfoOverSpeed;
+                else if (lst[0].LibratedStatus == 0 && lst[0].V >= this._OwnerRoller.Owner.MaxSpeed)
+                    overspeeding = TrackingSatus.NoLibratedOverSpeed;
+                else if (lst[0].LibratedStatus >0 && lst[0].V >= this._OwnerRoller.Owner.MaxSpeed)
+                     overspeeding = TrackingSatus.LibratedOverSpeed;
+                else if (lst[0].LibratedStatus == 0)
+                    overspeeding = TrackingSatus.NoLibrated;
+                else if (lst[0].LibratedStatus > 0)
+                    overspeeding = TrackingSatus.Librated;
+                 else
+                     overspeeding = TrackingSatus.NoInfo;
+               
 
                 onelist.Add(lst[0]);
                 lstoflst.Add(onelist);
@@ -590,50 +606,141 @@ namespace DamLKK._Model
 
                  for (int i = 1; i < lst.Count; i++)
                 {
-                    if (lst[i].V >= MyDeck.MaxSpeed)
+                    if (lst[i].LibratedStatus == -1 && lst[i].V >= this._OwnerRoller.Owner.MaxSpeed)
                     {
-                        if (!overspeeding)
+                        if (overspeeding!= TrackingSatus.NoInfoOverSpeed)
                         {
                             onelist = new List<GPSCoord>();
                             onelist.Add(previous);
                             lstoflst.Add(onelist);
-                            //System.Diagnostics.Debug.Print("未超速->超速");
-                            //                             gpOverspeed.SetVertex(true);
                         }
-                        overspeeding = true;
+                        overspeeding= TrackingSatus.NoInfoOverSpeed;
+                    }
+                    else if (lst[i].LibratedStatus == 0 && lst[i].V >= this._OwnerRoller.Owner.MaxSpeed)
+                    {
+                        if (overspeeding != TrackingSatus.NoLibratedOverSpeed)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        overspeeding = TrackingSatus.NoLibratedOverSpeed;
+                    }
+                    else if (lst[i].LibratedStatus > 0 && lst[i].V >= this._OwnerRoller.Owner.MaxSpeed)
+                    {
+                        if (overspeeding != TrackingSatus.LibratedOverSpeed)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        overspeeding = TrackingSatus.LibratedOverSpeed;
+                    }
+                    else if (lst[i].LibratedStatus == 0)
+                    {
+                        if (overspeeding != TrackingSatus.NoLibrated)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        overspeeding = TrackingSatus.NoLibrated;
+                    }
+                    else if (lst[i].LibratedStatus > 0)
+                    {
+                        if (overspeeding != TrackingSatus.Librated)
+                        {
+                            onelist = new List<GPSCoord>();
+                            onelist.Add(previous);
+                            lstoflst.Add(onelist);
+                        }
+                        overspeeding = TrackingSatus.Librated;
                     }
                     else
                     {
-                        if (overspeeding)
+                        if (overspeeding != TrackingSatus.NoInfo)
                         {
                             onelist = new List<GPSCoord>();
                             onelist.Add(previous);
                             lstoflst.Add(onelist);
-                            //System.Diagnostics.Debug.Print("超速->未超速");
-                            //                             gpOverspeed.SetVertex(false);
                         }
-                        overspeeding = false;
+                        overspeeding = TrackingSatus.NoInfo;
                     }
+
+                    //if (lst[i].V >= MyDeck.MaxSpeed)
+                    //{
+                    //    if (!overspeeding)
+                    //    {
+                    //        onelist = new List<GPSCoord>();
+                    //        onelist.Add(previous);
+                    //        lstoflst.Add(onelist);
+                    //        //System.Diagnostics.Debug.Print("未超速->超速");
+                    //        //                             gpOverspeed.SetVertex(true);
+                    //    }
+                    //    overspeeding = true;
+                    //}
+                    //else
+                    //{
+                    //    if (overspeeding)
+                    //    {
+                    //        onelist = new List<GPSCoord>();
+                    //        onelist.Add(previous);
+                    //        lstoflst.Add(onelist);
+                    //        //System.Diagnostics.Debug.Print("超速->未超速");
+                    //        //                             gpOverspeed.SetVertex(false);
+                    //    }
+                    //    overspeeding = false;
+                    //}
                     onelist.Add(lst[i]);
                     previous = lst[i];
 
                  }
 
 
-                    using (Pen p = WidthPen(Color.Black))
-                        for (int i = 0; i < lstoflst.Count; i++)
-                        {
-                            if (lstoflst[i].Count < 2)
-                                continue;
-                            GraphicsPath gp = new GraphicsPath();
-                            PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
+                using (Pen p = WidthPen(Color.Black))
+                    for (int i = 0; i < lstoflst.Count; i++)
+                    {
+                        if (lstoflst[i].Count < 2)
+                            continue;
+                        GraphicsPath gp = new GraphicsPath();
+                        PointF[] plane = Geo.DamUtils.Translate(lstoflst[i]);
 
-                            screenSegFiltered.Add(lstoflst[i]);
-                            gp.AddLines(plane);
-                            rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
-                            gpTracking.Add(gp);
-                            gpOverspeed.Add(lstoflst[i].Last().V >= _OwnerRoller.Owner.MaxSpeed);
+                        screenSegFiltered.Add(lstoflst[i]);
+                        gp.AddLines(plane);
+                        rc = RectangleF.Union(rc, gp.GetBounds(new Matrix(), p));
+                        gpTracking.Add(gp);
+
+                        if (lstoflst[i].Last().LibratedStatus == -1 && lstoflst[i].Last().V >= this._OwnerRoller.Owner.MaxSpeed)
+                        {
+                            gpTrackSatus.Add(TrackingSatus.NoInfoOverSpeed);
+                            gpOverspeed.Add(true);
                         }
+                        else if (lstoflst[i].Last().LibratedStatus == 0 && lstoflst[i].Last().V >= this._OwnerRoller.Owner.MaxSpeed)
+                        {
+                            gpTrackSatus.Add(TrackingSatus.NoLibratedOverSpeed);
+                            gpOverspeed.Add(true);
+                        }
+                        else if (lstoflst[i].Last().LibratedStatus > 0 && lstoflst[i].Last().V >= this._OwnerRoller.Owner.MaxSpeed)
+                        {
+                            gpTrackSatus.Add(TrackingSatus.LibratedOverSpeed);
+                            gpOverspeed.Add(true);
+                        }
+                        else if (lstoflst[i].Last().LibratedStatus == 0)
+                        {
+                            gpTrackSatus.Add(TrackingSatus.NoLibrated);
+                            gpOverspeed.Add(false);
+                        }
+                        else if (lstoflst[i].Last().LibratedStatus > 0)
+                        {
+                            gpTrackSatus.Add(TrackingSatus.Librated);
+                            gpOverspeed.Add(false);
+                        }
+                        else
+                        {
+                            gpTrackSatus.Add(TrackingSatus.NoInfo);
+                            gpOverspeed.Add(false);
+                        }
+                    }
                 
                 }
 
@@ -827,67 +934,111 @@ namespace DamLKK._Model
                 float scrSize = (float)_OwnerRoller.Owner.MyLayer.ScreenSize(0.05);
                 scrSize = Math.Max(scrSize, 0.1f);
                 scrSize = Math.Min(scrSize, 0.8f);
-                float size = 1;// (float)owner.Owner.Owner.ScreenSize(.15f);
+                float Bsize = 2.5f,size=1.5f;// (float)owner.Owner.Owner.ScreenSize(.15f);
 
 
 
-                if (_OwnerRoller.Owner._IsOutTrackingMap)
+                //if (_OwnerRoller.Owner._IsOutTrackingMap)
+                //{
+                //   using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
+                //   p1 = new Pen(Color.Yellow, 1.8f),
+                //   pblack = new Pen(Color.Black, p.Width),
+                //   pred = new Pen(Color.Red, p.Width),
+                //   p2 = new Pen(Color.Black, 2.7f))
+
+                //    for (int i = 0; i < gpTracking.Count; i++)
+                //    {
+
+                //        if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
+                //            p.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+
+
+                //        if (gpTrackSatus[i] == TrackingSatus.NoLibWarn)
+                //        {
+                //            g.DrawPath(pred, gpTracking[i]);
+                //        }
+                //        else if (gpTrackSatus[i] == TrackingSatus.LibratedWarn)
+                //        {
+                //            g.DrawPath(pblack, gpTracking[i]);
+                //        }
+                //        else if (gpTrackSatus[i] == TrackingSatus.OverSpeed)//gpOverspeed[i]
+                //        {
+                //            if (drawOverspeed)
+                //            {
+                //                g.DrawPath(p2, gpTracking[i]);
+                //                g.DrawPath(p1, gpTracking[i]);
+                //            }
+                //        }
+                //        else
+                //            g.DrawPath(p, gpTracking[i]);
+                //    }
+                //}
+                //else
                 {
-                   using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
-                   p1 = new Pen(Color.Yellow, 1.8f),
-                   pblack = new Pen(Color.Black, p.Width),
-                   pred = new Pen(Color.Red, p.Width),
-                   p2 = new Pen(Color.Black, 2.7f))
-
-                    for (int i = 0; i < gpTracking.Count; i++)
-                    {
-
-                        if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
-                            p.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
-
-
-                        if (gpTrackSatus[i] == TrackingSatus.NoLibWarn)
-                        {
-                            g.DrawPath(pred, gpTracking[i]);
-                        }
-                        else if (gpTrackSatus[i] == TrackingSatus.LibratedWarn)
-                        {
-                            g.DrawPath(pblack, gpTracking[i]);
-                        }
-                        else if (gpTrackSatus[i] == TrackingSatus.OverSpeed)//gpOverspeed[i]
-                        {
-                            if (drawOverspeed)
-                            {
-                                g.DrawPath(p2, gpTracking[i]);
-                                g.DrawPath(p1, gpTracking[i]);
-                            }
-                        }
-                        else
-                            g.DrawPath(p, gpTracking[i]);
-                    }
-                }
-                else
-                {
-                    using (Pen p = new Pen(Color.FromArgb(0xFF, this.Color), size),
-                    p1 = new Pen(Color.Yellow, 1.8f),
-                    p2 = new Pen(Color.Black, 2.7f))
+                    using (Pen pBthis = new Pen(Color.FromArgb(0xFF, this.Color), Bsize),
+                        pMthis = new Pen(Color.FromArgb(0xFF, this.Color), 1.5f),
+                         pthis = new Pen(Color.FromArgb(0xFF, this.Color), size),
+                        pByellow = new Pen(Color.Yellow, Bsize),
+                        pMyellow = new Pen(Color.Yellow, 1.5f),
+                        pyellow = new Pen(Color.Yellow, size))
 
                         for (int i = 0; i < gpTracking.Count; i++)
                         {
 
                             if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
-                                p.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
-
-                            if (gpOverspeed[i])
                             {
-                                if (drawOverspeed)
-                                {
-                                    g.DrawPath(p2, gpTracking[i]);
-                                    g.DrawPath(p1, gpTracking[i]);
-                                }
+                                pBthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+                                //pMthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+                                //pthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+                            }
+
+
+                            if (gpTrackSatus[i] == TrackingSatus.NoInfoOverSpeed)
+                            {
+                                if (this.DrawOverSpeed)
+                                    g.DrawPath(pMyellow, gpTracking[i]);
+                                else
+                                    g.DrawPath(pMthis, gpTracking[i]);
+                            }
+                            else if (gpTrackSatus[i] == TrackingSatus.NoLibratedOverSpeed)
+                            {
+                                if (this.DrawOverSpeed)
+                                    g.DrawPath(pyellow, gpTracking[i]);
+                                else
+                                    g.DrawPath(pthis, gpTracking[i]);
+                            }
+                            else if (gpTrackSatus[i] == TrackingSatus.LibratedOverSpeed)
+                            {
+                                //g.DrawPath(pByellow, gpTracking[i]);
+                                if (this.DrawOverSpeed)
+                                    g.DrawPath(pByellow, gpTracking[i]);
+                                else
+                                    g.DrawPath(pBthis, gpTracking[i]);
+                            }
+                            else if (gpTrackSatus[i] == TrackingSatus.NoLibrated)
+                            {
+                                g.DrawPath(pthis, gpTracking[i]);
+                            }
+                            else if (gpTrackSatus[i] == TrackingSatus.Librated)
+                            {
+                                g.DrawPath(pBthis, gpTracking[i]);
+                              
                             }
                             else
-                                g.DrawPath(p, gpTracking[i]);
+                            {
+                                g.DrawPath(pMthis, gpTracking[i]);
+                            }
+
+                            //if (gpOverspeed[i])
+                            //{
+                            //    if (drawOverspeed)
+                            //    {
+                            //        g.DrawPath(p2, gpTracking[i]);
+                            //        g.DrawPath(p1, gpTracking[i]);
+                            //    }
+                            //}
+                            //else
+                            //    g.DrawPath(p, gpTracking[i]);
                         }
                 }
 
