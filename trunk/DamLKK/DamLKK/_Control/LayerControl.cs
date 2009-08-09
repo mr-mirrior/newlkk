@@ -126,7 +126,7 @@ namespace DamLKK._Control
                 return null;
             }
 
-            view = Forms.Main.GetInstance().OpenLayer(unit, elevation);
+            view = Forms.Main.GetInstance.OpenLayer(unit, elevation);
             if (view == null)
                 return null;
 

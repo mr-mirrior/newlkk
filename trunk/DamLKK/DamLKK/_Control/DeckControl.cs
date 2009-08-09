@@ -47,7 +47,7 @@ namespace DamLKK._Control
         {
             _Tobesetvisible = deck;
             _DlgWaiting = new Forms.Waiting();
-            _DlgWaiting.Start(Forms.Main.GetInstance(), "正在计算轨迹，请稍候……", thrdSetVisibleDeck, 1000);
+            _DlgWaiting.Start(Forms.Main.GetInstance, "正在计算轨迹，请稍候……", thrdSetVisibleDeck, 1000);
         }
 
         public Deck GetVisibleDeck()
@@ -141,7 +141,7 @@ namespace DamLKK._Control
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
             warndlg.WarningType = WarningType.ROLLINGLESS;
             warndlg.FillForms();
-            Forms.Main.GetInstance().ShowWarningDlg(warndlg);
+            Forms.Main.GetInstance.ShowWarningDlg(warndlg);
         }
 
         public static void UnvisibleDeck(DamLKK._Model.Deck dk)

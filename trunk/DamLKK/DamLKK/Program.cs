@@ -11,13 +11,12 @@ namespace DamLKK
     public delegate void InvokeDelegate();
     static class Program
     {
-        //static volatile bool exiting = false;
-
-        //public static bool Exiting
-        //{
-        //    get { return Program.exiting; }
-        //    set { Program.exiting = value; DMControl.GPSServer.Stop(); }
-        //}
+        static volatile bool exiting = false;
+        public static bool Exiting
+        {
+            get { return Program.exiting; }
+            set { Program.exiting = value; _Control.GPSServer.Stop(); }
+        }
 
         static void SetWorkingDirectory()
         {
@@ -35,7 +34,7 @@ namespace DamLKK
             DB.DBconfig.GetInstance();
             dlg.Finished = true;
             // 开始接受GPS线程
-            //DMControl.GPSServer.StartReceiveGPSData(DM.DB.DBconfig.getInstance().Damserver, 6666);
+            _Control.GPSServer.StartReceiveGPSData(/*DB.DBconfig.GetInstance().Damserver*/"125.38.52.215", 6666);
             System.Diagnostics.Debug.Print("Init finished");
             if (!System.IO.File.Exists(_Model.Config.CONFIG_FILE))
                 _Model.Config.Save();
@@ -78,7 +77,7 @@ namespace DamLKK
             dlg.Start(null, "请稍候，正在读取数据库……", Init, 2000);
 #endif
 #if DEBUG
-            Application.Run(Forms.Main.GetInstance());
+            Application.Run(new Forms.Main());
 #endif
 
         }

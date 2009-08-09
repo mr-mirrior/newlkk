@@ -182,11 +182,11 @@ namespace DamLKK.Forms
 
         private void OnLoadUpdateLayer()
         {
-            Cursor = Main.GetInstance().Cursor = Cursors.WaitCursor;
+            Cursor = Main.GetInstance.Cursor = Cursors.WaitCursor;
 
             SearchUnits(false);
 
-            Cursor = Main.GetInstance().Cursor = Cursors.Default;
+            Cursor = Main.GetInstance.Cursor = Cursors.Default;
         }
 
         private void SearchUnits(bool review)

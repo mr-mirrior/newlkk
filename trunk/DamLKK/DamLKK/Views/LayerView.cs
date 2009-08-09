@@ -995,7 +995,7 @@ namespace DamLKK.Views
                     return true;
             }
 
-            return Forms.Main.GetInstance().ProcessKeys(this, e);
+            return Forms.Main.GetInstance.ProcessKeys(this, e);
         }
 
         /// <summary>
@@ -1180,7 +1180,7 @@ namespace DamLKK.Views
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (OnKeyDown(e)) return;
-            if (Forms.Main.GetInstance().ProcessKeys(this, e)) return;
+            if (Forms.Main.GetInstance.ProcessKeys(this, e)) return;
         }
         private void OnKeyUp(object sender, KeyEventArgs e) { }
         //        private void OnMouseMove(object sender, MouseEventArgs e) { cursorPos = ScrollPoint(e.Location);  OnMouseMove(e); }

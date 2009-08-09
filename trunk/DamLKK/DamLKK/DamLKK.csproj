@@ -187,6 +187,7 @@
     <Compile Include="Utils\ThicknessImage\PieChart.cs" />
     <Compile Include="Utils\ThicknessImage\Pixel.cs" />
     <Compile Include="Utils\ThicknessImage\Segment.cs" />
+    <Compile Include="Utils\Windows.cs" />
     <Compile Include="Views\Compass.cs" />
     <Compile Include="Views\LayerView.cs">
       <SubType>UserControl</SubType>

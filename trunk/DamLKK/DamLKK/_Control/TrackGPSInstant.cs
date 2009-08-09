@@ -23,17 +23,18 @@ namespace DamLKK._Control
         public override string ToString()
         {
             Geo.GPSCoord c3d = this.GPSCoord;
-            return string.Format("GPSDATA {0} Car={1} Speed={2}, GPSCoord={3}", Time.ToString(), 
+            return string.Format("GPSDATA {0} Car={1} Speed={2}, GPSCoord={3} LibratedStatues={4}", Time.ToString(), 
                 CarID, 
                 Speed,
-                c3d.ToString());
+                c3d.ToString(),
+                LibratedStatus.ToString());
         }
         public DateTime Time { get { try { return new DateTime(Year + 2000, Month, Day, Hour, Minute, Second); } catch { return DateTime.MinValue; } } }
         public Geo.BLH BLH { get { return new DamLKK.Geo.BLH(Latitude, Longitude, Altitude); } }
         public Geo.XYZ XYZ { get { return Geo.Coord84To54.Convert(BLH); } }
         // XYZ 中，X和Y互换 dont know why
         public Geo.GPSCoord GPSCoord { get { Geo.XYZ xyz = this.XYZ; 
-            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(xyz.y, -xyz.x, xyz.z, Speed,0,this.Time,LibratedSatus);
+            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(xyz.y, -xyz.x, xyz.z, Speed,0,this.Time,LibratedStatus);
             //c.When = this.Time;
             return c;
         }
@@ -68,13 +69,11 @@ namespace DamLKK._Control
         public double Longitude;    //经度
         [MarshalAs(UnmanagedType.R4)]
         public float Altitude;     //海拔
+        [MarshalAs(UnmanagedType.U1)]
+        public byte LibratedStatus;
 
         [MarshalAs(UnmanagedType.U1)]
         public byte WorkFlag;   //高4位为工作状态 0xFx 表示正在碾压, 低四位为GPS定位状态
-
-        [MarshalAs(UnmanagedType.U1)]
-        public byte LibratedSatus;
-
     }
     //超速报警结构 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -288,7 +287,7 @@ namespace DamLKK._Control
             System.Diagnostics.Debug.Print(fmt);
         }
 
-        public static bool IsConnected { get { return false;/* socket.Connected;*/ } }            //此此为判断是否soket已经连接，测试阶段先置false；
+        public static bool IsConnected { get { return  socket.Connected;} }            //此此为判断是否soket已经连接，测试阶段先置false；
 
         unsafe private static void OnGPSData()
         {
@@ -381,7 +380,7 @@ namespace DamLKK._Control
                     dlg.CarName = ci.Name;
                     dlg.UnitName = unit.Name;
                     dlg.FillForms();
-                    Forms.Main.GetInstance().ShowWarningDlg(dlg);
+                    Forms.Main.GetInstance.ShowWarningDlg(dlg);
                 }
                 catch(Exception e)
                 {
@@ -430,7 +429,7 @@ namespace DamLKK._Control
                     dlg.LibrateState = (int)warningLibrated->SenseOrgan;
                     dlg.CarName = VehicleControl.FindVechicle(warningLibrated->CarID).Name;
                     dlg.FillForms();
-                    Forms.Main.GetInstance().ShowWarningDlg(dlg);
+                    Forms.Main.GetInstance.ShowWarningDlg(dlg);
                 }
                 catch (Exception e)
                 {
@@ -468,7 +467,7 @@ namespace DamLKK._Control
                 dlg.Position = wot.Position;
                 dlg.UnitName = wot.Unit;
                 dlg.FillForms();
-                Forms.Main.GetInstance().ShowWarningDlg(dlg);  
+                Forms.Main.GetInstance.ShowWarningDlg(dlg);  
             }
 
 
@@ -547,8 +546,8 @@ namespace DamLKK._Control
         }
         public static void Stop()
         {
-            lock(lockRead)
-            {
+            //lock(lockRead)
+            //{
                 if (!IsConnected)
                     return;
                 tmHeartbeat.Stop();
@@ -556,7 +555,7 @@ namespace DamLKK._Control
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
                 TRACE("GPSReceiver stopped.");
-            }
+            //}
         }
         public static void test()
         {

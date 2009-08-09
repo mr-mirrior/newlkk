@@ -240,7 +240,7 @@ namespace DamLKK._Model
                         return;
                     SoundControl.BeepIII();
 
-                    this._LibratedState = (LibratedState)e.gps.LibratedSatus;
+                    this._LibratedState = (LibratedState)e.gps.LibratedStatus;
                     // John, 2009-1-20
                     if (TrackGPSControl.Tracking.Count != 0)
                     {
@@ -257,7 +257,7 @@ namespace DamLKK._Model
                     {
                         Count=Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
                         
-                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedSatus!=0)
+                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0)
                         {
                             if(!_Timer.Enabled)
                             {
@@ -266,7 +266,7 @@ namespace DamLKK._Model
                             }
                             
                         }
-                        else if(Count!=null&&(Count[0]+Count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedSatus==0)
+                        else if(Count!=null&&(Count[0]+Count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedStatus==0)
                         {
                             if (!_Timer.Enabled)
                             {
@@ -318,7 +318,7 @@ namespace DamLKK._Model
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
             warndlg.WarningType = WarningType.LIBRATED;
             warndlg.FillForms();
-            Forms.Main.GetInstance().ShowWarningDlg(warndlg);
+            Forms.Main.GetInstance.ShowWarningDlg(warndlg);
         }
 #endregion
     }
