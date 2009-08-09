@@ -91,7 +91,7 @@ namespace DamLKK.Forms
             warnForm.WarningTime = wi.warningTime;
             warnForm.WarningType = wi.warnType;
             warnForm.FillLabelsValue();
-            Forms.Main.GetInstance().ShowWarningDlg(warnForm);
+            Forms.Main.GetInstance.ShowWarningDlg(warnForm);
         }
     }
 }

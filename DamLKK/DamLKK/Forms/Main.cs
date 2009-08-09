@@ -11,21 +11,24 @@ namespace DamLKK.Forms
 {
     public partial class Main : Form
     {
-        private Main()
+        public Main()
         {
             InitializeComponent();
+            Utils.Global.Windows.MainWindow = this;
         }
 
-        static Main _FrmMain=null;
+        public static Main GetInstance { get { return (Main)Utils.Global.Windows.MainWindow; } }
 
-        public static Main GetInstance()
-        {
-            if (_FrmMain==null)
-            {
-                _FrmMain = new Main();
-            }
-            return _FrmMain;
-        }
+        //static Main _FrmMain=null;
+
+        //public static Main GetInstance()
+        //{
+        //    if (_FrmMain==null)
+        //    {
+        //        _FrmMain = new Main();
+        //    }
+        //    return _FrmMain;
+        //}
 
         #region 最高优先级键盘响应
         public bool PreFilterMessage(ref Message msg)
@@ -284,5 +287,10 @@ namespace DamLKK.Forms
             this.BeginInvoke(new InvokeDelegate(internalShowWarningDlg), dlg);
         }
 #endregion
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.Exiting = true;
+        }
     }
 }
