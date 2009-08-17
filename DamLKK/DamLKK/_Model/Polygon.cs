@@ -364,7 +364,7 @@ namespace DamLKK._Model
         public void Draw(Graphics g)
         {
             // 填充多边形
-            g.FillPath(_BrFill, _GraphicsPath);
+            g.FillPath(_BrFill, _GraphicsPath);//_BrFill
             g.DrawPath(_PenLine, _GraphicsPath);
 
             if(_BlockID!=-1)

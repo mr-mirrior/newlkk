@@ -197,6 +197,7 @@ namespace DamLKK._Control
                     return;
                 }
                 _Decks.Add(deck);
+              
                 return;
             }
         }
@@ -284,7 +285,7 @@ namespace DamLKK._Control
         {
             if (deck.WorkState== DeckWorkState.WORK|| deck.WorkState == DeckWorkState.END)
             {
-                Utils.MB.Warning("该仓面处于开仓状态或者已经工作完成，无法删除。");
+                Utils.MB.Warning("该仓面处于开启碾压监控状态或者已经工作完成，无法删除。");
                 return;
             }
 
@@ -419,10 +420,10 @@ namespace DamLKK._Control
             }
             if (!dk.IsVisible)
             {
-                Utils.MB.Warning("该仓面现在不是可见仓面，无法开仓。请设置为可见仓面再试一次。");
+                Utils.MB.Warning("该仓面现在不是可见仓面，无法开启碾压监控。请设置为可见仓面再试一次。");
                 return false;
             }
-            if (!Utils.MB.OKCancelQ("您确认要开仓吗？\n仓面信息：" + dk.Name))
+            if (!Utils.MB.OKCancelQ("您确认要开启碾压监控吗？\n仓面信息：" + dk.Name))
                 return false;
 
             //             ThicknessMonitor(dk);
@@ -433,7 +434,7 @@ namespace DamLKK._Control
 
             if (dk.WorkState== DeckWorkState.WORK)
             {
-                Utils.MB.Warning("该仓面已经在工作中，请关仓后再试一次");
+                Utils.MB.Warning("该仓面已经在工作中，请结束碾压监控后再试一次");
                 return false;
             }
             // 2) 检查车辆安排情况
@@ -453,14 +454,14 @@ namespace DamLKK._Control
                         continue;
                     if (cd.RollerID == inf.ID)
                     {
-                        Utils.MB.Warning("开仓失败：车辆已被占用：\"" + inf.Name + "\"");
+                        Utils.MB.Warning("开启碾压监控失败："+inf.Name+"已被占用");
                         return false;
                     }
                 }
             }
             if (distCount == 0)
             {
-                Utils.MB.Warning("开仓失败：尚未安排任何车辆");
+                Utils.MB.Warning("开启碾压监控失败：尚未安排任何车辆");
                 return false;
             }
 
@@ -472,9 +473,9 @@ namespace DamLKK._Control
             {
                 DeckVehicleResult result = daoSeg.StartDeck(unit.ID, elevation.Height, dk.ID, dk.MaxSpeed, dk.WorkState);
                 if (result == DeckVehicleResult.CARS_FAIL)
-                    Utils.MB.Warning("开仓失败：车辆错误");
+                    Utils.MB.Warning("开启碾压监控失败：车辆错误");
                 if (result == DeckVehicleResult.SEGMENT_FAIL)
-                    Utils.MB.Warning("开仓失败：仓面错误");
+                    Utils.MB.Warning("开启碾压监控失败：仓面错误");
                 if (result != DeckVehicleResult.SUCCESS)
                     return false;
             }
@@ -488,7 +489,7 @@ namespace DamLKK._Control
             LoadDB(dk);
             UpdateGraphics();
             GPSServer.OpenDeck();
-            Utils.MB.OKI("\"" + dk.Name + "\"" + "已经开仓！");
+            Utils.MB.OKI("\"" + dk.Name + "\"" + "已经开启碾压监控！");
 
             return true;
         }
@@ -503,10 +504,10 @@ namespace DamLKK._Control
             }
             if (!dk.IsVisible)
             {
-                Utils.MB.Warning("该仓面现在不是可见仓面，无法关仓。请设置为可见仓面再试一次。");
+                Utils.MB.Warning("该仓面现在不是可见仓面，无法结束碾压监控。请设置为可见仓面再试一次。");
                 return false;
             }
-            if (!Utils.MB.OKCancelQ("您确认要关仓吗？\n仓面信息：" + dk.Name))
+            if (!Utils.MB.OKCancelQ("您确认要结束碾压监控吗？\n仓面信息：" + dk.Name))
                 return false;
 
             // 0) 检查操作权限
@@ -515,7 +516,7 @@ namespace DamLKK._Control
 
             if (!(dk.WorkState==DeckWorkState.WORK))
             {
-                Utils.MB.Warning("该仓面未开仓，请开仓后再试一次");
+                Utils.MB.Warning("该仓面未开启碾压监控，请开启碾压监控后再试一次");
                 return false;
             }
             // 2) 检查车辆安排情况
@@ -529,9 +530,9 @@ namespace DamLKK._Control
             {
                 DeckVehicleResult result = dao.EndDeck(unit.ID, elevation.Height, dk.ID);
                 if (result == DeckVehicleResult.CARS_FAIL)
-                    Utils.MB.Warning("关仓失败：车辆错误");
+                    Utils.MB.Warning("结束碾压监控失败：车辆错误");
                 if (result == DeckVehicleResult.SEGMENT_FAIL)
-                    Utils.MB.Warning("关仓失败：仓面错误");
+                    Utils.MB.Warning("结束碾压监控失败：仓面错误");
                 if (result != DeckVehicleResult.SUCCESS)
                     return false;
             }
@@ -548,7 +549,7 @@ namespace DamLKK._Control
 
             GPSServer.CloseDeck();
 
-            Utils.MB.OKI("\"" + dk.Name + "\"" + "关仓完毕！");
+            Utils.MB.OKI("\"" + dk.Name + "\"" + "结束碾压监控完毕！");
 
             return true;
         }

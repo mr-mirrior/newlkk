@@ -192,7 +192,7 @@
             this.lbVehicleName.TabIndex = 3;
             this.lbVehicleName.Text = "四号碾压机";
             this.lbVehicleName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.toolTip1.SetToolTip(this.lbVehicleName, "单元：1，高程：569.2米，仓面1");
+            this.toolTip1.SetToolTip(this.lbVehicleName, "仓面：1，高程：569.2米，仓面1");
             // 
             // roundPanel2
             // 

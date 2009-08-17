@@ -211,9 +211,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(49, 34);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 17);
+            this.label1.Size = new System.Drawing.Size(80, 17);
             this.label1.TabIndex = 0;
-            this.label1.Text = "仓面名称：";
+            this.label1.Text = "碾压层名称：";
             // 
             // btnCancel
             // 
@@ -318,7 +318,7 @@
             this.lbPastiondsa.Name = "lbPastiondsa";
             this.lbPastiondsa.Size = new System.Drawing.Size(44, 17);
             this.lbPastiondsa.TabIndex = 42;
-            this.lbPastiondsa.Text = "高程：";
+            this.lbPastiondsa.Text = "标识：";
             // 
             // lbBlockname
             // 
@@ -336,7 +336,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 17);
             this.label4.TabIndex = 40;
-            this.label4.Text = "单元：";
+            this.label4.Text = "仓面：";
             // 
             // DeckInfo
             // 

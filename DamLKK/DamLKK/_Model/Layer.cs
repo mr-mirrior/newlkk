@@ -630,6 +630,7 @@ namespace DamLKK._Model
             }
             foreach (Polygon pl in _Polygons)
             {
+                pl.FillColor = Color.Linen;
                 pl.Draw(g);
             }
 
@@ -726,7 +727,18 @@ namespace DamLKK._Model
                 }
                 if (_IsDeckInput)
                 {
+                    List<Coord> temp=new List<Coord>();
+                    foreach (Coord c in  scrCut.Vertex)
+                    {
+                        if(c.YF<0)
+                            temp.Add(new Coord(c.XF,-c.YF));
+                        else
+                        temp.Add(new Coord(c.XF, c.YF));
+                    }
+                   
+                    scrCut.Vertex=temp;
                     Polygon DamDeck = _MyPolygon.CutByOfEarth(scrCut);
+                    
                     if (DamDeck != null)
                     {
                         Deck dk = new Deck();
@@ -738,9 +750,14 @@ namespace DamLKK._Model
                         _Dkcontrol.AddDeck(dk);
                         _IsDeckInput = false;
                     }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("您输入的坐标不在相应仓面内。");
+                    }
                 }
             
             CreateScreen(_Canvas);
+           
         }
 
         /// <算边数>

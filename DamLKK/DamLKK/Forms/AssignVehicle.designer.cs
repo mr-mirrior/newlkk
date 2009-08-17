@@ -272,11 +272,11 @@
             // dada
             // 
             this.dada.AutoSize = true;
-            this.dada.Location = new System.Drawing.Point(252, 14);
+            this.dada.Location = new System.Drawing.Point(245, 14);
             this.dada.Name = "dada";
-            this.dada.Size = new System.Drawing.Size(44, 17);
+            this.dada.Size = new System.Drawing.Size(56, 17);
             this.dada.TabIndex = 14;
-            this.dada.Text = "仓面：";
+            this.dada.Text = "碾压层：";
             // 
             // lbPastion
             // 
@@ -312,7 +312,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 17);
             this.label1.TabIndex = 10;
-            this.label1.Text = "单元：";
+            this.label1.Text = "仓面：";
             // 
             // btnCancel
             // 

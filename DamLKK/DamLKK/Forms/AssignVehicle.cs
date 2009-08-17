@@ -236,7 +236,7 @@ namespace DamLKK.Forms
                 {
                     if (CarDistributeDAO.GetInstance().GetCarDisInDeck_Inuse(_Deck.Unit.ID, _Deck.Elevation.Height, _Deck.ID).Count == 1)
                     {
-                        Utils.MB.Warning("不能在工作仓面中结束唯一工作的车辆，请关仓！");
+                        Utils.MB.Warning("不能在工作仓面中结束唯一工作的车辆，请结束碾压监控！");
                         return;
                     }
                     ListViewItem item = lstVehicle.SelectedItems[0];
