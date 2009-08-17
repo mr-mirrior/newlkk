@@ -15,11 +15,11 @@ namespace DamLKK._Model
         /// <数据图边界点位置>
         /// 数据图边界点位置
         /// </数据图边界点位置>
-        public const string BLOCK_VERTEX = @"C:\DAMDATAlkk\";
+        public const string BLOCK_VERTEX = @".\DAMDATAlkk\";// @"C:\DAMDATAlkk\";
         /// <鸟瞰图控制点位置>
         /// 鸟瞰图控制点位置
         /// </鸟瞰图控制点位置>
-        public const string _MiniData = @"C:\MiniLkk\";
+        public const string _MiniData = @".\MiniLkk\";//@"C:\MiniLkk\";
         public static Config I = new Config();
         public static void Save() { DamLKK.Utils.Xml.XMLUtil<Config>.SaveXml(CONFIG_FILE, I); }
         #endregion

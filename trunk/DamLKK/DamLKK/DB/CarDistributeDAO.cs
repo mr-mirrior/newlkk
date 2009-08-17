@@ -61,7 +61,7 @@ namespace DamLKK.DB
         //返回类型参照上面
          public int EndCar(_Model.RollerDis carDistribute)
          {
-             string sqlTxt = "update cardistribute set DTEnd=getDate() where carid=" + carDistribute.RollerID + " and unitid=" + carDistribute.UnitID + " and designz=" + carDistribute.DesignZ + " and segmentid=" + carDistribute.RollerID + " and DTEnd is null";
+             string sqlTxt = "update cardistribute set DTEnd=getDate() where carid=" + carDistribute.RollerID + " and unitid=" + carDistribute.UnitID + " and designz=" + carDistribute.Elevation+ " and segmentid=" + carDistribute.SegmentID + " and DTEnd is null";
              try
              {
                  int updateRowsNumber = DBConnection.executeUpdate(sqlTxt);
@@ -218,7 +218,7 @@ namespace DamLKK.DB
                 string sqlTxt = "delete cardistribute where carid= " + carDistribute.RollerID +
                     " and unitid=" + carDistribute.UnitID +
                     " and segmentid=" + carDistribute.SegmentID +
-                    " and designz= " + carDistribute.DesignZ;
+                    " and designz= " + carDistribute.Elevation;
 
                 int updateCount = DBConnection.executeUpdate(sqlTxt);
 

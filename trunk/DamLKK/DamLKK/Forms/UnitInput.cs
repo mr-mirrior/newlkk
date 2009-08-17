@@ -39,7 +39,7 @@ namespace DamLKK.Forms
 
             if(tbName.Text==string.Empty)
             {
-                Utils.MB.Warning("单元名称不能为空!");
+                Utils.MB.Warning("仓面名称不能为空!");
                 return;
             }
 
@@ -87,46 +87,46 @@ namespace DamLKK.Forms
                     }
                     coords.Add(coords.First());
 
-                   DamLKK.Geo.BorderShapeII b2=null;
+                    //DamLKK.Geo.BorderShapeII b2=null;
                     foreach (DamLKK.Geo.Coord c in coords)
                     {
                         coordtxt += c.XF.ToString() + "," + c.YF.ToString()+";";
-                        bool at = false;
+                    //    bool at = false;
 
-                        if (Blocks.First() > 0)
-                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() - 1].Polygon.Vertex);
-                        if (Blocks.Last() < DamLKK._Model.Dam.GetInstance().Blocks.Count - 1)
-                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() + 1].Polygon.Vertex);
-                        if (b2 != null && b2.IsInsideIII(c))
-                            at = true;
+                    //    if (Blocks.First() > 0)
+                    //        b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() - 1].Polygon.Vertex);
+                    //    if (Blocks.Last() < DamLKK._Model.Dam.GetInstance().Blocks.Count - 1)
+                    //        b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[Blocks.First() + 1].Polygon.Vertex);
+                    //    if (b2 != null && b2.IsInsideIII(c))
+                    //        at = true;
 
-//341524.0398   2936662.6486
-//342326.4075   2936734.8466
-//342332.5773   2936664.6449
-//341951.2937   2936443.1657
-//341529.9343   2936582.5707
-//341524.0398   2936662.6486
-                        //List<DamLKK.Geo.Coord> ver = new List<DamLKK.Geo.Coord>();
-                        //ver.Add(new Coord(341524.0398,2936662.6486));
-                        //ver.Add(new Coord(342326.4075,2936734.8466));
-                        //ver.Add(new Coord(342332.5773,2936664.6449));
-                        //ver.Add(new Coord(341951.2937,2936443.1657));
-                        //ver.Add(new Coord(341529.9343,2936582.5707));
-                        //ver.Add(new Coord(341524.0398, 2936662.6486));
-                        foreach (int i in Blocks)
-                        {
-                            b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex);//DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex
-                            if (b2.IsInsideIII(c))
-                            {
-                                at = true;
-                                break;
-                            }
-                        }
-                        if(!at)
-                        {
-                            Utils.MB.Warning(c.ToString() + "不再所选坝段范围之内,请检查重新输入!");
-                            return;
-                        }
+                    //    //341524.0398   2936662.6486
+                    //    //342326.4075   2936734.8466
+                    //    //342332.5773   2936664.6449
+                    //    //341951.2937   2936443.1657
+                    //    //341529.9343   2936582.5707
+                    //    //341524.0398   2936662.6486
+                    //    //List<DamLKK.Geo.Coord> ver = new List<DamLKK.Geo.Coord>();
+                    //    //ver.Add(new Coord(341524.0398,2936662.6486));
+                    //    //ver.Add(new Coord(342326.4075,2936734.8466));
+                    //    //ver.Add(new Coord(342332.5773,2936664.6449));
+                    //    //ver.Add(new Coord(341951.2937,2936443.1657));
+                    //    //ver.Add(new Coord(341529.9343,2936582.5707));
+                    //    //ver.Add(new Coord(341524.0398, 2936662.6486));
+                    //    foreach (int i in Blocks)
+                    //    {
+                    //        b2 = new DamLKK.Geo.BorderShapeII(DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex);//DamLKK._Model.Dam.GetInstance().Blocks[i].Polygon.Vertex
+                    //        if (b2.IsInsideIII(c))
+                    //        {
+                    //            at = true;
+                    //            break;
+                    //        }
+                    //    }
+                    //    if(!at)
+                    //    {
+                    //        Utils.MB.Warning(c.ToString() + "不再所选坝段范围之内,请检查重新输入!");
+                    //        return;
+                    //    }
                     }
                 }
                 catch
@@ -142,13 +142,13 @@ namespace DamLKK.Forms
 
             if (DamLKK._Model.Dam.GetInstance().NewOneUnit(Blocks,tbName.Text, coordtxt, float.Parse(tbStartZ.Text), float.Parse(tbEndZ.Text)))
             {
-                Utils.MB.OK("添加单元成功!");
+                Utils.MB.OK("添加仓面成功!");
                 Forms.ToolsWindow.GetInstance().cbWorkUnit.Items.Add(tbName.Text);
                 this.Close();
             }
             else
             {
-                Utils.MB.Warning("添加单元失败!");
+                Utils.MB.Warning("添加仓面失败!");
                 this.Close();
             }
         }

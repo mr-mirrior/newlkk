@@ -254,7 +254,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(68, 17);
             this.label9.TabIndex = 19;
-            this.label9.Text = "单元名称：";
+            this.label9.Text = "仓面名称：";
             // 
             // label10
             // 
@@ -299,7 +299,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "施工单元规划";
+            this.Text = "施工仓面规划";
             this.Load += new System.EventHandler(this.UnitInput_Load);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.UnitInput_FormClosed);
             this.ResumeLayout(false);

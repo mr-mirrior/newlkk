@@ -54,9 +54,9 @@
             this.dada.AutoSize = true;
             this.dada.Location = new System.Drawing.Point(268, 14);
             this.dada.Name = "dada";
-            this.dada.Size = new System.Drawing.Size(44, 17);
+            this.dada.Size = new System.Drawing.Size(56, 17);
             this.dada.TabIndex = 20;
-            this.dada.Text = "仓面：";
+            this.dada.Text = "碾压层：";
             // 
             // lbPastion
             // 
@@ -73,7 +73,7 @@
             this.lbPastiondsa.Name = "lbPastiondsa";
             this.lbPastiondsa.Size = new System.Drawing.Size(44, 17);
             this.lbPastiondsa.TabIndex = 18;
-            this.lbPastiondsa.Text = "高程：";
+            this.lbPastiondsa.Text = "标识：";
             // 
             // lbBlockname
             // 
@@ -90,7 +90,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 17);
             this.label1.TabIndex = 16;
-            this.label1.Text = "单元：";
+            this.label1.Text = "仓面：";
             // 
             // lstVehicle
             // 

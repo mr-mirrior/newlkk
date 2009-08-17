@@ -68,6 +68,13 @@ namespace DamLKK.Views
         bool _LockCursor = false;
         bool _IsPolySelecting = false;
         bool _IsDeckInput = false;
+
+        public bool IsDeckInput
+        {
+            get { return _IsDeckInput; }
+            set { _IsDeckInput = value; }
+        }
+
         bool _IsMenuDeckOn = false;
 
         private bool IsRectSelecting
@@ -1680,7 +1687,7 @@ namespace DamLKK.Views
             //Bitmap[] bp=DB.datamap.DataMapManager.draw(layer.VisibleDeck.DeckInfo.BlockID, layer.VisibleDeck.DeckInfo.DesignZ, layer.VisibleDeck.DeckInfo.SegmentID);
             Bitmap[] bp = DB.datamap.DataMapManager4.draw(_MyLayer.VisibleDeck.Unit.ID, _MyLayer.VisibleDeck.Elevation.Height, _MyLayer.VisibleDeck.ID);
             if (bp == null)
-                Utils.MB.Warning("此仓面或者此仓面的下层仓面没有生成数据图，请确认这两个仓面都已在关仓状态出过图形报告！");
+                Utils.MB.Warning("此仓面或者此仓面的下层仓面没有生成数据图，请确认这两个仓面都已在结束碾压监控状态出过图形报告！");
             else
             {
                 Image image = (Image)bp[0];

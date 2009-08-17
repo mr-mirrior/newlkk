@@ -12,11 +12,12 @@ namespace DamLKK.DB
         public static SqlConnection  getSqlConnection()
         {
             string dbname = /*"DAMGPS"*/DBconfig.GetInstance().Dbname;
-            dbname = "DamLKK";
+           
 
             string server = /*"172.23.225.215"*/DBconfig.GetInstance().Server;
             string username = /*"sa"*/DBconfig.GetInstance().Username;
             string password = /*"s"*/DBconfig.GetInstance().Password;
+            dbname = "lkk";
             username = "sa";
             password = "123456";
             server = "localhost";

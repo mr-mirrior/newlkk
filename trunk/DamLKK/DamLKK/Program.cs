@@ -34,7 +34,7 @@ namespace DamLKK
             DB.DBconfig.GetInstance();
             dlg.Finished = true;
             // 开始接受GPS线程
-            _Control.GPSServer.StartReceiveGPSData(/*DB.DBconfig.GetInstance().Damserver*/"125.38.52.215", 6666);
+            _Control.GPSServer.StartReceiveGPSData(/*DB.DBconfig.GetInstance().Damserver*/"192.168.1.101", 6666);
             System.Diagnostics.Debug.Print("Init finished");
             if (!System.IO.File.Exists(_Model.Config.CONFIG_FILE))
                 _Model.Config.Save();

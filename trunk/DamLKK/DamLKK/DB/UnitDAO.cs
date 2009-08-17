@@ -45,7 +45,7 @@ namespace DamLKK.DB
             try
             {
                 conn = DBConnection.getSqlConnection();
-                CmdText = "insert into unit(BlockID,UnitName,StartZ,EndZ,Vertex) Values('" + Blocks + "','" + p_Unit.Name + "','" + p_Unit.StartZ + "','" + p_Unit.EndZ + "','" + p_Unit.Vertex + "')";
+                CmdText = "insert into unit(BlockID,UnitName,StartZ,EndZ,Vertex) Values('" + Blocks + "','" + p_Unit.Name + "'," + p_Unit.StartZ + "," + p_Unit.EndZ + ",'" + p_Unit.Vertex + "')";
                 reader = DBConnection.executeQuery(conn, CmdText);
 
                 return true;

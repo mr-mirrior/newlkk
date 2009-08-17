@@ -30,6 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnUnit = new DamLKK.Utils.VistaButton();
+            this.btnInputCoord = new DamLKK.Utils.VistaButton();
+            this.vistaButton1 = new DamLKK.Utils.VistaButton();
+            this.btnZuoan = new DamLKK.Utils.VistaButton();
+            this.btnYouan = new DamLKK.Utils.VistaButton();
+            this.btnDeckPoly = new DamLKK.Utils.VistaButton();
+            this.btnFitscreen = new DamLKK.Utils.VistaButton();
+            this.btnShangyou = new DamLKK.Utils.VistaButton();
+            this.btnRestore = new DamLKK.Utils.VistaButton();
+            this.btnRollCount = new DamLKK.Utils.VistaButton();
+            this.btn7 = new DamLKK.Utils.VistaButton();
+            this.btnXiayou = new DamLKK.Utils.VistaButton();
+            this.btn3 = new DamLKK.Utils.VistaButton();
+            this.btn1 = new DamLKK.Utils.VistaButton();
+            this.btn11 = new DamLKK.Utils.VistaButton();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -46,185 +61,17 @@
             this.cbUnitTag = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.cbSyncline = new System.Windows.Forms.CheckBox();
-            this.btnUnit = new DamLKK.Utils.VistaButton();
-            this.btnInputCoord = new DamLKK.Utils.VistaButton();
-            this.vistaButton1 = new DamLKK.Utils.VistaButton();
-            this.btnZuoan = new DamLKK.Utils.VistaButton();
-            this.btnYouan = new DamLKK.Utils.VistaButton();
-            this.btnDeckPoly = new DamLKK.Utils.VistaButton();
-            this.btnFitscreen = new DamLKK.Utils.VistaButton();
-            this.btnShangyou = new DamLKK.Utils.VistaButton();
-            this.btnRestore = new DamLKK.Utils.VistaButton();
-            this.btnRollCount = new DamLKK.Utils.VistaButton();
-            this.btn7 = new DamLKK.Utils.VistaButton();
-            this.btnXiayou = new DamLKK.Utils.VistaButton();
-            this.btn3 = new DamLKK.Utils.VistaButton();
-            this.btn1 = new DamLKK.Utils.VistaButton();
-            this.btn11 = new DamLKK.Utils.VistaButton();
             this.SuspendLayout();
             // 
             // toolTip1
             // 
             this.toolTip1.ShowAlways = true;
             // 
-            // label2
-            // 
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(10, 215);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 2);
-            this.label2.TabIndex = 17;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 265);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 17);
-            this.label1.TabIndex = 24;
-            this.label1.Text = "分仓";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 114);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(32, 17);
-            this.label5.TabIndex = 26;
-            this.label5.Text = "视角";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 2);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 17);
-            this.label6.TabIndex = 27;
-            this.label6.Text = "移动";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 57);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(32, 17);
-            this.label7.TabIndex = 28;
-            this.label7.Text = "缩放";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 322);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(56, 17);
-            this.label8.TabIndex = 29;
-            this.label8.Text = "碾压情况";
-            // 
-            // label9
-            // 
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label9.Location = new System.Drawing.Point(9, 384);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(78, 2);
-            this.label9.TabIndex = 31;
-            // 
-            // label10
-            // 
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label10.Location = new System.Drawing.Point(9, 417);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(78, 2);
-            this.label10.TabIndex = 34;
-            // 
-            // cbMode
-            // 
-            this.cbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbMode.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.cbMode.FormattingEnabled = true;
-            this.cbMode.Items.AddRange(new object[] {
-            "设计模式",
-            "查询模式"});
-            this.cbMode.Location = new System.Drawing.Point(9, 467);
-            this.cbMode.Name = "cbMode";
-            this.cbMode.Size = new System.Drawing.Size(77, 25);
-            this.cbMode.TabIndex = 35;
-            this.cbMode.SelectedIndexChanged += new System.EventHandler(this.cbMode_SelectedIndexChanged);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 419);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(35, 17);
-            this.label11.TabIndex = 37;
-            this.label11.Text = "单元:";
-            // 
-            // cbWorkUnit
-            // 
-            this.cbWorkUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cbWorkUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.cbWorkUnit.FormattingEnabled = true;
-            this.cbWorkUnit.Location = new System.Drawing.Point(9, 439);
-            this.cbWorkUnit.Name = "cbWorkUnit";
-            this.cbWorkUnit.Size = new System.Drawing.Size(77, 25);
-            this.cbWorkUnit.TabIndex = 38;
-            this.cbWorkUnit.SelectedIndexChanged += new System.EventHandler(this.cbWorkUnit_SelectedIndexChanged);
-            // 
-            // btnOpen
-            // 
-            this.btnOpen.Location = new System.Drawing.Point(26, 548);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(41, 23);
-            this.btnOpen.TabIndex = 39;
-            this.btnOpen.Text = "打开";
-            this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
-            // 
-            // label12
-            // 
-            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label12.Location = new System.Drawing.Point(9, 264);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(78, 2);
-            this.label12.TabIndex = 41;
-            // 
-            // cbUnitTag
-            // 
-            this.cbUnitTag.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cbUnitTag.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.cbUnitTag.FormattingEnabled = true;
-            this.cbUnitTag.Location = new System.Drawing.Point(10, 517);
-            this.cbUnitTag.Name = "cbUnitTag";
-            this.cbUnitTag.Size = new System.Drawing.Size(77, 25);
-            this.cbUnitTag.Sorted = true;
-            this.cbUnitTag.TabIndex = 42;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 495);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(35, 17);
-            this.label13.TabIndex = 43;
-            this.label13.Text = "标识:";
-            // 
-            // cbSyncline
-            // 
-            this.cbSyncline.AutoSize = true;
-            this.cbSyncline.ForeColor = System.Drawing.Color.Black;
-            this.cbSyncline.Location = new System.Drawing.Point(38, 494);
-            this.cbSyncline.Name = "cbSyncline";
-            this.cbSyncline.Size = new System.Drawing.Size(51, 21);
-            this.cbSyncline.TabIndex = 44;
-            this.cbSyncline.Text = "斜层";
-            this.cbSyncline.UseVisualStyleBackColor = true;
-            this.cbSyncline.CheckedChanged += new System.EventHandler(this.cbSyncline_CheckedChanged);
-            // 
             // btnUnit
             // 
             this.btnUnit.BackColor = System.Drawing.Color.White;
             this.btnUnit.ButtonColor = System.Drawing.Color.MidnightBlue;
-            this.btnUnit.ButtonText = "规划单元";
+            this.btnUnit.ButtonText = "规划仓面";
             this.btnUnit.CornerRadius = 4;
             this.btnUnit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnUnit.GlowColor = System.Drawing.Color.Lavender;
@@ -476,6 +323,159 @@
             this.btn11.TabIndex = 10;
             this.toolTip1.SetToolTip(this.btn11, "左键放大/右键缩小");
             this.btn11.Click += new System.EventHandler(this.btn11_Click);
+            // 
+            // label2
+            // 
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label2.Location = new System.Drawing.Point(10, 215);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 2);
+            this.label2.TabIndex = 17;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 265);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 17);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "规划碾压层";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(11, 114);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(32, 17);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "视角";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(11, 2);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(32, 17);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "移动";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(11, 57);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(32, 17);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "缩放";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 322);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 17);
+            this.label8.TabIndex = 29;
+            this.label8.Text = "碾压情况";
+            // 
+            // label9
+            // 
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label9.Location = new System.Drawing.Point(9, 384);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(78, 2);
+            this.label9.TabIndex = 31;
+            // 
+            // label10
+            // 
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label10.Location = new System.Drawing.Point(9, 417);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(78, 2);
+            this.label10.TabIndex = 34;
+            // 
+            // cbMode
+            // 
+            this.cbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMode.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cbMode.FormattingEnabled = true;
+            this.cbMode.Items.AddRange(new object[] {
+            "设计模式",
+            "查询模式"});
+            this.cbMode.Location = new System.Drawing.Point(9, 467);
+            this.cbMode.Name = "cbMode";
+            this.cbMode.Size = new System.Drawing.Size(77, 25);
+            this.cbMode.TabIndex = 35;
+            this.cbMode.SelectedIndexChanged += new System.EventHandler(this.cbMode_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 419);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(35, 17);
+            this.label11.TabIndex = 37;
+            this.label11.Text = "仓面:";
+            // 
+            // cbWorkUnit
+            // 
+            this.cbWorkUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cbWorkUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cbWorkUnit.FormattingEnabled = true;
+            this.cbWorkUnit.Location = new System.Drawing.Point(9, 439);
+            this.cbWorkUnit.Name = "cbWorkUnit";
+            this.cbWorkUnit.Size = new System.Drawing.Size(77, 25);
+            this.cbWorkUnit.TabIndex = 38;
+            this.cbWorkUnit.SelectedIndexChanged += new System.EventHandler(this.cbWorkUnit_SelectedIndexChanged);
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.Location = new System.Drawing.Point(26, 548);
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Size = new System.Drawing.Size(41, 23);
+            this.btnOpen.TabIndex = 39;
+            this.btnOpen.Text = "打开";
+            this.btnOpen.UseVisualStyleBackColor = true;
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // label12
+            // 
+            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label12.Location = new System.Drawing.Point(9, 264);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(78, 2);
+            this.label12.TabIndex = 41;
+            // 
+            // cbUnitTag
+            // 
+            this.cbUnitTag.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cbUnitTag.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cbUnitTag.FormattingEnabled = true;
+            this.cbUnitTag.Location = new System.Drawing.Point(10, 517);
+            this.cbUnitTag.Name = "cbUnitTag";
+            this.cbUnitTag.Size = new System.Drawing.Size(77, 25);
+            this.cbUnitTag.Sorted = true;
+            this.cbUnitTag.TabIndex = 42;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 495);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(35, 17);
+            this.label13.TabIndex = 43;
+            this.label13.Text = "标识:";
+            // 
+            // cbSyncline
+            // 
+            this.cbSyncline.AutoSize = true;
+            this.cbSyncline.ForeColor = System.Drawing.Color.Black;
+            this.cbSyncline.Location = new System.Drawing.Point(38, 494);
+            this.cbSyncline.Name = "cbSyncline";
+            this.cbSyncline.Size = new System.Drawing.Size(51, 21);
+            this.cbSyncline.TabIndex = 44;
+            this.cbSyncline.Text = "斜层";
+            this.cbSyncline.UseVisualStyleBackColor = true;
+            this.cbSyncline.CheckedChanged += new System.EventHandler(this.cbSyncline_CheckedChanged);
             // 
             // ToolsWindow
             // 

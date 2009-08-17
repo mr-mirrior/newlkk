@@ -57,6 +57,8 @@ namespace DamLKK.Utils
             string[] xy;
             foreach (string s in coords)
             {
+                if (s == string.Empty)
+                    continue;
                 xy = s.Split(',');
                 cds.Add(new Geo.Coord(Convert.ToDouble(xy[0]),Convert.ToDouble(xy[1])));
             }

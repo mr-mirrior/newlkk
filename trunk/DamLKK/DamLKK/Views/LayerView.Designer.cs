@@ -74,42 +74,42 @@
             this.tmiNotRolling});
             仓面操作ToolStripMenuItem.Name = "仓面操作ToolStripMenuItem";
             仓面操作ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            仓面操作ToolStripMenuItem.Text = "仓面操作(&O)";
+            仓面操作ToolStripMenuItem.Text = "碾压层操作(&O)";
             // 
             // miStartDeck
             // 
             this.miStartDeck.Name = "miStartDeck";
             this.miStartDeck.ShortcutKeyDisplayString = "Ctrl+Alt+Shift+D";
-            this.miStartDeck.Size = new System.Drawing.Size(213, 22);
-            this.miStartDeck.Text = "开仓(&O)";
+            this.miStartDeck.Size = new System.Drawing.Size(261, 22);
+            this.miStartDeck.Text = "开启碾压监控(&O)";
             this.miStartDeck.Click += new System.EventHandler(this.miStartDeck_Click);
             // 
             // miEndDeck
             // 
             this.miEndDeck.Name = "miEndDeck";
             this.miEndDeck.ShortcutKeyDisplayString = "Ctrl+Alt+Shift+D";
-            this.miEndDeck.Size = new System.Drawing.Size(213, 22);
-            this.miEndDeck.Text = "关仓(&S)";
+            this.miEndDeck.Size = new System.Drawing.Size(261, 22);
+            this.miEndDeck.Text = "结束碾压监控(&S)";
             this.miEndDeck.Click += new System.EventHandler(this.miEndDeck_Click);
             // 
             // miDelete
             // 
             this.miDelete.Name = "miDelete";
-            this.miDelete.Size = new System.Drawing.Size(213, 22);
-            this.miDelete.Text = "删除仓面(&D)";
+            this.miDelete.Size = new System.Drawing.Size(261, 22);
+            this.miDelete.Text = "删除碾压层(&D)";
             this.miDelete.Click += new System.EventHandler(this.miDelete_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(210, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(258, 6);
             this.toolStripMenuItem4.Visible = false;
             // 
             // tmiNotRolling
             // 
             this.tmiNotRolling.Name = "tmiNotRolling";
             this.tmiNotRolling.ShortcutKeyDisplayString = "Ctrl+F10";
-            this.tmiNotRolling.Size = new System.Drawing.Size(213, 22);
+            this.tmiNotRolling.Size = new System.Drawing.Size(261, 22);
             this.tmiNotRolling.Text = "排除碾压区域(&E)";
             this.tmiNotRolling.Visible = false;
             // 
@@ -266,14 +266,14 @@
             this.miActive.Name = "miActive";
             this.miActive.ShortcutKeyDisplayString = "";
             this.miActive.Size = new System.Drawing.Size(178, 22);
-            this.miActive.Text = "设为可见仓面(&D)";
+            this.miActive.Text = "设为可见(&D)";
             this.miActive.Click += new System.EventHandler(this.miActive_Click);
             // 
             // btnChange
             // 
             this.btnChange.Name = "btnChange";
             this.btnChange.Size = new System.Drawing.Size(178, 22);
-            this.btnChange.Text = "修改仓面范围(&F)";
+            this.btnChange.Text = "修改碾压层边界(&F)";
             this.btnChange.Click += new System.EventHandler(this.btnChange_Click);
             // 
             // toolStripSeparator4

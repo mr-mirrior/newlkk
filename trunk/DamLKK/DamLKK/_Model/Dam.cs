@@ -113,21 +113,27 @@ namespace DamLKK._Model
                    Color.Thistle
             };
 
-
-            //读取鸟瞰的所有点信息
-            for (int i = 1; i < 31; i++)
+            try
             {
-                _MiniData.Add(Utils.FileHelper.ReadLayer(Config._MiniData + i.ToString() + "号坝段.txt", true,true));
-            }
+                //读取鸟瞰的所有点信息
+                for (int i = 1; i < 31; i++)
+                {
+                    _MiniData.Add(Utils.FileHelper.ReadLayer(Config._MiniData + i.ToString() + "号坝段.txt", true, true));
+                }
             #endregion
 
-            _Blocks =DB.BlockDAO.GetInstance().GetBlocks();
-            foreach (Block b in Blocks)
-            {
-                b.Polygon = new Polygon(Utils.FileHelper.ReadLayer(Config.BLOCK_VERTEX + "\\" + b.BlockID.ToString()+"号坝段" + "\\" + b.BlockID.ToString() + "号坝段.txt", false,true));
+                _Blocks = DB.BlockDAO.GetInstance().GetBlocks();
+                foreach (Block b in Blocks)
+                {
+                    b.Polygon = new Polygon(Utils.FileHelper.ReadLayer(Config.BLOCK_VERTEX + "\\" + b.BlockID.ToString() + "号坝段" + "\\" + b.BlockID.ToString() + "号坝段.txt", false, true));
+                }
+                _Elevations = new List<Elevation>();
             }
-            _Elevations = new List<Elevation>();
-            
+            catch
+            {
+                System.Windows.Forms.MessageBox.Show("在安装目录下未找到大坝边界点文件,请放置到安装目录下重新运行！");
+                System.Windows.Forms.Application.Exit();
+            }
         }
 
 

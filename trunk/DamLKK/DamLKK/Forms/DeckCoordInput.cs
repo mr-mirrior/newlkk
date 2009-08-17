@@ -51,19 +51,19 @@ namespace DamLKK.Forms
                     return;
                 }
                 DamLKK.Geo.Coord cd = new DamLKK.Geo.Coord(Convert.ToDouble(cdxy[0]),Convert.ToDouble(cdxy[1]));
-                if (cd.XF>700||cd.YF>500||cd.YF<-500)
-                {
-                    Utils.MB.Warning("输入坐标超越坝轴坐标界限，请检查后重新输入！");
-                }
+                //if (cd.XF>700||cd.YF>500||cd.YF<-500)
+                //{
+                //    Utils.MB.Warning("输入坐标超越坝轴坐标界限，请检查后重新输入！");
+                //}
                 deckcoords.Add(cd.ToEarthCoord());
             }
             deckcoords.Add(deckcoords.First());
 
-            //Forms.ToolsWindow.GetInstance().CurrentLayer.deckSelectPolygon = deckcoords;
-            //Forms.ToolsWindow.GetInstance().CurrentLayer.isDeckInput = true;
-            //Forms.ToolsWindow.GetInstance().CurrentLayer.MyLayer.isDeckInput = true;
-            //this.Close();
-            //Forms.ToolsWindow.GetInstance().CurrentLayer.IsPolySelecting=false;
+            Forms.ToolsWindow.GetInstance().CurrentLayer._DeckSelectPolygon = deckcoords;
+            Forms.ToolsWindow.GetInstance().CurrentLayer.IsDeckInput = true;
+            Forms.ToolsWindow.GetInstance().CurrentLayer.MyLayer.IsDeckInput = true;
+            this.Close();
+            Forms.ToolsWindow.GetInstance().CurrentLayer.IsPolySelecting = false;
         }
 
         private void DeckCoordInput_Load(object sender, EventArgs e)
@@ -73,15 +73,15 @@ namespace DamLKK.Forms
 
         private void tbCoords_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!(Char.IsNumber(e.KeyChar) ||
-                e.KeyChar == '\b' ||
-                e.KeyChar == Convert.ToChar(".") ||
-                e.KeyChar == Convert.ToChar(",") ||
-                e.KeyChar == Convert.ToChar(";")||
-                e.KeyChar == Convert.ToChar("-")))
-            {
-                e.Handled = true;
-            }
+            //if (!(Char.IsNumber(e.KeyChar) ||
+            //    e.KeyChar == '\b' ||
+            //    e.KeyChar == Convert.ToChar(".") ||
+            //    e.KeyChar == Convert.ToChar(",") ||
+            //    e.KeyChar == Convert.ToChar(";")||
+            //    e.KeyChar == Convert.ToChar("-")))
+            //{
+            //    e.Handled = true;
+            //}
         }
     }
 }
