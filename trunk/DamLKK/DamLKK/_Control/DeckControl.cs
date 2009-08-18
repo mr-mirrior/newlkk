@@ -69,7 +69,8 @@ namespace DamLKK._Control
                 if (dk.IsEqual(_Tobesetvisible))
                 {
                     dk.IsVisible = true;
-                    //LoadDBVehicle(dk);
+                    dk.VehicleControl.Owner = dk;
+                    LoadDBVehicle(dk);
                 }
                 else
                 {
@@ -82,6 +83,30 @@ namespace DamLKK._Control
             _Tobesetvisible = null;
 
         }
+
+        private List<Deck> Translate(List<Deck> lst)
+        {
+            List<Deck> dks = new List<Deck>();
+            foreach (Deck seg in lst)
+            {
+                Deck dk = new Deck(seg);
+                dk.MyLayer = this.Owner;
+                
+                dks.Add(dk);
+            }
+            return dks;
+        }
+
+        public void LoadDBVehicle(Deck dk)
+        {
+           
+            if (dk.IsVisible)
+            {
+                dk.Unit = dk.Unit;
+                dk.VehicleControl.LoadDB();
+            }
+        }
+
 
         /// <summary>
         /// 碾压结束报告
@@ -337,6 +362,7 @@ namespace DamLKK._Control
                 return;
 
             _Decks = DB.DeckDAO.GetInstance().GetDecks(_Layer.MyUnit.ID, _Layer.MyElevation.Height);
+           
 
             if (_Decks == null)
             {
@@ -363,7 +389,7 @@ namespace DamLKK._Control
                         lst.Add(new Geo.Coord(double.Parse(d[0]), double.Parse(d[1])));
                     }
                 }
-
+                
                 vertex.SetVertex(lst);
                 deck.Polygon = vertex;
             }

@@ -1091,7 +1091,7 @@ namespace DamLKK._Model
                 else
                     libratedstring = "（" + Forms.Warning.GetLibratedString((int)OwnerRoller.LibratedState) + "）";
 
-                string strInfo = string.Format("{0}", OwnerRoller.Name + libratedstring, lastpt.Plane.ToString());
+                string strInfo = string.Format("{0}", VehicleControl.FindVechicle(OwnerRoller.Assignment.RollerID).Name + libratedstring, lastpt.Plane.ToString());
                 string strVelocity = string.Format("{0:0.00} km/h", lastpt.V);
 
                 FontStyle fs = FontStyle.Regular;

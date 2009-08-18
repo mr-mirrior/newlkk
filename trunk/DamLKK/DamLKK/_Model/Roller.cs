@@ -151,7 +151,7 @@ namespace DamLKK._Model
         {
             TrackGPSControl.Owner = this;
             this.ScrollWidth = 2.17;
-            _Timer.Interval = 1000 * 60 * 3;
+            _Timer.Interval = Config.I.LIBRATE_Secends * 60 * 1000;
             _Timer.Elapsed += new System.Timers.ElapsedEventHandler(_Timer_Elapsed);
         }
 
@@ -228,7 +228,7 @@ namespace DamLKK._Model
                     return;
                 if (e.msg != _Control.GPSMessage.GPSDATA)
                     return;
-                if (e.gps.CarID != this.ID)
+                if (e.gps.CarID != this.Assignment.RollerID)
                     return;
                 if (!_RollDis.IsWorking())
                     return;
@@ -255,7 +255,8 @@ namespace DamLKK._Model
                     //2.边数和击震力状态是否符合要求
                     if (Owner.IsInThisDeck(e.gps.GPSCoord.Plane))
                     {
-                        Count=Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
+                        
+                        Count = Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
                         
                         if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0)
                         {
@@ -311,12 +312,13 @@ namespace DamLKK._Model
             WarningControl.SendMessage(WarningType.LIBRATED, Owner.Unit.ID, warning);
 
            
+            warndlg.WarningType = WarningType.LIBRATED;
             warndlg.UnitName = this.Owner.Unit.Name;
             warndlg.DeckName = this.Owner.Name;
             warndlg.DesignZ = this.Owner.Elevation.Height;
             warndlg.WarningDate = DB.DateUtil.GetDate().Date.ToString("D");
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
-            warndlg.WarningType = WarningType.LIBRATED;
+            warndlg.CarName = this.Name;
             warndlg.FillForms();
             Forms.Main.GetInstance.ShowWarningDlg(warndlg);
         }

@@ -333,7 +333,7 @@ namespace DamLKK.Forms
                 sf5.LineAlignment = StringAlignment.Near;
                 using (Font ft1 = new Font(Font.FontFamily, 32, FontStyle.Bold))
                 {
-                    string str = "龙   开   口   水   电   站" + "\n 大   坝   填   筑   质   量   GPS   监   控   系   统";
+                    string str = "龙   开   口   水   电   站" + "\n 大   坝   碾   压   质   量   GPS   监   控   系   统";
                     g.DrawString(str, ft1, Brushes.Black, this.ClientRectangle, sf5);
                 }
             }

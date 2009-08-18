@@ -201,7 +201,11 @@ namespace DamLKK._Control
                 Color.Goldenrod,
                 Color.Indigo,
                 Color.SteelBlue,
-                Color.LimeGreen
+                Color.LimeGreen,
+                Color.Turquoise,
+                Color.RoyalBlue,
+                Color.LawnGreen,
+                Color.PowderBlue
 
             };
 
@@ -215,7 +219,7 @@ namespace DamLKK._Control
                 {
                     if (VehicleControl.vehiclesInfo[i].ID == cd.RollerID)
                     {
-                        color = i % 16;
+                        color = i % 20;
                         break;
                     }
                 }

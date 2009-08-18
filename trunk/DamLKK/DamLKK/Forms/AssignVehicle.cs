@@ -444,6 +444,8 @@ namespace DamLKK.Forms
 
             foreach (Roller ci in allInUsedCars)
             {
+                if (ci == null)
+                    continue;
                 int j = 0;
                 for (int k = 0; k < inUsedAtThisDeck.Count; k++)
                 {

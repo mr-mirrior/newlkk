@@ -87,9 +87,24 @@ namespace DamLKK.Geo
         /// <summary>
         /// 将坐标的x,y都致负
         /// </summary>
+        public Coord Negative(bool x,bool y)
+        {
+            if (x == true && y == false)
+                return new Coord(-_x, _y);
+            else if (y == true && x == false)
+                return new Coord(_x, -_y);
+            else if (x == false && y == false)
+                return new Coord(_x, _y);
+            else
+                return new Coord(-_x, -_y);
+        }
+
+        /// <summary>
+        /// 将坐标的x,y都致负
+        /// </summary>
         public Coord Negative()
         {
-            return new Coord(-_x, -_y);
+                return new Coord(-_x, -_y);
         }
 
         /// <summary>

@@ -288,7 +288,9 @@ namespace DamLKK.Forms
         }
 #endregion
 
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
         {
             Program.Exiting = true;
         }

@@ -34,7 +34,7 @@ namespace DamLKK._Control
         public Geo.XYZ XYZ { get { return Geo.Coord84To54.Convert(BLH); } }
         // XYZ 中，X和Y互换 dont know why
         public Geo.GPSCoord GPSCoord { get { Geo.XYZ xyz = this.XYZ; 
-            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(xyz.y, -xyz.x, xyz.z, Speed,0,this.Time,LibratedStatus);
+            Geo.GPSCoord c = new DamLKK.Geo.GPSCoord(xyz.y, xyz.x, xyz.z, Speed,0,this.Time,LibratedStatus);
             //c.When = this.Time;
             return c;
         }
@@ -546,8 +546,8 @@ namespace DamLKK._Control
         }
         public static void Stop()
         {
-            //lock(lockRead)
-            //{
+            lock(lockRead)
+            {
                 if (!IsConnected)
                     return;
                 tmHeartbeat.Stop();
@@ -555,7 +555,7 @@ namespace DamLKK._Control
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
                 TRACE("GPSReceiver stopped.");
-            //}
+            }
         }
         public static void test()
         {
