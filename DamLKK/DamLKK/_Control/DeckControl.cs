@@ -284,16 +284,16 @@ namespace DamLKK._Control
 
             if (re && dkFound == null)
             {
-                Utils.MB.OKI("添加仓面成功，已保存至数据库");
+                Utils.MB.OKI("添加碾压层成功，已保存至数据库");
             }
             else if (!re&& dkFound!=null)
             {
-                Utils.MB.Warning("修改仓面信息失败！");
+                Utils.MB.Warning("修改碾压层信息失败！");
                 return false;
             }
             else
             {
-                Utils.MB.OKI("修改仓面信息成功");
+                Utils.MB.OKI("修改碾压层信息成功");
             }
 
             LoadDB(deck);
@@ -310,16 +310,16 @@ namespace DamLKK._Control
         {
             if (deck.WorkState== DeckWorkState.WORK|| deck.WorkState == DeckWorkState.END)
             {
-                Utils.MB.Warning("该仓面处于开启碾压监控状态或者已经工作完成，无法删除。");
+                Utils.MB.Warning("该碾压层处于开启碾压监控状态或者已经工作完成，无法删除。");
                 return;
             }
 
-            if (!Utils.MB.OKCancelQ("确定删除该仓面吗？\n\n" + deck.Name))
+            if (!Utils.MB.OKCancelQ("确定删除该碾压层吗？\n\n" + deck.Name))
                 return;
             if (SubmitDB(2,deck))
             {
                 Forms.ToolsWindow.GetInstance().UpdateMode();
-                Utils.MB.OKI("仓面已从数据库删除");
+                Utils.MB.OKI("该碾压层已从数据库删除");
             }
 
             deck.VehicleControl.DeleteAll();
@@ -441,15 +441,15 @@ namespace DamLKK._Control
         {
             if (null == FindDeck(dk))
             {
-                Utils.MB.Warning("该仓面不存在");
+                Utils.MB.Warning("该碾压层不存在");
                 return false;
             }
             if (!dk.IsVisible)
             {
-                Utils.MB.Warning("该仓面现在不是可见仓面，无法开启碾压监控。请设置为可见仓面再试一次。");
+                Utils.MB.Warning("该碾压层现在不是可见碾压层，无法开启碾压监控。请设置为可见再试一次。");
                 return false;
             }
-            if (!Utils.MB.OKCancelQ("您确认要开启碾压监控吗？\n仓面信息：" + dk.Name))
+            if (!Utils.MB.OKCancelQ("您确认要开启碾压监控吗？\n碾压层信息：" + dk.Name))
                 return false;
 
             //             ThicknessMonitor(dk);
@@ -460,7 +460,7 @@ namespace DamLKK._Control
 
             if (dk.WorkState== DeckWorkState.WORK)
             {
-                Utils.MB.Warning("该仓面已经在工作中，请结束碾压监控后再试一次");
+                Utils.MB.Warning("该碾压层已经在工作中，请结束碾压监控后再试一次");
                 return false;
             }
             // 2) 检查车辆安排情况
@@ -515,6 +515,7 @@ namespace DamLKK._Control
             LoadDB(dk);
             UpdateGraphics();
             GPSServer.OpenDeck();
+     
             Utils.MB.OKI("\"" + dk.Name + "\"" + "已经开启碾压监控！");
 
             return true;
@@ -525,15 +526,15 @@ namespace DamLKK._Control
         {
             if (null == FindDeck(dk))
             {
-                Utils.MB.Warning("该仓面不存在");
+                Utils.MB.Warning("该碾压层不存在");
                 return false;
             }
             if (!dk.IsVisible)
             {
-                Utils.MB.Warning("该仓面现在不是可见仓面，无法结束碾压监控。请设置为可见仓面再试一次。");
+                Utils.MB.Warning("该碾压层现在不是可见，无法结束碾压监控。请设置为可见再试一次。");
                 return false;
             }
-            if (!Utils.MB.OKCancelQ("您确认要结束碾压监控吗？\n仓面信息：" + dk.Name))
+            if (!Utils.MB.OKCancelQ("您确认要结束碾压监控吗？\n碾压层信息：" + dk.Name))
                 return false;
 
             // 0) 检查操作权限

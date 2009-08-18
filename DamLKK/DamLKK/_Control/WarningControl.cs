@@ -112,7 +112,7 @@ namespace DamLKK._Control
             }
             else if (type == WarningType.LIBRATED)
             {
-                workErrorString.Type = 0x05;
+                workErrorString.Type = 0x4;
             }
             workErrorString.BlockID = (byte)unitid;
 

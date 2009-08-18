@@ -427,7 +427,9 @@ namespace DamLKK._Control
                     dlg.WarningDate = dt.Date.ToString("D");
                     dlg.WarningTime = dt.ToString("T");
                     dlg.LibrateState = (int)warningLibrated->SenseOrgan;
+
                     dlg.CarName = VehicleControl.FindVechicle(warningLibrated->CarID).Name;
+
                     dlg.FillForms();
                     Forms.Main.GetInstance.ShowWarningDlg(dlg);
                 }

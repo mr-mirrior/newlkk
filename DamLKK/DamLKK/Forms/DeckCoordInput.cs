@@ -83,5 +83,10 @@ namespace DamLKK.Forms
             //    e.Handled = true;
             //}
         }
+
+        private void DeckCoordInput_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _FrmCoordInput = null;
+        }
     }
 }

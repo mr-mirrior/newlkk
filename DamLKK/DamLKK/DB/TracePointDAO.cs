@@ -23,7 +23,7 @@ namespace DamLKK.DB
             return _MyInstance;
         }
 
-        private string statusLimit = " and status not in ("+_Model.Config.I.BASE_STATUS+") order by dttrace";
+        private string statusLimit = " and status not in ("+_Model.Config.I.BASE_STATUS+")  order by dttrace";
         //private const String statusLimit = " and status not in (0)";
         //private const String statusLimit = " and status not in (0,1)";
         /// <summary>

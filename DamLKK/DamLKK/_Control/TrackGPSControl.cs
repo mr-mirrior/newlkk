@@ -87,7 +87,7 @@ namespace DamLKK._Control
             {
                 blh = new Geo.BLH(pt.Plane.Y, pt.Plane.X, pt.Z);
                 xyz = Geo.Coord84To54.Convert(blh);
-                Geo.GPSCoord c3d = new Geo.GPSCoord(xyz.y, xyz.x, xyz.z, (double)pt.V / 100, 0);
+                Geo.GPSCoord c3d = new Geo.GPSCoord(xyz.y, xyz.x, xyz.z, (double)pt.V / 100, pt.Tag,pt.When,pt.LibratedStatus);
                 //Geo.Coord3D c3d = new DM.Geo.Coord3D(xyz.y, -xyz.x, xyz.z, (double)pt.V / 100, 0);
                 c3d.When = pt.When;
                 c3d.Z -= _OwnerRoller.GPSHeight;

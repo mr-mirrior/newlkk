@@ -494,7 +494,7 @@ namespace DamLKK._Model
             for (int k = 0; k < VehicleControl.Rollers.Count; k++)
             {
                 Roller v = VehicleControl.Rollers[k];
-                if (v.Name == null)
+                if (_Control.VehicleControl.FindVechicle(v.Assignment.RollerID).Name == null)
                     continue;
                 TrackGPS gps = v.TrackGPSControl.Tracking;
                 Color oldcl = gps.Color;
@@ -618,7 +618,7 @@ namespace DamLKK._Model
 #if !DEBUG
             if (WorkState== DeckWorkState.WAIT)//this.IsWorking||或结束结束碾压监控后
             {
-                Utils.MB.Warning("该仓面没有开仓，无法生成图形报告。请再试一次。");
+                Utils.MB.Warning("该碾压层没有开启监控，无法生成图形报告。请再试一次。");
                 return false;
             }
 #endif
@@ -949,7 +949,7 @@ namespace DamLKK._Model
             thisPf = new RectangleF(0, topBlank * 0.7f + s.Height, bitMp.Width * 0.98f, topBlank);
             endG.DrawString(dateEndString, ftWord, Brushes.Black, thisPf, thisSf);
             //输出分区，高程，名称，时间
-            string allString = this.MyLayer.MyUnit.Name + "单元   " + this.Elevation.Height.ToString() + "    " + this.Name + "仓面" + this.Polygon.ActualArea.ToString("（0.00 米²）");
+            string allString = this.MyLayer.MyUnit.Name + "仓面   " + this.Elevation.Height.ToString() + "    " + this.Name + "碾压层" + this.Polygon.ActualArea.ToString("（0.00 米²）");
             fa = 20f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1199,14 +1199,14 @@ namespace DamLKK._Model
             {
                 return;
             }
-            vehicleName.Add(vCtrl.Rollers[0].Name);
+            vehicleName.Add(_Control.VehicleControl.FindVechicle(vCtrl.Rollers[0].Assignment.RollerID).Name);
             vehicleColor.Add(vCtrl.Rollers[0].TrackGPSControl.Tracking.Color);
             foreach (Roller v in vCtrl.Rollers)
             {
                 has = false;
                 for (int i = 0; i < vehicleName.Count; i++)
                 {
-                    if (v.Name.Equals(vehicleName[i]))
+                    if (_Control.VehicleControl.FindVechicle(v.Assignment.RollerID).Name.Equals(vehicleName[i]))
                     {
                         has = true;
                         break;
@@ -1214,7 +1214,7 @@ namespace DamLKK._Model
                 }
                 if (!has)
                 {
-                    vehicleName.Add(v.Name);
+                    vehicleName.Add(_Control.VehicleControl.FindVechicle(v.Assignment.RollerID).Name);
                     vehicleColor.Add(v.TrackGPSControl.Tracking.Color);
                 }
             }
@@ -1318,7 +1318,7 @@ namespace DamLKK._Model
             //输出分区，高程，名称，时间
 
 
-            string allString = this.MyLayer.MyUnit.Name + "仓面   " + this._Elevation.Height.ToString() + "     " + this._Name + "仓面" + pl.ActualArea.ToString("（0.00 米²）");
+            string allString = this.MyLayer.MyUnit.Name + "仓面   " + this._Elevation.Height.ToString() + "     " + this._Name + "碾压层" + pl.ActualArea.ToString("（0.00 米²）");
             fa = 50f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1460,7 +1460,7 @@ namespace DamLKK._Model
             {
                 Geo.Coord c = c3d.Plane.ToDamAxisCoord();
                 string position = string.Format("{{{0:0.00},{1:0.00}}}", c.X, c.Y);
-                string warning = string.Format("碾压超厚告警！仓面 {0}，高程 {1}米，仓面 {2}，超厚 {3:0.00}米，桩号 {4}",
+                string warning = string.Format("碾压超厚告警！仓面 {0}，高程 {1}米，碾压层 {2}，超厚 {3:0.00}米，桩号 {4}",
                     this.Unit.Name,
                     this.Elevation.Height,
                     this.Name,

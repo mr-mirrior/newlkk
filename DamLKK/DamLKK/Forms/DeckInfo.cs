@@ -164,7 +164,7 @@ namespace DamLKK.Forms
         {
             if (tbDeckName.Text.Equals(""))
             {
-                MessageBox.Show("仓面名称不能为空！");
+                MessageBox.Show("碾压层名称不能为空！");
             }
             else if (Convert.ToInt32(tbNLibCounts.Text) == 0 || Convert.ToInt32(tbLibCounts.Text) == 0 || tbNLibCounts.Text == string.Empty || tbLibCounts.Text == string.Empty || tbNLibCounts.Text.Equals("") || Convert.ToInt32(tbNLibCounts.Text) == 0 || Convert.ToSingle(txErrorParam.Text) == 0 || txErrorParam.Text.Equals("") || Convert.ToSingle(tbMaxSpeed.Text) == 0 || tbMaxSpeed.Text.Equals("") || txDesignDepth.Text.Equals("") || Convert.ToSingle(txDesignDepth.Text) == 0)
             {
@@ -172,7 +172,7 @@ namespace DamLKK.Forms
             }
             else
             {
-                DialogResult dr = MessageBox.Show("您确定保存仓面信息？", "确认输入", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                DialogResult dr = MessageBox.Show("您确定保存碾压层信息？", "确认输入", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (dr == DialogResult.OK)
                 {
                     if (cbSpeedUnit.SelectedIndex == 0)

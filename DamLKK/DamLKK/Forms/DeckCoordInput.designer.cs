@@ -113,6 +113,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "仓面坐标输入";
             this.Load += new System.EventHandler(this.DeckCoordInput_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DeckCoordInput_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
