@@ -132,6 +132,41 @@ namespace DamLKK.DB
             }
         }
 
+        /// <获得指定单元>
+        /// 获得指定单元
+        /// </获得指定单元>
+        public _Model.Unit GetOneUnit(int id)
+        {
+            SqlConnection conn = null;
+            SqlDataReader reader = null;
+            try
+            {
+                conn = DBConnection.getSqlConnection();
+                reader = DBConnection.executeQuery(conn, "select * from unit where id='" + id + "'order by ID desc");
+                _Model.Unit unit = new _Model.Unit();
+                while (reader.Read())
+                {
+                    unit.ID = (int)reader["ID"];
+                    unit.Name = reader["UnitName"].ToString();
+                    unit.StartZ = Convert.ToSingle(reader["StartZ"]);
+                    unit.EndZ = Convert.ToSingle(reader["EndZ"]);
+                    if (reader["Vertex"] != DBNull.Value)
+                        unit.Vertex = reader["Vertex"].ToString();
+                    unit.Blocks = GetBlockIDs(reader["BlockID"].ToString());
+                }
+                return unit;
+            }
+            catch (System.Exception e)
+            {
+                Utils.DebugUtil.log(e);
+                return null;
+            }
+            finally
+            {
+                DBConnection.closeDataReader(reader);
+                DBConnection.closeSqlConnection(conn);
+            }
+        }
         /// <获取所有单元>
         /// 获取所有单元
         /// </获取所有单元>

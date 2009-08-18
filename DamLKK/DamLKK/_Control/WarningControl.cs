@@ -114,7 +114,7 @@ namespace DamLKK._Control
             {
                 workErrorString.Type = 0x4;
             }
-            workErrorString.BlockID = (byte)unitid;
+            workErrorString.BlockID = (byte)1;//unitid;
 
             //发送错误信息
 
@@ -126,14 +126,14 @@ namespace DamLKK._Control
 
             clientString[i++] = Convert.ToByte(workErrorString.Len);
             clientString[i++] = Convert.ToByte(workErrorString.Type);
-            clientString[i++] = Convert.ToByte(workErrorString.BlockID);
+            clientString[i++] =Convert.ToByte(workErrorString.BlockID);
 
             foreach (byte b in warningString2byte)
             {
                 clientString[i] = b;
                 i++;
             }
-            //GPSServer.SendString(workErrorString, Marshal.SizeOf(workErrorString), warningString2byte);
+            GPSServer.SendString(workErrorString, Marshal.SizeOf(workErrorString), warningString2byte);
         }
         private static byte[] ToBytes(WorkErrorString workErrorString)
         {
@@ -153,8 +153,8 @@ namespace DamLKK._Control
         }
         public static void Init()
         {
-            //GPSServer.OnResponseData -= OnWarning;
-            //GPSServer.OnResponseData += OnWarning;
+            GPSServer.OnResponseData -= OnWarning;
+            GPSServer.OnResponseData += OnWarning;
         }
 
         public static WarningOverThickness ParseOverThickness(string msg)
@@ -188,19 +188,19 @@ namespace DamLKK._Control
 
             //if (f.msg == GPSMessage.WARNINGSPEED)
             //{
-            //    RollerDis cd = VehicleControl.FindVehicleInUse(f.speed.CarID);
+            //    DamLKK._Model.RollerDis cd = VehicleControl.FindVehicleInUse(f.speed.CarID);
             //    if (cd == null) return;
-            //    Roller ci = VehicleControl.FindVechicle(cd.Carid);
+            //    DamLKK._Model.Roller ci = VehicleControl.FindVechicle(cd.RollerID);
             //    if (cd == null || ci == null)
             //        return;
-            //    Models.Unit part = UnitControl.FromID(cd.Blockid);
+            //    _Model.Unit part = UnitControl.FromID(cd.Blockid);
             //    if (part == null) return;
-            //    Models.Elevation elev = new DM.Models.Elevation(cd.DesignZ);
-            //    Models.Layer layer = LayerControl.Instance.FindLayerByPE(part, elev);
+            //    _Model.Elevation elev = new _Model.Elevation(cd.DesignZ);
+            //    _Model.Layer layer = LayerControl.Instance.FindLayerByPE(cd.UnitID, elev);
             //    if (layer == null) return;
-            //    Models.Deck deck = layer.DeckControl.FindDeckByIndex(cd.Segmentid);
+            //    _Model.Deck deck = layer.DeckControl.FindDeckByIndex(cd.SegmentID);
             //    if (deck == null) return;
-                
+
             //}
 
         }

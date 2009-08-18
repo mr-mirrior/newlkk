@@ -76,10 +76,22 @@ namespace DamLKK
             dlg = new DamLKK.Forms.Waiting();
             dlg.Start(null, "请稍候，正在读取数据库……", Init, 2000);
 #endif
+            //byte[] test, all;
+            //string s = "aaa";
+            //test = System.Text.Encoding.Default.GetBytes(s);
+            //all = new byte[3 + test.Length];
+            //all[0] = Convert.ToByte(all.Length);
+            //all[1] = (byte)4;
+            //all[2] = (byte)3;
+            //for (int i = 0; i < test.Length; i++)
+            //{
+            //    all[3 + i] = test[i];
+            //}
+            //DamLKK._Control.GPSServer.socket.Send(all);
 #if DEBUG
             Application.Run(new Forms.Main());
 #endif
-
+            
         }
     }
 }

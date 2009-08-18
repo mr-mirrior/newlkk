@@ -380,7 +380,8 @@ namespace DamLKK.Forms
             RotateLayer(0);
         }
 
-        const double SHANGYOU = -175.790047519344;
+        const double SHANGYOU = -184.20995248065553595506978493554;
+        //-175.790047519344;
         const double XIAYOU = SHANGYOU - 180;
         const double ZUOAN = SHANGYOU - 90;
         const double YOUAN = XIAYOU - 90;
