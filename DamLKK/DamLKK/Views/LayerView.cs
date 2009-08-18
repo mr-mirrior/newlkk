@@ -328,6 +328,7 @@ namespace DamLKK.Views
         private void OnZoomChange(object sender, EventArgs e)
         {
             Zoom =_Zoomer.ZoomValue;
+      
             UpdateGraphics();
         }
 
@@ -347,6 +348,7 @@ namespace DamLKK.Views
         /// </summary>
         public void OnActiveTab()
         {
+            _IsMenuDeckOn = false;
             ShowLandscape(true);
         }
         /// <summary>
@@ -384,6 +386,7 @@ namespace DamLKK.Views
 
             if (!IsPreview)
             {
+
                 _MyLayer.OnMouseEnter += OnLayerEnter;
                 _MyLayer.OnMouseEnterDeck += OnDeckEnter;
             }
@@ -520,6 +523,13 @@ namespace DamLKK.Views
         public Coord DamAxisCursor()
         {
             Coord dampt = ScreenToDam(DePadding(_CursorPos));
+            Coord damaxis = dampt.ToDamAxisCoord();
+            return damaxis;
+        }
+
+        public Coord DamAxisCursor(PointF cur)
+        {
+            Coord dampt = ScreenToDam(DePadding(cur));
             Coord damaxis = dampt.ToDamAxisCoord();
             return damaxis;
         }
@@ -711,7 +721,7 @@ namespace DamLKK.Views
                 }
                 // 画层
                 _MyLayer.Draw(g, RestoreCoord(_CursorPos), true, _IsMoving || _IsZooming, Font);
-                if (lg != null) _MyLayer.Draw(lg, RestoreCoord(_MyScrollPos), false, _IsMoving || _IsZooming, Font);
+                if (lg != null) _MyLayer.Draw(lg, RestoreCoord(_CursorPos), false, _IsMoving || _IsZooming, Font);
 
                 if (!_IsPreview)
                 {
@@ -739,7 +749,7 @@ namespace DamLKK.Views
                     using (Font ft = new Font(Font.FontFamily, 32, FontStyle.Bold))
                     using (Brush b = new SolidBrush(Color.FromArgb(0xFF, Color.White)), b1 = new SolidBrush(Color.FromArgb(0xFF, Color.Black)))
                     {
-                        string str = "龙   开   口   水   电   站" + "\n大   坝   填   筑   质   量   GPS   监   控   系   统";
+                        string str = "龙   开   口   水   电   站" + "\n大   坝   碾   压   质   量   GPS   监   控   系   统";
                         GraphicsPath gp = new GraphicsPath();
                         gp.AddString(str, Font.FontFamily, (int)FontStyle.Bold, 32, this.ClientRectangle, sf);
                         g.FillPath(b, gp);
@@ -832,11 +842,15 @@ namespace DamLKK.Views
             Color cl = Color.OrangeRed;
             int goodCount = 8;
             _Model.Deck deck = _MyLayer.VisibleDeck;
-            if (deck != null) goodCount = deck.NOLibRollCount+deck.LibRollCount;
+            if (deck != null)
+            {
+                goodCount = deck.NOLibRollCount + deck.LibRollCount;
+            
             if ((count[0] + count[1]) >= goodCount||count[0]>deck.NOLibRollCount||count[1]>deck.LibRollCount)
                 cl = Color.OliveDrab;
-            rc.Location = DeScrollPoint(_CursorPos); 
-
+            }
+            rc.Location = DeScrollPoint(_CursorPos);
+            
             GraphicsPath gp = new GraphicsPath();
             gp.AddString(strCount, Font.FontFamily, (int)((count[0] + count[1]) == 0 ? FontStyle.Regular : FontStyle.Bold), emSize, rc, sf);
            
@@ -906,6 +920,19 @@ namespace DamLKK.Views
                 _Landscape.Visible = true;
             else
                 _Landscape.Visible = false;
+        }
+
+        private void CheckMenu(ToolStripMenuItem mi, _Model.DrawingComponent dc)
+        {
+            _IsMenuDeckOn = false;
+            _Model.Deck deck = _MyLayer.VisibleDeck;
+            if (deck != null)
+            {
+                bool check = deck.IsDrawing(dc);
+                deck.ShowDrawingComponent(dc, !check);
+                Refresh();
+                mi.Checked = !check;
+            }
         }
 
         //#region - 滚动相关 -
@@ -1741,18 +1768,7 @@ namespace DamLKK.Views
             }
         }
 
-        private void CheckMenu(ToolStripMenuItem mi, _Model.DrawingComponent dc)
-        {
-            _IsMenuDeckOn = false;
-            _Model.Deck deck = _MyLayer.VisibleDeck;
-            if (deck != null)
-            {
-                bool check = deck.IsDrawing(dc);
-                deck.ShowDrawingComponent(dc, !check);
-                Refresh();
-                mi.Checked = !check;
-            }
-        }
+      
         #endregion
 
 

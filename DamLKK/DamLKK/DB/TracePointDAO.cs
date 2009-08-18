@@ -136,7 +136,7 @@ namespace DamLKK.DB
                 if(datetimes.Length==1){
                     string tablename = string.Format("{0:yyyyMM}", datetimes[0]);
                     String sqltxt = "select * from " + GetTableNameByDateTime(datetimes[0]) + " where carid=" + carid + " and dttrace between '" + dtstart.ToString() + "' and '" + dtend.ToString() + "'" + statusLimit;
-                    GetGPSCoordList(tracePoints,sqltxt);
+                    tracePoints=GetGPSCoordList(tracePoints, sqltxt);
                 }else {
                     for(int i=0;i<datetimes.Length;i++){
                         if(i==0){
@@ -179,7 +179,7 @@ namespace DamLKK.DB
                     double Z = Convert.ToDouble((reader["z"]));
                     double V = Convert.ToInt32((reader["v"]));
                     DateTime When = Convert.ToDateTime(reader["dttrace"]);
-                    int LibratedStatus = Convert.ToInt32(reader["libratedsatus"]);
+                    int LibratedStatus = Convert.ToInt32(reader["libratedstatus"]);
 
                     tracePoint = new GPSCoord(X,Y,Z,V,0,When,LibratedStatus);
                     tracepoints.Add(tracePoint);                

@@ -54,6 +54,7 @@ namespace DamLKK._Model
             _SpreadZ = p_Deck.SpreadZ;
             _StartZ = p_Deck.StartZ;
             _WorkState = p_Deck._WorkState;
+            Init();
         }
 
         public void Dispose()
@@ -61,6 +62,12 @@ namespace DamLKK._Model
             this.VehicleControl.Dispose();
             GC.SuppressFinalize(this);
         }
+
+        private void Init()
+        {
+            vCtrl.Owner = this;
+        }
+
 
         DrawingComponent drawingComponent = DrawingComponent.ALL;
         public DrawingComponent DrawingComponent { get { return drawingComponent; } set { drawingComponent = value; } }

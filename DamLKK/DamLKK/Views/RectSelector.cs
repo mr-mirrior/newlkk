@@ -35,10 +35,10 @@ namespace DamLKK.Views
                 g.DrawRectangle(p, T(rc));
             }
 
-            //Geo.Coord realCursor = layer.DamAxisCursor(cursor.PF);/*layer.ScreenToDam(cursor.PF);*/
-            //Geo.Coord realDown = layer.DamAxisCursor(down.PF);/*layer.ScreenToDam(down.PF);*/
-            //g.DrawString(realDown.ToString(), font, Brushes.Black, rc, sf1);
-            //g.DrawString(realCursor.ToString(), font, Brushes.Black, rc, sf2);
+            Geo.Coord realCursor = layer.DamAxisCursor(cursor.PF);/*layer.ScreenToDam(cursor.PF);*/
+            Geo.Coord realDown = layer.DamAxisCursor(down.PF);/*layer.ScreenToDam(down.PF);*/
+            g.DrawString(realDown.ToString(), font, Brushes.Black, rc, sf1);
+            g.DrawString(realCursor.ToString(), font, Brushes.Black, rc, sf2);
 
 //             rc = new RectangleF(cur.X, cur.Y - 20, 1000, 20);
 //             StringFormat sf = new StringFormat();

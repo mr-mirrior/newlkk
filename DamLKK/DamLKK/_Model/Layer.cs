@@ -77,7 +77,7 @@ namespace DamLKK._Model
         }
 
         List<Deck> _Decks;     //该层的仓面
-        Deck _FocusedDeck ;    //交点仓面
+        Deck _FocusedDeck=null ;    //交点仓面
         Deck _CurrentDeck ;    //现在的仓面
         Deck _VisibleDeck;     //正在显示的仓面
 
@@ -114,7 +114,7 @@ namespace DamLKK._Model
         /// 焦点仓面
         /// </summary>
         [XmlIgnore]
-        public Deck FocusedDeck { get { return _FocusedDeck; } set { _FocusedDeck = value; } }
+        public Deck FocusedDeck { get { return _FocusedDeck; } }
         /// <summary>
         /// 现在的仓面
         /// </summary>
@@ -175,9 +175,14 @@ namespace DamLKK._Model
         private void Init()
         {
             _Mtx.Boundary = new DMRectangle();
+            OnMouseEnter += Dummy;
+            OnMouseLeave += Dummy;
+            OnMouseEnterDeck += Dummy;
+            OnMouseLeaveDeck += Dummy;
             ResetBoundary();
             _Mtx.Zoom = 1;
         }
+        private void Dummy(object sender, EventArgs e) { }
 
         /// <summary>
         /// 重置边框
@@ -642,8 +647,8 @@ namespace DamLKK._Model
             else
             {
                 //取消了多边形移动触发操作
-                //if (_LastHoverLayer == pl)
-                //    OnMouseLeave.Invoke(pl, null);
+                if (_LastHoverLayer == _MyPolygon)
+                    OnMouseLeave.Invoke(_MyPolygon, null);
             }
 
             // 倒序查找，保证最晚的仓面优先被选中
@@ -684,7 +689,7 @@ namespace DamLKK._Model
 
             if (_FocusedDeck != null)
             {
-                //OnMouseLeave(_LastHoverLayer, null);
+                OnMouseLeave(_LastHoverLayer, null);
                 OnMouseEnterDeck(_FocusedDeck, null);
             }
             else

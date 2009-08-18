@@ -20,7 +20,7 @@ namespace DamLKK.DB
             dbname = "lkk";
             username = "sa";
             password = "123456";
-            server = "localhost";
+            server = "192.168.1.101";
 
             //             string sqlConnectionCommand = "Data Source="+server+";Initial Catalog="+dbname+";User ID="+username+";password="+"'"+password+"'";
             string sqlConnectionCommand = string.Format("Data Source={0}; Initial Catalog={1};User ID='{2}';password='{3}'",

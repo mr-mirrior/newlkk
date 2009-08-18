@@ -66,10 +66,10 @@ namespace DamLKK._Control
             try
             {
                 List<DamLKK.Geo.GPSCoord> lst = DB.TracePointDAO.GetInstance().GetGPSCoordList(
-                    _OwnerRoller.ID,
+                    _OwnerRoller.Assignment.RollerID,
                     _OwnerRoller.Assignment.DTStart,
                     _OwnerRoller.Assignment.DTEnd);
-                List<Geo.GPSCoord> pts = lst;// Translate(lst);
+                List<Geo.GPSCoord> pts = Translate(lst);
                 this.Tracking.SetTracking(pts, 0, 0);
             }
             catch
@@ -77,6 +77,27 @@ namespace DamLKK._Control
 
             }
         }
+
+        private List<Geo.GPSCoord> Translate(List<Geo.GPSCoord> pts)
+        {
+            List<Geo.GPSCoord> lst = new List<Geo.GPSCoord>();
+            Geo.XYZ xyz;
+            Geo.BLH blh;
+            foreach (Geo.GPSCoord pt in pts)
+            {
+                blh = new Geo.BLH(pt.Plane.Y, pt.Plane.X, pt.Z);
+                xyz = Geo.Coord84To54.Convert(blh);
+                Geo.GPSCoord c3d = new Geo.GPSCoord(xyz.y, xyz.x, xyz.z, (double)pt.V / 100, 0);
+                //Geo.Coord3D c3d = new DM.Geo.Coord3D(xyz.y, -xyz.x, xyz.z, (double)pt.V / 100, 0);
+                c3d.When = pt.When;
+                c3d.Z -= _OwnerRoller.GPSHeight;
+                if (_OwnerRoller.Owner.MyLayer.RectContains(c3d.Plane) && IsValid(lst, c3d, _OwnerRoller.Owner, _OwnerRoller))
+                    lst.Add(c3d);
+            }
+
+            return lst;
+        }
+
         public void Draw(Graphics g, bool frameonly)
         {
             tracking.Draw(g, frameonly,0);

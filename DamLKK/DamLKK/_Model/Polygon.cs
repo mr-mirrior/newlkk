@@ -287,21 +287,25 @@ namespace DamLKK._Model
         /// </summary>
         private void CreatePath()
         {
-            _GraphicsPath.Reset();
-            if (_ScreenVertex.Count < 3 && NeedClose)
-                return;
-
-            List<PointF> lst = Geo.DamUtils.TranslatePoints(_ScreenVertex);
-
-            if (_InCurve)
-                _GraphicsPath.AddCurve(lst.ToArray());
-            else
+            lock(ooxx)
             {
-                if (_NeedClose)
-                    _GraphicsPath.AddPolygon(lst.ToArray());
+                _GraphicsPath.Reset();
+                if (_ScreenVertex.Count < 3 && NeedClose)
+                    return;
+
+                List<PointF> lst = Geo.DamUtils.TranslatePoints(_ScreenVertex);
+
+                if (_InCurve)
+                    _GraphicsPath.AddCurve(lst.ToArray());
                 else
-                    _GraphicsPath.AddLines(lst.ToArray());
+                {
+                    if (_NeedClose)
+                        _GraphicsPath.AddPolygon(lst.ToArray());
+                    else
+                        _GraphicsPath.AddLines(lst.ToArray());
+                }
             }
+           
         }
 
         /// <画控制点(橙色)>
@@ -403,12 +407,14 @@ namespace DamLKK._Model
 
             return result;
         }
+        private object ooxx = new object();
 
         /// <summary>
         /// 返回点是否在屏幕图形内
         /// </summary>
         public bool IsScreenVisible(Coord pt)
         {
+            lock(ooxx)
             return _GraphicsPath.IsVisible(pt.PF);
         }
         #endregion
