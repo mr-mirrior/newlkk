@@ -437,11 +437,11 @@ namespace DamLKK.Forms
 
             if (unit == null)
             {
-                Utils.MB.OK("抱歉，该分区未发现正在工作的仓面。");
+                Utils.MB.OK("抱歉，该坝段未发现正在工作的仓面。");
                 return;
             }  
 
-            string confirm = string.Format("目前单元{0}正在工作的起始高程为{1}米，现在打开吗？", unit.Name, unit.StartZ.ToString("0.0"));
+            string confirm = string.Format("目前仓面{0}正在工作的起始高程为{1}米，现在打开吗？", unit.Name, unit.StartZ.ToString("0.0"));
             if (Utils.MB.OKCancelQ(confirm))
             {
                 List<double> tags = DB.UnitDAO.GetInstance().GetTagsInUnit(unit.ID, true);

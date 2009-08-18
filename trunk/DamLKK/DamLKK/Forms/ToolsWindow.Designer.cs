@@ -81,7 +81,6 @@
             this.btnUnit.Name = "btnUnit";
             this.btnUnit.Size = new System.Drawing.Size(77, 40);
             this.btnUnit.TabIndex = 40;
-            this.toolTip1.SetToolTip(this.btnUnit, "从右岸往对面看");
             this.btnUnit.Click += new System.EventHandler(this.btnUnit_Click);
             // 
             // btnInputCoord
@@ -99,7 +98,7 @@
             this.btnInputCoord.Name = "btnInputCoord";
             this.btnInputCoord.Size = new System.Drawing.Size(36, 36);
             this.btnInputCoord.TabIndex = 36;
-            this.toolTip1.SetToolTip(this.btnInputCoord, "分仓");
+            this.toolTip1.SetToolTip(this.btnInputCoord, "规划碾压层");
             this.btnInputCoord.Click += new System.EventHandler(this.btnInputCoord_Click);
             // 
             // vistaButton1
@@ -116,7 +115,6 @@
             this.vistaButton1.Name = "vistaButton1";
             this.vistaButton1.Size = new System.Drawing.Size(77, 19);
             this.vistaButton1.TabIndex = 30;
-            this.toolTip1.SetToolTip(this.vistaButton1, "从右岸往对面看");
             this.vistaButton1.Click += new System.EventHandler(this.vistaButton1_Click);
             // 
             // btnZuoan
@@ -167,7 +165,7 @@
             this.btnDeckPoly.Name = "btnDeckPoly";
             this.btnDeckPoly.Size = new System.Drawing.Size(36, 36);
             this.btnDeckPoly.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.btnDeckPoly, "多边形分仓");
+            this.toolTip1.SetToolTip(this.btnDeckPoly, "多边形规划");
             this.btnDeckPoly.Click += new System.EventHandler(this.btnDeckPoly_Click);
             // 
             // btnFitscreen
@@ -235,7 +233,7 @@
             this.btnRollCount.Name = "btnRollCount";
             this.btnRollCount.Size = new System.Drawing.Size(36, 39);
             this.btnRollCount.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.btnRollCount, "观察碾压次数");
+            this.toolTip1.SetToolTip(this.btnRollCount, "观察碾压遍数");
             this.btnRollCount.Click += new System.EventHandler(this.btnRollCount_Click);
             // 
             // btn7
@@ -286,7 +284,7 @@
             this.btn3.Name = "btn3";
             this.btn3.Size = new System.Drawing.Size(36, 36);
             this.btn3.TabIndex = 2;
-            this.toolTip1.SetToolTip(this.btn3, "滚动");
+            this.toolTip1.SetToolTip(this.btn3, "拖动");
             this.btn3.Click += new System.EventHandler(this.btn3_Click);
             // 
             // btn1

@@ -1140,7 +1140,7 @@ namespace DamLKK.Views
                 }
                 SetTip(this,
                     tip,
-                    "仓面信息");
+                    "碾压层信息");
             }
         }
 
@@ -1495,6 +1495,7 @@ namespace DamLKK.Views
                     if (DB.DeckDAO.GetInstance().UpdateVertex(_MyLayer.VisibleDeck))
                     {
                         Utils.MB.OK("数据库修改成功！");
+                        DamLKK._Control.GPSServer.OpenDeck();
                         UpdateGraphics();
                     }
                     else 

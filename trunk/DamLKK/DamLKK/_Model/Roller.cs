@@ -151,7 +151,7 @@ namespace DamLKK._Model
         {
             TrackGPSControl.Owner = this;
             this.ScrollWidth = 2.17;
-            _Timer.Interval = Config.I.LIBRATE_Secends * 60 * 1000;
+            _Timer.Interval = Config.I.LIBRATE_Secends * 1000;
             _Timer.Elapsed += new System.Timers.ElapsedEventHandler(_Timer_Elapsed);
         }
 
@@ -177,6 +177,8 @@ namespace DamLKK._Model
                 TurnOffGPS();
                 _TrackCtrl.Dispose();
                 GC.SuppressFinalize(this);
+                _Timer.Stop();
+                _Timer.Dispose();
                 isDisposed = true;
             }
         }
@@ -253,12 +255,12 @@ namespace DamLKK._Model
                     //feiying  击震力报警
                     //1.是否在仓面内
                     //2.边数和击震力状态是否符合要求
-                    if (Owner.IsInThisDeck(e.gps.GPSCoord.Plane))
+                    if (this.Owner.MyLayer.CurrentDeck.IsInThisDeck(e.gps.GPSCoord.Plane))
                     {
                         
                         Count = Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
                         
-                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0)
+                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0&&e.gps.Speed>Config.I.LIBRATE_Speed/*&&e.gps.WorkFlag!=1*/)
                         {
                             if(!_Timer.Enabled)
                             {
@@ -267,7 +269,7 @@ namespace DamLKK._Model
                             }
                             
                         }
-                        else if(Count!=null&&(Count[0]+Count[1])>(this.Owner.NOLibRollCount+Config.I.NOLIBRITEDALLOWNUM)&&(int)e.gps.LibratedStatus==0)
+                        else if (Count != null && (Count[0] + Count[1]) > (this.Owner.NOLibRollCount + Config.I.NOLIBRITEDALLOWNUM) && (int)e.gps.LibratedStatus == 0 && e.gps.Speed > Config.I.LIBRATE_Speed /*&& e.gps.WorkFlag != 1*/)
                         {
                             if (!_Timer.Enabled)
                             {
@@ -280,6 +282,11 @@ namespace DamLKK._Model
                             if (_Timer.Enabled)
                             _Timer.Stop();
                         }
+                    }
+                    else
+                    {
+                        if (_Timer.Enabled)
+                            _Timer.Stop();
                     }
 
 
@@ -300,7 +307,7 @@ namespace DamLKK._Model
             {
                 warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为振动,设计应为不振。)",
                                 this.Name, Count[0].ToString(), Count[1].ToString());
-                warndlg.LibrateState = 1;
+                warndlg.LibrateState = 3;
             }
             else
             {
@@ -318,7 +325,8 @@ namespace DamLKK._Model
             warndlg.DesignZ = this.Owner.Elevation.Height;
             warndlg.WarningDate = DB.DateUtil.GetDate().Date.ToString("D");
             warndlg.WarningTime = DB.DateUtil.GetDate().ToString("T");
-            warndlg.CarName = this.Name;
+            warndlg.CarName = this.Roll.Name;
+
             warndlg.FillForms();
             Forms.Main.GetInstance.ShowWarningDlg(warndlg);
         }

@@ -30,7 +30,8 @@ namespace DamLKK._Model
         public double BASE_FILTER_METERS = 5; // m, 相邻点距离
         public double BASE_FILTER_SECONDS = 3;  // sec, 相邻点时间间隔
         public string BASE_STATUS = "0";// 状态种类
-        public int LIBRATE_Secends = 3;//多少毫秒之内的算做连续振动不合格
+        public int LIBRATE_Secends = 10;//多少毫秒之内的算做连续振动不合格
+        public double LIBRATE_Speed = 0.0f;
         // 高程筛选
         public double ELEV_FILTER_SPEED = 1.5; // %
         public double ELEV_FILTER_ELEV_LOWER = 0.5; // %

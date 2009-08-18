@@ -355,10 +355,14 @@ namespace DamLKK._Model
         /// <returns></returns>
         public Region SetDrawClip(Graphics g)
         {
-            Region r = new Region(_GraphicsPath);
-            Region old = g.Clip;
-            g.Clip = r;
-            return old;
+            lock(ooxx)
+            {
+                Region r = new Region(_GraphicsPath);
+                Region old = g.Clip;
+                g.Clip = r;
+                return old;
+            }
+            
         }
 
         /// <summary>
@@ -367,9 +371,13 @@ namespace DamLKK._Model
         /// <param name="g"></param>
         public void Draw(Graphics g)
         {
-            // 填充多边形
-            g.FillPath(_BrFill, _GraphicsPath);//_BrFill
-            g.DrawPath(_PenLine, _GraphicsPath);
+            lock(ooxx)
+            {
+                // 填充多边形
+                g.FillPath(_BrFill, _GraphicsPath);//_BrFill
+                g.DrawPath(_PenLine, _GraphicsPath);
+            }
+            
 
             if(_BlockID!=-1)
                 g.DrawString(_BlockID.ToString(), new Font("微软雅黑", 12), Brushes.Black, this.ScreenCentroid.Negative().PF);
@@ -415,7 +423,10 @@ namespace DamLKK._Model
         public bool IsScreenVisible(Coord pt)
         {
             lock(ooxx)
-            return _GraphicsPath.IsVisible(pt.PF);
+            {
+                return _GraphicsPath.IsVisible(pt.PF);
+            }
+            
         }
         #endregion
     }

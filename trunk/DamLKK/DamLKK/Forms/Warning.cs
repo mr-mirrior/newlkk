@@ -354,7 +354,7 @@ Normal：震动	//此值只适用于只有两种状态的碾压机*/
                 proportion = (this.totalAreaRatio - this.shortRollerArea) /*/ totalAreaRatio*/ * 100;
                 lbProportion.Text = proportion.ToString("0.00") + "%";
 
-                string toolVehicle = "仓面：" + this._UnitName + ",高程：" + this.designZ.ToString();
+                string toolVehicle = "碾压层：" + this._UnitName + ",标识：" + this.designZ.ToString();
                 string toolProportion = "碾压合格面积：" + ((this.totalAreaRatio - this.shortRollerArea) * this.ActualArea).ToString("0.00") +
                     "平方千米，总面积：" + this.ActualArea.ToString("0.00") + "平方千米";
                 lbVehicleName.Text = this.deckName;
