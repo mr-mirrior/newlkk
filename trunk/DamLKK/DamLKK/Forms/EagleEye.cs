@@ -462,5 +462,31 @@ namespace DamLKK.Forms
         {
             Main.GetInstance.ProcessKeys(sender, e);
         }
+
+
+        public void AddDeck(DamLKK._Model.Deck dk)
+        {
+            foreach (DamLKK._Model.Unit u in _WorkUntis)
+            {
+                if (u.ID == dk.Unit.ID)
+                    return;
+            }
+            _WorkUntis.Add(DamLKK.DB.UnitDAO.GetInstance().GetOneUnit(dk.Unit.ID));
+            this.Refresh();
+        }
+
+        public void ReMoveDeck(DamLKK._Model.Deck dk)
+        {
+            DamLKK._Model.Unit unit=null;
+            foreach (DamLKK._Model.Unit u in _WorkUntis)
+            {
+                if (u.ID == dk.Unit.ID)
+                    unit = u;
+                    break;
+            }
+            if (unit != null&&DamLKK.DB.DeckDAO.GetInstance().GetDecksCount(unit.ID,dk.Elevation.Height)>0)
+                _WorkUntis.Remove(unit);
+            this.Refresh();
+        }
     }
 }

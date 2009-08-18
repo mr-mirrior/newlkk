@@ -249,6 +249,37 @@ namespace DamLKK.DB
                 }
             }
 
+            public int GetDecksCount(int unitid, double designZ)
+            {
+                List<Deck> segments = new List<Deck>();
+                SqlConnection connection = null;
+                SqlDataReader reader = null;
+                string sqlTxt = "select * from segment where (unitid=" + unitid + ") and (designZ='" + designZ + "')";
+                try
+                {
+                    connection = DBConnection.getSqlConnection();
+                    reader = DBConnection.executeQuery(connection, sqlTxt);
+                    while (reader.Read())
+                    {
+                        Deck segment = ReadDeck(reader);
+
+                        segments.Add(segment);
+                    }
+                    return segments.Count;
+                }
+                catch (Exception exp)
+                {
+                    DebugUtil.log(exp);
+                    return 0;
+                }
+                finally
+                {
+                    DBConnection.closeDataReader(reader);
+                    DBConnection.closeSqlConnection(connection);
+                }
+            }
+
+
             /// <summary>
             /// 读仓面
             /// </summary>

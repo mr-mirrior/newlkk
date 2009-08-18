@@ -119,7 +119,7 @@ namespace DamLKK._Control
 
             Forms.AssignVehicle dlg = new Forms.AssignVehicle();
             dlg.Deck = deck;
-            dlg.BlockName = deck.Unit.Name;
+            dlg.BlockName = DamLKK.DB.UnitDAO.GetInstance().GetName(deck.Unit.ID);
 
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {

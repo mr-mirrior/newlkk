@@ -222,7 +222,7 @@ namespace DamLKK._Control
                     return;
                 }
                 _Decks.Add(deck);
-              
+               
                 return;
             }
         }
@@ -518,6 +518,9 @@ namespace DamLKK._Control
      
             Utils.MB.OKI("\"" + dk.Name + "\"" + "已经开启碾压监控！");
 
+            Dam.GetInstance().FrmEagleEye.WorkUntis.Add(UnitDAO.GetInstance().GetOneUnit(dk.Unit.ID));
+            Dam.GetInstance().FrmEagleEye.Refresh();
+
             return true;
         }
 
@@ -577,6 +580,8 @@ namespace DamLKK._Control
             GPSServer.CloseDeck();
 
             Utils.MB.OKI("\"" + dk.Name + "\"" + "结束碾压监控完毕！");
+
+            Dam.GetInstance().FrmEagleEye.ReMoveDeck(dk);
 
             return true;
         }

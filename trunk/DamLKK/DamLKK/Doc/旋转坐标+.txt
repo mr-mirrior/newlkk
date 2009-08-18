@@ -12,7 +12,7 @@ COS a = 0.9973017404432851
        Y  56.38รื
 
 
- const double SHANGYOU = -175.790047519344;
+ const double SHANGYOU =-184.20995248065553595506978493554;
  const double XIAYOU = SHANGYOU - 180;
  const double ZUOAN = SHANGYOU - 90;
  const double YOUAN = XIAYOU - 90;
