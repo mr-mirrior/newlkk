@@ -306,13 +306,13 @@ namespace DamLKK._Model
             if (IsNoLib)
             {
                 warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为振动,设计应为不振。)",
-                                this.Name, Count[0].ToString(), Count[1].ToString());
+                                this.Roll.Name, Count[0].ToString(), Count[1].ToString());
                 warndlg.LibrateState = 3;
             }
             else
             {
                 warning = string.Format("振动不合格报警：碾压机：{0},当前地点静碾了{1}遍,振碾了{2}边,该车当前振动状态为不振,设计应为振动。)",
-                               this.Name, Count[0].ToString(), Count[1].ToString());
+                                this.Roll.Name, Count[0].ToString(), Count[1].ToString());
                 warndlg.LibrateState = 0;
             }
 

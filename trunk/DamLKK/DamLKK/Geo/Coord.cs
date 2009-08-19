@@ -177,12 +177,24 @@ namespace DamLKK.Geo
         /// <returns>大坝坐标</returns>
         public Geo.Coord ToDamAxisCoord()
         {
-            //double SIN = 0.5509670120356448784912018921605;
-            //double COS = 0.83452702271916488948079272306091;
+            double X = 43711.79;//342007.9073 ;    
+            double Y = 435172.95;//2936668.6550;
+            double  sinβ = 0.073411433093179015127035277240849;
+            double cosβ = 0.99730174044328514895742951093525;
+            double L = Math.Sqrt((this.X - X) * (this.X - X) + (this.Y - Y) * (this.Y - Y));
+            if (L == 0)
+                return new Coord(0, 0);
+            double sinA = (this.Y - Y) / L;
+            double cosA = (this.X - X) / L;
 
             Geo.Coord cod0 = new Geo.Coord();
-            cod0.X = this._x;//(-COS * this.X + SIN * this.Y + 46557.7811830799932563179112397188);
-            cod0.Y = this._y; //(SIN * this.X + COS * this.Y - 20616.2311146461071871455578251375);
+
+            cod0.X = (cosA*cosβ+sinA*sinβ)*L;
+            cod0.Y = (sinA*cosβ-cosA*sinβ)*L;
+
+
+            //cod0.X = this._x;//(-COS * this.X + SIN * this.Y + 46557.7811830799932563179112397188);
+            //cod0.Y = this._y; //(SIN * this.X + COS * this.Y - 20616.2311146461071871455578251375);
 
             return cod0;
         }
@@ -193,14 +205,26 @@ namespace DamLKK.Geo
         /// <returns>大地坐标</returns>
         public Geo.Coord ToEarthCoord()
         {
-            //double SIN = 0.5509670120356448784912018921605;
-            //double COS = 0.83452702271916488948079272306091;
+            double X = this.X;
+            double Y = this.Y;
+            double sinβ = 0.073411433093179015127035277240849;
+            double cosβ = 0.99730174044328514895742951093525;
+            double L = Math.Sqrt(X* X + Y * Y);
+            if (L == 0)
+                return new Coord(X, Y);
+            double sinA = Y / L;
+            double cosA =X / L;
 
             Geo.Coord c = new Geo.Coord();
-            c.X = this._x;//(-COS * this.X + SIN * this.Y + 50212.59);
-            c.Y = this._y;//(-SIN * this.X - COS * this.Y + 8447);
 
-            c.Y = -c.Y;
+            c.X = (cosA * cosβ - sinA * sinβ) * L + 43711.79 ;//342007.9073;
+            c.Y = (sinA * cosβ + cosA * sinβ) * L + 435172.95;//2936668.6550;
+
+
+            //c.X = this._x;//(-COS * this.X + SIN * this.Y + 50212.59);
+            //c.Y = this._y;//(-SIN * this.X - COS * this.Y + 8447);
+
+            //c.Y = -c.Y;
             return c;
         }
     }

@@ -378,7 +378,7 @@ namespace DamLKK._Model
         /// <屏幕转大坝>
         /// 屏幕转大坝
         /// </屏幕转大坝>
-        public Coord ScreenToDam(PointF pt)
+        public Coord ScreenToEarth(PointF pt)
         {
             Coord c = new Coord(pt);
 
@@ -412,7 +412,7 @@ namespace DamLKK._Model
         {
             for (int i = 0; i < pts.Count; i++)
             {
-                pts[i] = ScreenToDam(pts[i].PF);
+                pts[i] = ScreenToEarth(pts[i].PF);
             }
         }
 
