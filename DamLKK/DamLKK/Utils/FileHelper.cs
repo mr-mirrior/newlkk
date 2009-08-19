@@ -60,7 +60,8 @@ namespace DamLKK.Utils
                 if (s == string.Empty)
                     continue;
                 xy = s.Split(',');
-                cds.Add(new Geo.Coord(Convert.ToDouble(xy[0]),Convert.ToDouble(xy[1])));
+                DamLKK.Geo.Coord temp = new Geo.Coord(Convert.ToDouble(xy[0]), Convert.ToDouble(xy[1]));
+                cds.Add(temp.ToEarthCoord());
             }
 
             return cds;
@@ -88,7 +89,7 @@ namespace DamLKK.Utils
                             continue;
                         }
 
-                        DamLKK.Geo.GPSCoord cd = new Geo.GPSCoord(Convert.ToSingle(s[0].Trim()), Convert.ToSingle(s[3].Trim()), 1111);
+                        DamLKK.Geo.GPSCoord cd = new Geo.GPSCoord(Convert.ToSingle(s[0].Trim()), -Convert.ToSingle(s[3].Trim()), 1111);
                         cd.V = rand.Next(5);
                         cd.LibratedStatus = rand.Next(3);
                         tracking.Add(cd);

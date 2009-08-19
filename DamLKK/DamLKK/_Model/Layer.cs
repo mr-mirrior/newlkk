@@ -732,16 +732,6 @@ namespace DamLKK._Model
                 }
                 if (_IsDeckInput)
                 {
-                    List<Coord> temp=new List<Coord>();
-                    foreach (Coord c in  scrCut.Vertex)
-                    {
-                        if(c.YF<0)
-                            temp.Add(new Coord(c.XF,-c.YF));
-                        else
-                        temp.Add(new Coord(c.XF, c.YF));
-                    }
-                   
-                    scrCut.Vertex=temp;
                     Polygon DamDeck = _MyPolygon.CutByOfEarth(scrCut);
                     
                     if (DamDeck != null)

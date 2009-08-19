@@ -380,7 +380,7 @@ namespace DamLKK._Model
             
 
             if(_BlockID!=-1)
-                g.DrawString(_BlockID.ToString(), new Font("微软雅黑", 12), Brushes.Black, this.ScreenCentroid.Negative().PF);
+                g.DrawString(_BlockID.ToString(), new Font("微软雅黑", 12), Brushes.Black, this.ScreenCentroid.PF);
             if (Token)
                 DrawToken(g);
         }

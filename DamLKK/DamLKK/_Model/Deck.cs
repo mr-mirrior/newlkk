@@ -576,11 +576,31 @@ namespace DamLKK._Model
             //// 超过部分统一
             if (!_IsDatamap)
             {
-                for (int idx = this.NOLibRollCount + this.LibRollCount + 1; idx < areas.Length; idx++)
+                if(mapindex==0)
                 {
-                    areas[this.NOLibRollCount+this.LibRollCount] += areas[idx];
-                    areas[idx] = 0;
+                    for (int idx = this.NOLibRollCount + this.LibRollCount + 1; idx < areas.Length; idx++)
+                    {
+                        areas[this.NOLibRollCount + this.LibRollCount] += areas[idx];
+                        areas[idx] = 0;
+                    }
                 }
+                else if (mapindex == 1)
+                {
+                    for (int idx = this.NOLibRollCount+1; idx < areas.Length; idx++)
+                    {
+                        areas[this.NOLibRollCount] += areas[idx];
+                        areas[idx] = 0;
+                    }
+                }
+                else
+                {
+                    for (int idx =  this.LibRollCount + 1; idx < areas.Length; idx++)
+                    {
+                        areas[this.LibRollCount] += areas[idx];
+                        areas[idx] = 0;
+                    }
+                }
+                
             }
             output.UnlockBits(bd);
             g.Dispose();
@@ -630,7 +650,7 @@ namespace DamLKK._Model
                 {
                     bs[i] = new SolidBrush(_LayersColor[i]);
                 }
-                const double SHANGYOU =-184.20995248065553595506978493554;
+                const double SHANGYOU = -175.790047519344;
                 if (!datamap)
                 {
                     layer.RotateDegree = SHANGYOU - 180;
@@ -784,8 +804,14 @@ namespace DamLKK._Model
             //原点坐标
             newG.DrawString(_OrignCoordString, _FtScale, Brushes.Black, offset * 0.8f, (float)this.Polygon.ScreenBoundary.Height + newH + 2);
             newPen.Dispose();
+            int okcount;
+            if (mapindex==0)
+                okcount = this.NOLibRollCount + this.LibRollCount;
+            else if (mapindex == 1)
+                okcount = this.NOLibRollCount;
+            else
+                okcount = this.LibRollCount;
 
-            int okcount = this.NOLibRollCount + this.LibRollCount;
             double[] area_ratio = AreaRatio(areas, this);
 
             for (int i = 0; i < 6; i++)

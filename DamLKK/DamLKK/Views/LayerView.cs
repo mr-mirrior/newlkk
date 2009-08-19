@@ -1098,7 +1098,7 @@ namespace DamLKK.Views
             List<Coord> lst =new List<Coord>();
             foreach (Block b in p.Blocks)
             {
-                lst.AddRange(Utils.FileHelper.ReadLayer(_Model.Config.BLOCK_VERTEX + b.BlockName + "\\" + b.BlockName + ".txt", false, true));
+                lst.AddRange(Utils.FileHelper.ReadLayer(_Model.Config.BLOCK_VERTEX + b.BlockName + "\\" + b.BlockName + ".txt", false,false));
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////

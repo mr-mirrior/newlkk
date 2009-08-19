@@ -263,9 +263,8 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(533, 79);
             this.label10.TabIndex = 21;
-            this.label10.Text = "排除碾压区域边界输入法：形如x11,y11;x12,y12;x13,y13|x21,y21;x22,y22;x23,y23;x24,y24 ，即逗号隔离某一点的坝" +
-                "横坐标与坝纵坐标，分号隔离两个控制点，竖杠隔离两个排除碾压区域（坐标点请按照顺时针或逆时针依次输入）。排除碾压区域备注输入法：形如 监测仪器埋设|修路 标点请使" +
-                "用英文半角输入法！";
+            this.label10.Text = "边界输入方法：形如x11,y11;x12,y12;x13,y13|x21,y21;x22,y22;x23,y23;x24,y24 ，即逗号隔离某一点的坝左(右)坐" +
+                "标与坝上(下)坐标，分号隔离两个控制点。标点请使用英文半角输入法！注:坝左(坝上)为+,坝右(坝下)为-。\r\n";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // UnitInput
