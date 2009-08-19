@@ -181,10 +181,10 @@ namespace DamLKK.Geo
             double Y = 435172.95;//2936668.6550;
             double  sinβ = 0.073411433093179015127035277240849;
             double cosβ = 0.99730174044328514895742951093525;
-            double L = Math.Sqrt((this.X - X) * (this.X - X) + (this.Y - Y) * (this.Y - Y));
+            double L = Math.Sqrt((this.X - X) * (this.X - X) + (-this.Y - Y) * (-this.Y - Y));
             if (L == 0)
                 return new Coord(0, 0);
-            double sinA = (this.Y - Y) / L;
+            double sinA = (-this.Y - Y) / L;
             double cosA = (this.X - X) / L;
 
             Geo.Coord cod0 = new Geo.Coord();
@@ -224,7 +224,7 @@ namespace DamLKK.Geo
             //c.X = this._x;//(-COS * this.X + SIN * this.Y + 50212.59);
             //c.Y = this._y;//(-SIN * this.X - COS * this.Y + 8447);
 
-            //c.Y = -c.Y;
+            c.Y = -c.Y;
             return c;
         }
     }

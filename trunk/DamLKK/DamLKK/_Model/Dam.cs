@@ -125,7 +125,7 @@ namespace DamLKK._Model
                 _Blocks = DB.BlockDAO.GetInstance().GetBlocks();
                 foreach (Block b in Blocks)
                 {
-                    b.Polygon = new Polygon(Utils.FileHelper.ReadLayer(Config.BLOCK_VERTEX + "\\" + b.BlockID.ToString() + "号坝段" + "\\" + b.BlockID.ToString() + "号坝段.txt", false, true));
+                    b.Polygon = new Polygon(Utils.FileHelper.ReadLayer(Config.BLOCK_VERTEX + "\\" + b.BlockID.ToString() + "号坝段" + "\\" + b.BlockID.ToString() + "号坝段.txt", false,false));
                 }
                 _Elevations = new List<Elevation>();
             }
