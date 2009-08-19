@@ -171,14 +171,15 @@ namespace DamLKK.Geo
         SIN=0.5509670120356448784912018921605
         COS=0.83452702271916488948079272306091
          */
+        //50333.75,8496.30  nzd
         /// <summary>
         /// 大地坐标转大坝坐标
         /// </summary>
         /// <returns>大坝坐标</returns>
         public Geo.Coord ToDamAxisCoord()
         {
-            double X = 43711.79;//342007.9073 ;    
-            double Y = 435172.95;//2936668.6550;
+            double X = 50333.75;//342007.9073 ;    
+            double Y = 8496.30;//2936668.6550;
             double  sinβ = 0.073411433093179015127035277240849;
             double cosβ = 0.99730174044328514895742951093525;
             double L = Math.Sqrt((this.X - X) * (this.X - X) + (-this.Y - Y) * (-this.Y - Y));
@@ -217,8 +218,8 @@ namespace DamLKK.Geo
 
             Geo.Coord c = new Geo.Coord();
 
-            c.X = (cosA * cosβ - sinA * sinβ) * L + 43711.79 ;//342007.9073;
-            c.Y = (sinA * cosβ + cosA * sinβ) * L + 435172.95;//2936668.6550;
+            c.X = (cosA * cosβ - sinA * sinβ) * L + 50333.75;//342007.9073;
+            c.Y = (sinA * cosβ + cosA * sinβ) * L + 8496.30;//2936668.6550;
 
 
             //c.X = this._x;//(-COS * this.X + SIN * this.Y + 50212.59);

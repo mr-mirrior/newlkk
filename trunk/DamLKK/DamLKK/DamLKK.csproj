@@ -338,6 +338,7 @@
     </Content>
     <Content Include="Doc\DM2.iss" />
     <Content Include="Doc\TrackPoint.wav" />
+    <Content Include="Doc\坝轴总边界.txt" />
     <Content Include="Doc\旋转坐标+.txt" />
     <Content Include="Doc\软件重用修改目录.txt" />
     <Content Include="Pictures\Locks.png" />
