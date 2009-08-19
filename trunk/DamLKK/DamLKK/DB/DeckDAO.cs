@@ -174,8 +174,8 @@ namespace DamLKK.DB
                 {
                     endDateStr = "NULL";
                 }
-                string sqlTxt = string.Format("update segment set SegmentID={0}, WorkState={1}, unitID={2}, DesignZ='{3}', Vertex='{4}',  MaxSpeed='{5}', DesignRollCount='{6}', ErrorParam='{7}', SpreadZ='{8}', DesignDepth='{9}', SegmentName='{10}',StartZ='{11}',pop='{12}',SenseOrganState='{13}',NotRolling='{14}',CommentNR='{15}' where unitid={16} and designz={17} and segmentid={18}",
-                   segmentID, (int)workState, unitID, designZ, vertext,  maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop, 0, 0, 0, unitID, designZ, segmentID);
+                string sqlTxt = string.Format("update segment set WorkState={0},   MaxSpeed='{1}', DesignRollCount='{2}', ErrorParam='{3}', SpreadZ='{4}', DesignDepth='{5}', SegmentName='{6}',StartZ='{7}',pop='{8}' where unitid={9} and designz={10} and segmentid={11}",
+                    (int)workState,    maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop,  unitID, designZ, segmentID);
                 try
                 {
                      if (DBConnection.executeUpdate(sqlTxt) != 1)

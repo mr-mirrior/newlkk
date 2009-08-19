@@ -153,7 +153,7 @@ namespace DamLKK._Control
                     dk.POP);
             DeckDAO.GetInstance().SetDeckPOP(dk.Unit.ID, dk.Elevation.Height, dk.ID, dk.POP);
 
-            _Control.WarningControl.SendMessage(WarningType.ROLLINGLESS, dk.Unit.ID, warning);
+            //_Control.WarningControl.SendMessage(WarningType.ROLLINGLESS, dk.Unit.ID, warning);
 
             //dk.UpdateName();
             warndlg.UnitName = dk.Unit.Name;
@@ -271,6 +271,7 @@ namespace DamLKK._Control
             Deck tobemodified = new Deck(dlg.Deck);
             tobemodified.MyLayer = this.Owner;
             tobemodified.Polygon = deck.Polygon;
+            tobemodified.ID = deck.ID;
 
             if (dkFound == null || idx == -1)
                 _Decks.Add(tobemodified);
