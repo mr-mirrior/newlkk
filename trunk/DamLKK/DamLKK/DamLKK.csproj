@@ -344,6 +344,7 @@
     <Content Include="Utils\ThicknessImage\副本 DataMapManager.txt" />
     <Content Include="图标.ico" />
     <None Include="Doc\Chinese.isl" />
+    <None Include="Doc\大坝坐标转换.doc" />
     <None Include="Resources\warning.png" />
     <EmbeddedResource Include="Forms\AssignVehicle.resx">
       <DependentUpon>AssignVehicle.cs</DependentUpon>
