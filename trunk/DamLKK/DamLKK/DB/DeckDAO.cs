@@ -174,8 +174,8 @@ namespace DamLKK.DB
                 {
                     endDateStr = "NULL";
                 }
-                string sqlTxt = string.Format("update segment set SegmentID={0}, WorkState={1}, unitID={2}, DesignZ='{3}', Vertex='{4}', DTStart={5}, DTEnd={6}, MaxSpeed='{7}', DesignRollCount='{8}', ErrorParam='{9}', SpreadZ='{10}', DesignDepth='{11}', SegmentName='{12}',StartZ='{13}',pop='{14}',SenseOrganState='{15}',NotRolling='{16}',CommentNR='{17}' where unitid={18} and designz={19} and segmentid={20}",
-                   segmentID, (int)workState, unitID, designZ, vertext, startDateStr, endDateStr, maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop, 0, 0, 0, unitID, designZ, segmentID);
+                string sqlTxt = string.Format("update segment set SegmentID={0}, WorkState={1}, unitID={2}, DesignZ='{3}', Vertex='{4}',  MaxSpeed='{5}', DesignRollCount='{6}', ErrorParam='{7}', SpreadZ='{8}', DesignDepth='{9}', SegmentName='{10}',StartZ='{11}',pop='{12}',SenseOrganState='{13}',NotRolling='{14}',CommentNR='{15}' where unitid={16} and designz={17} and segmentid={18}",
+                   segmentID, (int)workState, unitID, designZ, vertext,  maxSpeed, designRollCount, errorParam, spreadZ, designDepth, segmentName, startZ, pop, 0, 0, 0, unitID, designZ, segmentID);
                 try
                 {
                      if (DBConnection.executeUpdate(sqlTxt) != 1)

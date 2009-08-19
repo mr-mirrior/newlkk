@@ -497,7 +497,7 @@ namespace DamLKK._Control
             DamLKK.DB.DeckDAO daoSeg = DamLKK.DB.DeckDAO.GetInstance();
             try
             {
-                DeckVehicleResult result = daoSeg.StartDeck(unit.ID, elevation.Height, dk.ID, dk.MaxSpeed, dk.WorkState);
+                DeckVehicleResult result = daoSeg.StartDeck(unit.ID, dk.Elevation.Height, dk.ID, dk.MaxSpeed, dk.WorkState);
                 if (result == DeckVehicleResult.CARS_FAIL)
                     Utils.MB.Warning("开启碾压监控失败：车辆错误");
                 if (result == DeckVehicleResult.SEGMENT_FAIL)

@@ -826,7 +826,8 @@ namespace DamLKK._Model
                     newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + w0, output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
                     continue;
                 }
-                newG.DrawString(i.ToString() + "遍", _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
+
+                newG.DrawString(i.ToString() + "遍" + ((i == okcount) ? "及以上" : ""), _FtString, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2);
                 newG.DrawString(area_ratio[i].ToString("0.00%"), _FtScale, /*bs[i]*/Brushes.Black, offset * 1.05f + ((i + 1) * multiple - w0), output.Height + newH * 0.8f + output.Width / 6 * 0.5f * 0.5f * 2 + w0 / 3.5f);
             }
 
