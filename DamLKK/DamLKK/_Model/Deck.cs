@@ -630,10 +630,10 @@ namespace DamLKK._Model
                 {
                     bs[i] = new SolidBrush(_LayersColor[i]);
                 }
-                const double SHANGYOU = -146.568450927734;
+                const double SHANGYOU =-184.20995248065553595506978493554;
                 if (!datamap)
                 {
-                    layer.RotateDegree = SHANGYOU;
+                    layer.RotateDegree = SHANGYOU - 180;
                 }
                 else
                 {
@@ -712,7 +712,7 @@ namespace DamLKK._Model
 
             //求原点坐标
             Geo.Coord screenOriginCoord = this.Polygon.ScreenBoundary.LeftBottom;
-            Geo.Coord earthOriginCoord = _MyLayer.ScreenToDam(screenOriginCoord.PF);
+            Geo.Coord earthOriginCoord = _MyLayer.ScreenToEarth(screenOriginCoord.PF);
             _DamOrignCoord = earthOriginCoord.ToDamAxisCoord();
             _OrignCoordString = "(" + _DamOrignCoord.X.ToString("0.00") + ", " + _DamOrignCoord.Y.ToString("0.00") + ")";
 
@@ -854,45 +854,69 @@ namespace DamLKK._Model
 
 
             newG.SmoothingMode = SmoothingMode.None;
-            //横轴刻度
-            for (float i = 1; i < (float)(this.Polygon.ScreenBoundary.Width - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+
+            float width = (float)Math.Min(this.Polygon.ScreenBoundary.Width, this.Polygon.ScreenBoundary.Height) / 5;
+            if(this.Polygon.ScreenBoundary.Width<this.Polygon.ScreenBoundary.Height)
             {
-                pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
-                pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                if (i % 5 == 0)
+                double max = Math.Abs(this.Polygon.Vertex[0].ToDamAxisCoord().X - _DamOrignCoord.X);
+                foreach (DamLKK.Geo.Coord c in this.Polygon.Vertex)
                 {
-                    pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
-                    pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                    pfWord = new PointF(offset - 8 + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
+                    if (Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.X) > max)
+                        max = Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.X);
+                }
+                meterPrePoint = (float)max / 5;
+            }
+            else
+            {
+                double max = Math.Abs(this.Polygon.Vertex[0].ToDamAxisCoord().Y- _DamOrignCoord.Y);
+                foreach (DamLKK.Geo.Coord c in this.Polygon.Vertex)
+                {
+                    if (Math.Abs(c.ToDamAxisCoord().Y - _DamOrignCoord.Y) > max)
+                        max = Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.Y);
+                }
+                meterPrePoint = (float)max / 5;
+            }
+          
+
+            //横轴刻度
+            for (float i = width,j=1; i < this.Polygon.ScreenBoundary.Width; i+=width,j++)//this.Polygon.ScreenBoundary.Width-40//(float)(this.Polygon.ScreenBoundary.Width - 10) / meterPrePoint
+            {
+                pf = new PointF(offset + j *width/* meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
+                pf5 = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                //if (i % 5 == 0)
+                //{
+                pf = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
+                pf5 = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                    pfWord = new PointF(offset - 8 + j * width /*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
                     newG.DrawLine(Pens.Black, pf, pf5);
 
-                    pf1 = new PointF(offset + (i - 1) * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                    sz = new SizeF(2 * meterPrePoint, offset * 0.4f);
+                    pf1 = new PointF(offset + (j - 1) *width/* meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                    sz = new SizeF(2 * width/*meterPrePoint*/, offset * 0.4f);
                     rf = new RectangleF(pf1, sz);
-                    newG.DrawString((_DamOrignCoord.X + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
-                    continue;
-                }
+                    newG.DrawString((_DamOrignCoord.X + j * meterPrePoint/*5*/).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+                    //continue;
+                //}
                 newG.DrawLine(Pens.Gray, pf, pf5);
             }
             //纵轴刻度
 
-            for (float i = 1; i < (float)(this.Polygon.ScreenBoundary.Height - 2) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            for (float i = width,j=1; i < this.Polygon.ScreenBoundary.Height; i+=width,j++)//this.Polygon.ScreenBoundary.Width-40//(float)(this.Polygon.ScreenBoundary.Height - 2) / meterPrePoint
             {
-                pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                pf5 = new PointF(offset + 5, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                if (i % 5 == 0)
-                {
-                    pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    pf5 = new PointF(offset + 10, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf = new PointF(offset, -j * width /*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf5 = new PointF(offset + 5, -j * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                //if (i % 5 == 0)
+                ////{
+                pf = new PointF(offset, -j * width/* meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf5 = new PointF(offset + 10, -j * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
                     newG.DrawLine(Pens.Black, pf, pf5);
-                    pf1 = new PointF(offset * 0.2f, -(i + 1) * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    sz = new SizeF(offset * 0.8f, 2 * meterPrePoint);
+                    pf1 = new PointF(offset * 0.2f, -(j + 1) * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                    sz = new SizeF(offset * 0.8f, 2 * width/*meterPrePoint*/);
                     rf = new RectangleF(pf1, sz);
 
-                    newG.DrawString((_DamOrignCoord.Y + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+                    newG.DrawString((_DamOrignCoord.Y + j *  meterPrePoint/*5*/).ToString("0"), _FtScale, Brushes.Black, rf, sf);
 
-                    continue;
-                }
+                    //continue;
+                //}
                 newG.DrawLine(Pens.Gray, pf, pf5);
             }
             newG.SmoothingMode = SmoothingMode.AntiAlias;
@@ -1057,7 +1081,7 @@ namespace DamLKK._Model
 
             //求原点坐标
             Geo.Coord screenOriginCoord = pl.ScreenBoundary.LeftBottom;
-            Geo.Coord earthOriginCoord = layer.ScreenToDam(screenOriginCoord.PF);
+            Geo.Coord earthOriginCoord = layer.ScreenToEarth(screenOriginCoord.PF);
             _DamOrignCoord = earthOriginCoord.ToDamAxisCoord();
             _OrignCoordString = "(" + _DamOrignCoord.X.ToString("0.00") + ", " + _DamOrignCoord.Y.ToString("0.00") + ")";
 
@@ -1147,47 +1171,111 @@ namespace DamLKK._Model
 
 
             newG.SmoothingMode = SmoothingMode.None;
-            //横轴刻度
-            for (float i = 1; i < (float)(pl.ScreenBoundary.Width - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            float width = (float)Math.Min(this.Polygon.ScreenBoundary.Width, this.Polygon.ScreenBoundary.Height) / 5;
+            if (this.Polygon.ScreenBoundary.Width < this.Polygon.ScreenBoundary.Height)
             {
-                pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
-                pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                if (i % 5 == 0)
+                double max = Math.Abs(this.Polygon.Vertex[0].ToDamAxisCoord().X - _DamOrignCoord.X);
+                foreach (DamLKK.Geo.Coord c in this.Polygon.Vertex)
                 {
-                    pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
-                    pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                    pfWord = new PointF(offset - 8 + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
-                    newG.DrawLine(Pens.Black, pf, pf5);
-
-                    pf1 = new PointF(offset + (i - 1) * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
-                    sz = new SizeF(2 * meterPrePoint, offset * 0.4f);
-                    rf = new RectangleF(pf1, sz);
-                    newG.DrawString((_DamOrignCoord.X + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
-                    continue;
+                    if (Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.X) > max)
+                        max = Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.X);
                 }
+                meterPrePoint = (float)max / 5;
+            }
+            else
+            {
+                double max = Math.Abs(this.Polygon.Vertex[0].ToDamAxisCoord().Y - _DamOrignCoord.Y);
+                foreach (DamLKK.Geo.Coord c in this.Polygon.Vertex)
+                {
+                    if (Math.Abs(c.ToDamAxisCoord().Y - _DamOrignCoord.Y) > max)
+                        max = Math.Abs(c.ToDamAxisCoord().X - _DamOrignCoord.Y);
+                }
+                meterPrePoint = (float)max / 5;
+            }
+
+
+            //横轴刻度
+            for (float i = width, j = 1; i < this.Polygon.ScreenBoundary.Width; i += width, j++)//this.Polygon.ScreenBoundary.Width-40//(float)(this.Polygon.ScreenBoundary.Width - 10) / meterPrePoint
+            {
+                pf = new PointF(offset + j * width/* meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
+                pf5 = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                //if (i % 5 == 0)
+                //{
+                pf = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
+                pf5 = new PointF(offset + j * width/*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                pfWord = new PointF(offset - 8 + j * width /*meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
+                newG.DrawLine(Pens.Black, pf, pf5);
+
+                pf1 = new PointF(offset + (j - 1) * width/* meterPrePoint*/, (float)this.Polygon.ScreenBoundary.Height + newH);
+                sz = new SizeF(2 * width/*meterPrePoint*/, offset * 0.4f);
+                rf = new RectangleF(pf1, sz);
+                newG.DrawString((_DamOrignCoord.X + j * meterPrePoint/*5*/).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+                //continue;
+                //}
                 newG.DrawLine(Pens.Gray, pf, pf5);
             }
             //纵轴刻度
 
-            for (float i = 1; i < (float)(pl.ScreenBoundary.Height - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            for (float i = width, j = 1; i < this.Polygon.ScreenBoundary.Height; i += width, j++)//this.Polygon.ScreenBoundary.Width-40//(float)(this.Polygon.ScreenBoundary.Height - 2) / meterPrePoint
             {
-                pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                pf5 = new PointF(offset + 5, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                if (i % 5 == 0)
-                {
-                    pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    pf5 = new PointF(offset + 10, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
-                    newG.DrawLine(Pens.Black, pf, pf5);
-                    pf1 = new PointF(offset * 0.2f, -(i + 1) * meterPrePoint + (float)pl.ScreenBoundary.Height + newH);
-                    sz = new SizeF(offset * 0.8f, 2 * meterPrePoint);
-                    rf = new RectangleF(pf1, sz);
+                pf = new PointF(offset, -j * width /*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf5 = new PointF(offset + 5, -j * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                //if (i % 5 == 0)
+                ////{
+                pf = new PointF(offset, -j * width/* meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                pf5 = new PointF(offset + 10, -j * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                newG.DrawLine(Pens.Black, pf, pf5);
+                pf1 = new PointF(offset * 0.2f, -(j + 1) * width/*meterPrePoint*/ + (float)this.Polygon.ScreenBoundary.Height + newH);
+                sz = new SizeF(offset * 0.8f, 2 * width/*meterPrePoint*/);
+                rf = new RectangleF(pf1, sz);
 
-                    newG.DrawString((_DamOrignCoord.Y + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+                newG.DrawString((_DamOrignCoord.Y + j * meterPrePoint/*5*/).ToString("0"), _FtScale, Brushes.Black, rf, sf);
 
-                    continue;
-                }
+                //continue;
+                //}
                 newG.DrawLine(Pens.Gray, pf, pf5);
             }
+            ////横轴刻度
+            //for (float i = 1; i < (float)(pl.ScreenBoundary.Width - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            //{
+            //    pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 6);
+            //    pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+            //    if (i % 5 == 0)
+            //    {
+            //        pf = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH - 10);
+            //        pf5 = new PointF(offset + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+            //        pfWord = new PointF(offset - 8 + i * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH + 5);
+            //        newG.DrawLine(Pens.Black, pf, pf5);
+
+            //        pf1 = new PointF(offset + (i - 1) * meterPrePoint, (float)this.Polygon.ScreenBoundary.Height + newH);
+            //        sz = new SizeF(2 * meterPrePoint, offset * 0.4f);
+            //        rf = new RectangleF(pf1, sz);
+            //        newG.DrawString((_DamOrignCoord.X + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+            //        continue;
+            //    }
+            //    newG.DrawLine(Pens.Gray, pf, pf5);
+            //}
+            ////纵轴刻度
+
+            //for (float i = 1; i < (float)(pl.ScreenBoundary.Height - 10) / meterPrePoint; i++)//this.Polygon.ScreenBoundary.Width-40
+            //{
+            //    pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+            //    pf5 = new PointF(offset + 5, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+            //    if (i % 5 == 0)
+            //    {
+            //        pf = new PointF(offset, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+            //        pf5 = new PointF(offset + 10, -i * meterPrePoint + (float)this.Polygon.ScreenBoundary.Height + newH);
+            //        newG.DrawLine(Pens.Black, pf, pf5);
+            //        pf1 = new PointF(offset * 0.2f, -(i + 1) * meterPrePoint + (float)pl.ScreenBoundary.Height + newH);
+            //        sz = new SizeF(offset * 0.8f, 2 * meterPrePoint);
+            //        rf = new RectangleF(pf1, sz);
+
+            //        newG.DrawString((_DamOrignCoord.Y + i * 5).ToString("0"), _FtScale, Brushes.Black, rf, sf);
+
+            //        continue;
+            //    }
+            //    newG.DrawLine(Pens.Gray, pf, pf5);
+            //}
             newG.SmoothingMode = SmoothingMode.AntiAlias;
 
 

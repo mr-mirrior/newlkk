@@ -551,7 +551,7 @@ namespace DamLKK.Views
         {
             pt.X -= _MoveOffset.X;
             pt.Y -= _MoveOffset.Y;
-            return _MyLayer.ScreenToDam(pt);
+            return _MyLayer.ScreenToEarth(pt);
         }
 
         /// <summary>
@@ -813,12 +813,17 @@ namespace DamLKK.Views
                 count=new int[]{0,0};
 
             Coord dampt = ScreenToDam(DePadding(_CursorPos));
+            
             Coord damaxis = dampt.ToDamAxisCoord();
-            dampt.Y = -dampt.Y;
+            //dampt = damaxis.ToEarthCoord();
+            //dampt.Y = -dampt.Y;
             PointF scrPt = pt;
             scrPt = new PointF(pt.X, _MyDisplayRectangle.Height - _CursorPos.Y - PAD_VERT * 2);
             string dbg = string.Format("层:{0}, 大地{1}, 施工{2}",
                 _MyLayer.Name, dampt.ToString(), damaxis.ToString());
+
+            
+            
             Utils.Graph.OutGlow.DrawOutglowText(g, dbg, Font, rc, sf, Brushes.Black, Brushes.WhiteSmoke);
 
             if (IsPreview || Operation != Operations.ROOL_COUNT)
