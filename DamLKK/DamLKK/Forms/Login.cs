@@ -66,6 +66,8 @@ namespace DamLKK.Forms
 
             if (_RetainedUsers == null)
                 return;
+            cbuserName.Text = _RetainedUsers.Last();
+            cbuserName.Focus();
 
             foreach (string ui in _RetainedUsers)
             {
@@ -93,11 +95,16 @@ namespace DamLKK.Forms
             {
                 if (cbRetainMe.Checked)
                 {
-                    foreach (string s in _RetainedUsers)
+                    if(_RetainedUsers!=null)
                     {
-                        if (cbuserName.Text.Equals(s))
-                            return;
+                        foreach (string s in _RetainedUsers)
+                        {
+                            if (cbuserName.Text.Equals(s))
+                                return;
+                        }
                     }
+                    else
+                    _RetainedUsers = new List<string>();
                     _RetainedUsers.Add(cbuserName.Text);
                 }
 

@@ -385,24 +385,24 @@ namespace DamLKK._Control
                 catch(Exception e)
                 {
                     DamLKK.Utils.DebugUtil.log(e);
-                    DateTime t = DateTime.Now;
-                    string s = t.ToString("logs\\yy-MM-dd HH.mm.ss\\");
-                    if (warningSpeed != null)
-                    {
-                        FileStream fs = new FileStream(s+"WarningSpeed.dat", FileMode.CreateNew);
-                        BinaryWriter bw = new BinaryWriter(fs);
-                        int size = Marshal.SizeOf(typeof(WarningSpeed));
-                        byte[] buf = new byte[size];
-                        Marshal.Copy((IntPtr)warningSpeed, buf, 0, size);
-                        bw.Write(buf, 0, size);
-                        bw.Close();
-                        fs.Close();
+                    //DateTime t = DateTime.Now;
+                    //string s = t.ToString("logs\\yy-MM-dd HH.mm.ss\\");
+                    //if (warningSpeed != null)
+                    //{
+                    //    FileStream fs = new FileStream(s+"WarningSpeed.dat", FileMode.CreateNew);
+                    //    BinaryWriter bw = new BinaryWriter(fs);
+                    //    int size = Marshal.SizeOf(typeof(WarningSpeed));
+                    //    byte[] buf = new byte[size];
+                    //    Marshal.Copy((IntPtr)warningSpeed, buf, 0, size);
+                    //    bw.Write(buf, 0, size);
+                    //    bw.Close();
+                    //    fs.Close();
                         
-                        Utils.Xml.XMLUtil<RollerDis>.SaveXml(s+"CarDistribute.xml", cd);
-                        Utils.Xml.XMLUtil<Roller>.SaveXml(s + "CarInfo.xml", ci);
-                        Utils.Xml.XMLUtil<Deck>.SaveXml(s + "Segment.xml", dk);
-                        //Utils.Xml.XMLUtil<DamLKK.Models.Unit>.SaveXml(s + "Unit.xml", part);
-                    }
+                    //    Utils.Xml.XMLUtil<RollerDis>.SaveXml(s+"CarDistribute.xml", cd);
+                    //    Utils.Xml.XMLUtil<Roller>.SaveXml(s + "CarInfo.xml", ci);
+                    //    Utils.Xml.XMLUtil<Deck>.SaveXml(s + "Segment.xml", dk);
+                    //    //Utils.Xml.XMLUtil<DamLKK.Models.Unit>.SaveXml(s + "Unit.xml", part);
+                    //}
                 }
             }
         }
