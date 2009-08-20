@@ -168,15 +168,15 @@ namespace DamLKK._Control
         {
             try
             {
-                //RollerDis cd = VehicleControl.FindVehicleInUse(carid);
-                //_Model.Deck part = UnitControl.FromID(cd.Blockid);
-                //_Model.Elevation elev = new DM.Models.Elevation(cd.DesignZ);
+                RollerDis cd = VehicleControl.FindVehicleInUse(carid);
+         
+                //_Model.Elevation elev = new _Model.Elevation(cd.DesignZ);
 
-                //List<DamLKK._Model.Deck> seg = DB.DeckDAO.GetInstance().GetSegment(cd.Blockid, cd.DesignZ, cd.Segmentid);
-                //if (seg.Count == 0)
-                //    return null;
-                //return seg.First();
-                //Models.Layer layer = this.FindLayerByPE(part, elev);
+                Deck seg = DB.DeckDAO.GetInstance().GetDeck(cd.UnitID, cd.DesignZ, cd.SegmentID);
+                if (seg == null)
+                    return null;
+                return seg;
+                //_Model.Layer layer = this.FindLayerByPE(part, elev);
                 //return layer.DeckControl.FindDeckByIndex(cd.Segmentid);
             }
             catch

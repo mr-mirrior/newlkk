@@ -243,7 +243,7 @@ Normal：震动	//此值只适用于只有两种状态的碾压机*/
         {
             if (warningType == WarningType.OVERSPEED)
             {
-                return "当前速度为：！";
+                return "当前速度为：";
             }
             else if (warningType == WarningType.OVERTHICKNESS)
             {

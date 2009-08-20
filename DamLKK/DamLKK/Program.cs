@@ -70,7 +70,7 @@ namespace DamLKK
             {
                 Utils.MB.OKI("登录成功！");
 
-                Application.Run(Forms.Main.GetInstance());
+                Application.Run(new Forms.Main());
             }
 #else
             dlg = new DamLKK.Forms.Waiting();

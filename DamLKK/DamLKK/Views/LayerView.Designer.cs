@@ -187,6 +187,7 @@
             this.miDatTrackMap.ShortcutKeyDisplayString = "F10";
             this.miDatTrackMap.Size = new System.Drawing.Size(177, 22);
             this.miDatTrackMap.Text = "生成轨迹图(&D)";
+            this.miDatTrackMap.Visible = false;
             this.miDatTrackMap.Click += new System.EventHandler(this.miDatTrackMap_Click);
             // 
             // 生成压实厚度图TToolStripMenuItem
