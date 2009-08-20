@@ -166,7 +166,7 @@
             this.miArrows.Name = "miArrows";
             this.miArrows.Size = new System.Drawing.Size(177, 22);
             this.miArrows.Text = "轨迹箭头(&W)";
-            this.miArrows.Click += new System.EventHandler(this.miArrows_Click_1);
+            this.miArrows.Click += new System.EventHandler(this.miArrows_Click);
             // 
             // toolStripMenuItem3
             // 

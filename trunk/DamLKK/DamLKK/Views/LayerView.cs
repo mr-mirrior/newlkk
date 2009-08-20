@@ -1702,11 +1702,7 @@ namespace DamLKK.Views
         {
             CheckMenu(miVehicleInfo, _Model.DrawingComponent.VEHICLE);
         }
-        //轨迹箭头
-        private void miArrows_Click_1(object sender, EventArgs e)
-        {
-            CheckMenu(miArrows, _Model.DrawingComponent.ARROWS);
-        }
+       
 
         private void 生成压实厚度图TToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -543,7 +543,12 @@ namespace DamLKK._Model
 
                         cl_idx = Math.Min(cl_idx, _LayersColor.Length - 1);
                         int last_idx;
+                        if(mapindex==0)
                         last_idx = Math.Min(cl_idx, this.LibRollCount+this.NOLibRollCount);
+                        else if(mapindex==1)
+                            last_idx = Math.Min(cl_idx,this.NOLibRollCount);
+                        else
+                            last_idx = Math.Min(cl_idx, this.LibRollCount);
 
                         areas[cl_idx]++;
                         if (_IsDatamap)
