@@ -378,7 +378,7 @@ namespace DamLKK._Control
                     dlg.DesignZ = cd.DesignZ;
                     dlg.DeckName = dk.Name;
                     dlg.CarName = ci.Name;
-                    dlg.UnitName = unit.Name;
+                    dlg.UnitName = UnitDAO.GetInstance().GetOneUnit(dk.Unit.ID).Name;
                     dlg.FillForms();
                     Forms.Main.GetInstance.ShowWarningDlg(dlg);
                 }

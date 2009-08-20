@@ -686,6 +686,7 @@ namespace DamLKK._Model
                     return false;
 
                 int[] areas;
+                _Rolladdress = @"C:\OUTPUT\" + this._MyLayer.CurrentDeck.Name + @"\"  +this.Elevation.Height.ToString("0.0") + this.ID.ToString();
                 Bitmap output = CreateRollCountImage(out areas,0);
 
                 DB.DeckDAO.GetInstance().UpdateRollBitMap(this.Unit.ID, this.Elevation.Height, this._ID, DB.DeckDAO.GetInstance().ToByte(output));
@@ -702,7 +703,7 @@ namespace DamLKK._Model
                     MachRollMap(output, areas, i,bs);
                 }
                 
-                _Rolladdress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
+                
             }
 
 
@@ -1063,7 +1064,12 @@ namespace DamLKK._Model
                 {
                     dd.Create();
                 }
-                bitMp.Save(_Rolladdress);
+            if (mapindex==0)
+                bitMp.Save(_Rolladdress + "roll.png");
+            else if (mapindex==1)
+                bitMp.Save(_Rolladdress + "rollNoLib.png");
+            else
+                bitMp.Save(_Rolladdress + "rollLib.png");
 #endif
             output.Dispose();
             endG.Dispose();
@@ -1474,7 +1480,7 @@ namespace DamLKK._Model
 #if DEBUG
             bitMp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png");
 #else
-            bitMp.Save(address, System.Drawing.Imaging.ImageFormat.Png);
+            bitMp.Save(_Rolladdress+"Elevetion.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
 
             output.Dispose();

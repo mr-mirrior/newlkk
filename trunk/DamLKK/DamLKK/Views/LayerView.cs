@@ -1730,8 +1730,8 @@ namespace DamLKK.Views
                 image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
                 image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
 #else
-                image.Save(@"C:\OUTPUT\" + layer.VisibleDeck.DeckInfo.SegmentName.Trim() + @"\" + layer.VisibleDeck.Partition.Name + layer.VisibleDeck.Elevation.Height.ToString("0.0") + layer.VisibleDeck.ID.ToString() + "thickness.png");
-                image2.Save(@"C:\OUTPUT\" + layer.VisibleDeck.DeckInfo.SegmentName.Trim() + @"\" + layer.VisibleDeck.Partition.Name + layer.VisibleDeck.Elevation.Height.ToString("0.0") + layer.VisibleDeck.ID.ToString() + "elevation.png");
+                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
+                image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
 #endif
                 image.Dispose();
                 image2.Dispose();
@@ -1759,7 +1759,7 @@ namespace DamLKK.Views
             dlg.Finished = true;
             if (!result)
                 return;
-            System.IO.FileInfo fi = new System.IO.FileInfo(@"C:\output\" + this._MyLayer.CurrentDeck.Name + @"\" + this._MyLayer.CurrentDeck._Rolladdress);
+            System.IO.FileInfo fi = new System.IO.FileInfo(this._MyLayer.CurrentDeck._Rolladdress+"roll.png");
             if (result)
             {
 #if !DEBUG
