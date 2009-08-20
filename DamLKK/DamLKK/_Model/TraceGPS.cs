@@ -988,8 +988,8 @@ namespace DamLKK._Model
                             if (g.SmoothingMode == SmoothingMode.AntiAlias && drawingArrows)
                             {
                                 pBthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
-                                //pMthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
-                                //pthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+                                pMthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
+                                pthis.CustomEndCap = new AdjustableArrowCap(scrSize * 3, scrSize * 12, true);
                             }
 
 
