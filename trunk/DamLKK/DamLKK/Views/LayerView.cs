@@ -1765,7 +1765,7 @@ namespace DamLKK.Views
 #if !DEBUG
                 Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
 #else
-                Utils.Sys.SysUtils.StartProgram(@"C:\output\" + this._MyLayer.CurrentDeck._Rolladdress, null);
+                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "roll.png", null);
 #endif
             }
         }
