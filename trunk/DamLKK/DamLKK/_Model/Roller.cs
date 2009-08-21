@@ -260,7 +260,7 @@ namespace DamLKK._Model
                         
                         Count = Owner.RollCount(Owner.MyLayer.DamToScreen(e.gps.GPSCoord.Plane));
                         
-                        if(Count!=null&&(Count[0]+Count[1])<this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0&&e.gps.Speed>Config.I.LIBRATE_Speed&&e.gps.WorkFlag>1)
+                        if(Count!=null&&(Count[0]+Count[1])<=this.Owner.NOLibRollCount&&(int)e.gps.LibratedStatus!=0&&e.gps.Speed>Config.I.LIBRATE_Speed&&e.gps.WorkFlag>1)
                         {
                             if(!_Timer.Enabled)
                             {
