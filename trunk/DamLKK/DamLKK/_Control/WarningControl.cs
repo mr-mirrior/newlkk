@@ -17,7 +17,8 @@ namespace DamLKK._Control
         public byte Type;   //=4
         [MarshalAs(UnmanagedType.U1)]
         public byte BlockID;   //分区号
-
+        //[MarshalAs(UnmanagedType.U1)]
+        //public byte CarID;   //车辆ID
 
         public static int Size()
         {
@@ -127,6 +128,7 @@ namespace DamLKK._Control
             clientString[i++] = Convert.ToByte(workErrorString.Len);
             clientString[i++] = Convert.ToByte(workErrorString.Type);
             clientString[i++] =Convert.ToByte(workErrorString.BlockID);
+            //clientString[i++] = Convert.ToByte(workErrorString.CarID);
 
             foreach (byte b in warningString2byte)
             {
@@ -147,6 +149,7 @@ namespace DamLKK._Control
                 workErrorString2String[0] = (*p).Len;
                 workErrorString2String[1] = (*p).Type;
                 workErrorString2String[2] = (*p).BlockID;
+                //workErrorString2String[3] = (*p).CarID;
 
                 return workErrorString2String;
             }

@@ -524,6 +524,7 @@ namespace DamLKK.Views
         {
             Coord dampt = ScreenToDam(DePadding(_CursorPos));
             Coord damaxis = dampt.ToDamAxisCoord();
+           
             return damaxis;
         }
 

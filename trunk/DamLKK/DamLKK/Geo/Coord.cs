@@ -40,7 +40,7 @@ namespace DamLKK.Geo
         
         public override string ToString()
         {
-            return string.Format("X={0:0.00},Y={1:0.00};", _x, _y);
+            return string.Format("X={0:0.00},Y={1:0.00};", _x,- _y);
         }
         /// <summary>
         /// 完全相等判断，包含Z坐标
