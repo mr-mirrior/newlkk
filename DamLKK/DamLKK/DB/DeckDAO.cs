@@ -498,7 +498,7 @@ namespace DamLKK.DB
                 }
                 return DeckVehicleResult.SEGMENT_FAIL;
             }
-           
+
             /// <summary>
             /// //包含车辆操作的结束仓面
             /// </summary>
