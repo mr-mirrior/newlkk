@@ -1387,6 +1387,7 @@ namespace DamLKK.Views
                 this.miStartDeck.Enabled = false;
                 this.miEndDeck.Enabled = false;
                 this.miDelete.Enabled = false;
+                this.btnChange.Enabled = false;
                 this.tmiNotRolling.Enabled = false;
             }
 

@@ -139,7 +139,9 @@ namespace DamLKK.Forms
             {
                 btnDeckPoly.Enabled = false;
                 btnInputCoord.Enabled = false;
+                btnUnit.Enabled = false;
                 btnDeckPoly.ForeColor = Color.Gray;
+                btnUnit.ForeColor = Color.Gray;
             }
             foreach (Control c in this.Controls)
             {
