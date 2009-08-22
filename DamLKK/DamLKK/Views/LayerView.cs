@@ -821,7 +821,7 @@ namespace DamLKK.Views
             PointF scrPt = pt;
             scrPt = new PointF(pt.X, _MyDisplayRectangle.Height - _CursorPos.Y - PAD_VERT * 2);
             string dbg = string.Format("层:{0}, 大地{1}, 施工{2}",
-                _MyLayer.Name, dampt.ToString(), damaxis.ToString());
+                _MyLayer.Name, dampt.ToString(), string.Format("X={0:0.00},Y={1:0.00};", damaxis.X, damaxis.Y));
 
             
             
