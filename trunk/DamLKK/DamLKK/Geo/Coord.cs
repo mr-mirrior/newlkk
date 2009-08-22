@@ -172,6 +172,10 @@ namespace DamLKK.Geo
         COS=0.83452702271916488948079272306091
          */
         //50333.75,8496.30  nzd
+
+
+        private const double sinβ = 0.073411433093179015127035277240849;
+        private const double cosβ = 0.99730174044328514895742951093525;
         /// <summary>
         /// 大地坐标转大坝坐标
         /// </summary>
@@ -180,8 +184,7 @@ namespace DamLKK.Geo
         {
             double X = 50333.75;//342007.9073 ;    
             double Y = 8496.30;//2936668.6550;
-            double  sinβ = 0.073411433093179015127035277240849;
-            double cosβ = 0.99730174044328514895742951093525;
+    
             double L = Math.Sqrt((this.X - X) * (this.X - X) + (-this.Y - Y) * (-this.Y - Y));
             if (L == 0)
                 return new Coord(0, 0);
@@ -208,8 +211,7 @@ namespace DamLKK.Geo
         {
             double X = this.X;
             double Y = this.Y;
-            double sinβ = 0.073411433093179015127035277240849;
-            double cosβ = 0.99730174044328514895742951093525;
+      
             double L = Math.Sqrt(X* X + Y * Y);
             if (L == 0)
                 return new Coord(X, Y);

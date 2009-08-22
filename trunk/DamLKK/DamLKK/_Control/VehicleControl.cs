@@ -258,12 +258,12 @@ namespace DamLKK._Control
             double min = double.MaxValue;
             foreach (Roller v in vehicles)
             {
-                //double l, h;
-                //v.TrackGPSControl.Tracking.MaxMin(out l, out h);
-                //if (h != -1)
-                //    max = Math.Max(max, h);
-                //if( l != -1 )
-                //    min = Math.Min(min, l);
+                double l, h;
+                v.TrackGPSControl.Tracking.MaxMin(out l, out h);
+                if (h != -1)
+                    max = Math.Max(max, h);
+                if (l != -1)
+                    min = Math.Min(min, l);
             }
             hi = max;
             lo = min;
