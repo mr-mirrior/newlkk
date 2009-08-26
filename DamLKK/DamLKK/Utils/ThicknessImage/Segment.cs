@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace DamLKK.DB
+namespace DM.DB
 {
     public class Segment
     {
@@ -27,11 +27,11 @@ namespace DamLKK.DB
         public Segment() { }
         public bool IsEqual(Segment s)
         {
-            return IsEqual(s.BlockID, s.DesignZ, s.SegmentID);
+            return IsEqual(s.UnitID, s.DesignZ, s.SegmentID);
         }
         public bool IsEqual(int partitionID, double elevation, int sID)
         {
-            return partitionID == this.BlockID && elevation == this.DesignZ && sID == this.SegmentID;
+            return partitionID == this.UnitID && elevation == this.DesignZ && sID == this.SegmentID;
         }
         string elevationValues;
 
@@ -93,19 +93,19 @@ namespace DamLKK.DB
             get { return workState; }
             set { workState = value; }
         }
-        Int32 blockID;
+        Int32 unitID;
 
-        public Int32 BlockID
+        public Int32 UnitID
         {
-            get { return blockID; }
-            set { blockID = value; }
+            get { return unitID; }
+            set { unitID = value; }
         }
-        string blockName;
+        string unitName;
 
-        public string BlockName
+        public string UnitName
         {
-            get { return blockName; }
-            set { blockName = value; }
+            get { return unitName; }
+            set { unitName = value; }
         }
 
 
@@ -280,13 +280,13 @@ namespace DamLKK.DB
         //         {
         //             this.workState = workState;
         //         }
-        //         public Int32 getBlockID()
+        //         public Int32 getUnitID()
         //         {
-        //             return blockID;
+        //             return unitID;
         //         }
-        //         public void setBlockID(Int32 blockID)
+        //         public void setUnitID(Int32 unitID)
         //         {
-        //             this.blockID = blockID;
+        //             this.unitID = unitID;
         //         }
         //         public Double getMaxSpeed()
         //         {

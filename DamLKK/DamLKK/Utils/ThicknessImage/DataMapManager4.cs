@@ -6,7 +6,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-namespace DamLKK.DB.datamap
+using DamLKK.DB.datamap;
+using DamLKK.DB;
+namespace DM.DB.datamap
 {
     class DataMapManager4
     {
@@ -16,29 +18,37 @@ namespace DamLKK.DB.datamap
 
         public static float WIDTH = 0.5f;//每个正方形网格的宽度/单位米
         public static int SCREEN_ONEMETER = 20;//每米的像素数,每个网格的大小刚好是SCREEN_ONEMETER的一半
-        public static double sin = 0.5509670120356448784912018921605;
-        public static double cos = 0.83452702271916488948079272306091;
+        //public static double sin = 0.5509670120356448784912018921605;
+        //public static double cos = 0.83452702271916488948079272306091;
+        const double X0 = 50333.75;//342007.9073 ;    
+        const double Y0 = 8496.30;//2936668.6550;
+        const double sinβ = 0.073411433093179015127035277240849;
+        const double cosβ = 0.99730174044328514895742951093525;
+
         static int map_left = 80;//主图形左侧
         static int map_bottom = 200;//主图形下侧
         static int map_right = 80;//右侧
         static int map_top = 160;//上侧
 
-        public static Bitmap[] draw(int blockid, double designz, int segmentid)
+        static float min_mutiple;
+        static float max_mutiple;
+
+        public static Bitmap[] draw(int unitid, double designz, int segmentid)
         {
 //              string valuesstrs = "604.52,609.89";
 //              Bitmap eimage = new Bitmap("d:/elevation/ED607.20OrignElevation.png");//segment.ElevationImage;
-//              DAO.getInstance().updateElevationBitMap(blockid, 607.2, 0, DAO.getInstance().ToByte(eimage), valuesstrs);
+//              DAO.getInstance().updateElevationBitMap(unitid, 607.2, 0, DAO.getInstance().ToByte(eimage), valuesstrs);
 // 
 
             //从数据库中读出本仓面,和本仓面上一层的所有仓面信息.
-            Segment segment = DAO.getInstance().getSegment(blockid, designz, segmentid);
+            Segment segment = DAO.getInstance().getSegment(unitid, designz, segmentid);
             if (segment == null)
                 return null;
             //得到上一层的所有仓面信息
             DateTime dtend = segment.EndDate;
             String vertex = segment.Vertext;//大地坐标的vertex
-            double lastDesignz = DAO.getInstance().getLastDesignZ(blockid, designz, segmentid, vertex);
-            List<Segment> segments = DAO.getInstance().getSegments(blockid, lastDesignz);
+            double lastDesignz = DAO.getInstance().getLastDesignZ(unitid, designz, segmentid, vertex);
+            List<Segment> segments = DAO.getInstance().getSegments(unitid, lastDesignz);
             //将上一层所有仓面的数据图读出来
             
             if (segments == null || segments.Count == 0)
@@ -49,11 +59,11 @@ namespace DamLKK.DB.datamap
             for (int ii = 0; ii < segments.Count; ii++)
             {
 
-                //byte[] datamap = DAO.getInstance().getDatamap(blockid, lastDesignz, segments[ii].SegmentID);
-                Bitmap this_e_map = DAO.getInstance().getElevationBitMap(blockid, lastDesignz, segments[ii].SegmentID);
+                //byte[] datamap = DAO.getInstance().getDatamap(unitid, lastDesignz, segments[ii].SegmentID);
+                Bitmap this_e_map = DAO.getInstance().getElevationBitMap(unitid, lastDesignz, segments[ii].SegmentID);
                 if (this_e_map == null)
                 {
-                    DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + blockid + " " + lastDesignz + " " + segments[ii].SegmentID);
+                    DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + unitid + " " + lastDesignz + " " + segments[ii].SegmentID);
                      return null;
                 }
                 else
@@ -63,18 +73,24 @@ namespace DamLKK.DB.datamap
             }
             
             
-            //byte[] bytes = DAO.getInstance().getDatamap(blockid, designz, segmentid);//本仓面的数据图
+            //byte[] bytes = DAO.getInstance().getDatamap(unitid, designz, segmentid);//本仓面的数据图
 
-            Bitmap this_elevation_map = DAO.getInstance().getElevationBitMap(blockid, designz, segmentid);
+            Bitmap this_elevation_map = DAO.getInstance().getElevationBitMap(unitid, designz, segmentid);
             if (this_elevation_map== null)
             {
 
-                DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + blockid + " " + designz + " " + segmentid);
+                DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + unitid + " " + designz + " " + segmentid);
                 return null;
             }
             segment.ElevationImage = this_elevation_map;
 
+
+            min_mutiple = Convert.ToSingle(DifferenceConfig.getInstance().getMinValue());
+            max_mutiple = Convert.ToSingle(DifferenceConfig.getInstance().getMaxValue());
+
             //DataMap dm = new DataMap(bytes);
+
+
 
             //通过vertex得到大坝坐标系的边界点
             List<PointF> dam_points = getSegmentVertex_DAM(vertex);
@@ -220,7 +236,8 @@ namespace DamLKK.DB.datamap
                     {
                         this_difference = this_designz - getLastDesignz;
 
-                        if (this_difference <= 0.25*designdepth || this_difference > 1.25 * designdepth)
+                        //改这里
+                        if (this_difference <= min_mutiple * designdepth || this_difference > max_mutiple * designdepth)
                         {
                             difference_s.Add(-1);
                             continue;
@@ -548,7 +565,12 @@ namespace DamLKK.DB.datamap
             String thickness_title = "压实厚度图形报告";
             String elevation_title = "碾压高程图形报告";
 
-            String sub_title = "仓面   " + DB.UnitDAO.GetInstance().GetName(blockid) + "     仓面名称   " + segment.SegmentName + "      高程   " + segment.DesignZ + "m";
+            
+
+            String sub_title = getSubTitle(segment);
+            
+            
+            
             StringFormat fmt = new StringFormat();
             fmt.Alignment = StringAlignment.Center;
             fmt.LineAlignment = StringAlignment.Near;
@@ -625,7 +647,7 @@ namespace DamLKK.DB.datamap
             elevation_g.DrawString("高程均值:" + average_designz.ToString("N", centimeter) + "m    高程标准差:" + standard_deviation_designz.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new RectangleF(juxingjianbian.X, juxingjianbian.Y - 20, juxingjianbian_width, juxingjianbian_height), fmt);/*new PointF(juxingjianbian.X, juxingjianbian.Y + 25 + 25)*/
             //更新数据库字段
             string elevations = average_difference.ToString("N", centimeter) + "," + standard_deviation.ToString("N", centimeter) + "," + average_designz.ToString("N", centimeter) + "," + standard_deviation_designz.ToString("N", centimeter);
-            DAO.updateElevations(blockid, designz, segmentid, elevations);
+            DAO.updateElevations(unitid, designz, segmentid, elevations);
             //g.DrawString((min+(max-min)/2).ToString() + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width/2, juxingjianbian.Y + 25));
             //间隔
             //float jiange_y = juxingjianbian.Y + 25;
@@ -659,13 +681,13 @@ namespace DamLKK.DB.datamap
         public static Pixel getPixel(String x, String y, List<Segment> segments)
         {
             //确定所属仓面
-            //System.out.println(blockid+" "+designz);		 
+            //System.out.println(unitid+" "+designz);		 
             for (int i = 0; i < segments.Count; i++)
             {
                 Segment segment = segments[i];
                 String vertex = segment.Vertext;
                 //System.out.println(vertex+" "+x+" "+y);
-                //byte[] bytes1 = getBytes(blockid,designz,segment.getSegmentID());
+                //byte[] bytes1 = getBytes(unitid,designz,segment.getSegmentID());
                 //DataMap.test(bytes1);
                 if (inThisSegment(vertex, x, y))
                 {
@@ -861,17 +883,31 @@ namespace DamLKK.DB.datamap
         //将大地坐标转换成大坝坐标
         static Coordinate earthToDam(Coordinate p)
         {
-            double x0 = -cos * p.getX() - sin * p.getY() + 46557.7811830799932563179112397188;
-            double y0 = +sin * p.getX() - cos * p.getY() - 20616.2311146461071871455578251375;
-            return new Coordinate(x0, y0);
+            double thisX = p.getX();
+            double thisY = -p.getY();
+            
+            double L = Math.Sqrt((thisX - X0) * (thisX - X0) + (-thisY - Y0) * (-thisY - Y0));          
+            double sinA = (-thisY - Y0) / L;
+            double cosA = (thisX - X0) / L;
+            double rX = (cosA * cosβ + sinA * sinβ) * L;
+            double rY = (sinA * cosβ - cosA * sinβ) * L;
+            //cod0.X = this._x;//(-COS * this.X + SIN * this.Y + 46557.7811830799932563179112397188);
+            //cod0.Y = this._y; //(SIN * this.X + COS * this.Y - 20616.2311146461071871455578251375);
+             
+            return new Coordinate(rX,rY);
 
         }
-        //将大把坐标转换成大地坐标
+        //将大坝坐标转换成大地坐标
         static Coordinate damToEarth(PointF p)
         {
-            double x = -cos * p.X + sin * (-p.Y) + 50212.59;
-            double y = -sin * p.X - cos * (-p.Y) + 8447;
-            return new Coordinate(x, y);
+            double X = p.X;
+            double Y = p.Y;
+            double L = Math.Sqrt(X * X + Y * Y);
+            double sinA = Y / L;
+            double cosA = X / L;
+            double cX = (cosA * cosβ - sinA * sinβ) * L + X0;//342007.9073;
+            double cY = (sinA * cosβ + cosA * sinβ) * L + Y0;//2936668.6550;
+            return new Coordinate(cX,cY);
         }
         //得到这一堆点最左的点在这个数组中的下标,最小的X
         public static int getLeftIndex(List<PointF> cs)
@@ -1043,5 +1079,23 @@ namespace DamLKK.DB.datamap
             }
             return -1;
         }
+
+        public static string getSubTitle(Segment segment){
+            //几到几坝段 多少到多少高程 仓面名称 平层就显示多少多少米 斜层就显示“斜层-几”
+
+            String unitblocks = DAO.getInstance().getUnitBlocks(segment.UnitID);
+            string[] blocks = unitblocks.Split(',');
+            unitblocks = blocks[1] + "-" + blocks[blocks.Length-2];
+            if (segment.DesignZ < 1000)
+            {//斜层
+                return "坝段 "+unitblocks+" 碾压层名称  "+segment.SegmentName+" "+segment.DesignZ+"m";
+            }
+            else
+            {
+                return "坝段 "+unitblocks + " 碾压层名称  " + segment.SegmentName + "  斜层" + segment.DesignZ ;
+            }
+            
+        }
+
     }
 }

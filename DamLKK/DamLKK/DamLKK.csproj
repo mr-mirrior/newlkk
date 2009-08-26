@@ -184,6 +184,7 @@
     <Compile Include="Utils\ThicknessImage\DataMap.cs" />
     <Compile Include="Utils\ThicknessImage\DataMapManager.cs" />
     <Compile Include="Utils\ThicknessImage\DataMapManager4.cs" />
+    <Compile Include="Utils\ThicknessImage\DifferenceConfig.cs" />
     <Compile Include="Utils\ThicknessImage\PieChart.cs" />
     <Compile Include="Utils\ThicknessImage\Pixel.cs" />
     <Compile Include="Utils\ThicknessImage\Segment.cs" />
