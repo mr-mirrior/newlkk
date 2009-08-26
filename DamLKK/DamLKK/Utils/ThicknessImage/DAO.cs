@@ -534,6 +534,35 @@ namespace DM.DB.datamap
             return null;
         }
 
+        public string getStartZEndZ(int unitid)
+        {
+
+            SqlConnection connection = null;
+            SqlDataReader reader = null;
+            string sqlTxt = "select startz,endz from unit where (id=" + unitid + ") ";
+            try
+            {
+                connection = DBConnection.getSqlConnection();
+                reader = DBConnection.executeQuery(connection, sqlTxt);
+                if (reader.Read())
+                {
+                    return " "+reader["startz"].ToString()+"米-"+reader["endz"].ToString()+"米";
+                }
+
+            }
+            catch (Exception exp)
+            {
+                DebugUtil.log(exp);
+
+            }
+            finally
+            {
+                DBConnection.closeDataReader(reader);
+                DBConnection.closeSqlConnection(connection);
+            }
+            return null;
+        }
+
     }
 
 }
