@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using DamLKK.DB.datamap;
-using DamLKK.DB;
+using DamLKK.Utils;
 namespace DM.DB.datamap
 {
     class DataMapManager4
@@ -63,7 +63,7 @@ namespace DM.DB.datamap
                 Bitmap this_e_map = DAO.getInstance().getElevationBitMap(unitid, lastDesignz, segments[ii].SegmentID);
                 if (this_e_map == null)
                 {
-                    DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + unitid + " " + lastDesignz + " " + segments[ii].SegmentID);
+                    DebugUtil.fileLog("没有elevationImage图" + unitid + " " + lastDesignz + " " + segments[ii].SegmentID);
                      return null;
                 }
                 else
@@ -79,7 +79,7 @@ namespace DM.DB.datamap
             if (this_elevation_map== null)
             {
 
-                DamLKK.Utils.DebugUtil.fileLog("没有elevationImage图" + unitid + " " + designz + " " + segmentid);
+                DebugUtil.fileLog("没有elevationImage图" + unitid + " " + designz + " " + segmentid);
                 return null;
             }
             segment.ElevationImage = this_elevation_map;
@@ -638,8 +638,8 @@ namespace DM.DB.datamap
             thickness_g.DrawString("最小值:" + min_thickness.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X - 25, juxingjianbian.Y + 25));
             elevation_g.DrawString("最小值:" + min_value.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X - 25, juxingjianbian.Y + 25));
             //最大值
-            thickness_g.DrawString("最大值:" + max_thickness.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 25, juxingjianbian.Y + 25));
-            elevation_g.DrawString("最大值:" + max_value.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 25, juxingjianbian.Y + 25));
+            thickness_g.DrawString("最大值:" + max_thickness.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 35, juxingjianbian.Y + 25));
+            elevation_g.DrawString("最大值:" + max_value.ToString("N", centimeter) + "m", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 35, juxingjianbian.Y + 25));
             //中间值
             fmt.Alignment = StringAlignment.Center;
             fmt.LineAlignment = StringAlignment.Center;
@@ -654,8 +654,8 @@ namespace DM.DB.datamap
             //g.DrawString("<----             " + ((max - min)).ToString() + "m" + "             ---->", f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width / 2, jiange_y));
             //出图时间
             DateTime now = DateTime.Now;
-            thickness_g.DrawString("出图时间:" + now, f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 100, juxingjianbian.Y + 25 + 25));
-            elevation_g.DrawString("出图时间:" + now, f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 100, juxingjianbian.Y + 25 + 25));
+            thickness_g.DrawString("出图时间:" + now, f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 120, juxingjianbian.Y + 25 + 25));
+            elevation_g.DrawString("出图时间:" + now, f, new SolidBrush(Color.Black), new PointF(juxingjianbian.X + juxingjianbian_width - 120, juxingjianbian.Y + 25 + 25));
             //垃圾回收尚未进行,需要看书了解.
             //大坝边界线
             thickness_g.DrawLines(Pens.Green, screen_points.ToArray());
@@ -1084,15 +1084,16 @@ namespace DM.DB.datamap
             //几到几坝段 多少到多少高程 仓面名称 平层就显示多少多少米 斜层就显示“斜层-几”
 
             String unitblocks = DAO.getInstance().getUnitBlocks(segment.UnitID);
+            String startzendz = DAO.getInstance().getStartZEndZ(segment.UnitID);
             string[] blocks = unitblocks.Split(',');
             unitblocks = blocks[1] + "-" + blocks[blocks.Length-2];
-            if (segment.DesignZ < 1000)
+            if (segment.DesignZ > 1000)
             {//斜层
-                return "坝段 "+unitblocks+" 碾压层名称  "+segment.SegmentName+" "+segment.DesignZ+"m";
+                return unitblocks+"坝段 "+startzendz+/*" 碾压层名称  "+segment.SegmentName+" "+*/segment.DesignZ+"米";
             }
             else
             {
-                return "坝段 "+unitblocks + " 碾压层名称  " + segment.SegmentName + "  斜层" + segment.DesignZ ;
+                return unitblocks + "坝段 "+ startzendz /*+ " 碾压层名称  " + segment.SegmentName  */+"  第" + segment.DesignZ + "斜层";
             }
             
         }
