@@ -7,10 +7,10 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using DamLKK.DB;
 using DamLKK.Utils;
-using DamLKK._Model;
 
-namespace DamLKK.DB.datamap
+namespace DM.DB.datamap
 {
     class DAO
     {
@@ -27,11 +27,11 @@ namespace DamLKK.DB.datamap
             return myInstance;
         }
 
-        public static bool updateElevations(int blockid, double designz, int segmentid, string elevations)
+        public static bool updateElevations(int unitid, double designz, int segmentid, string elevations)
         {
 
             string sqlTxt = "update segment set elevations = '" + elevations +
-                "' where blockid=" + blockid + " and segmentid=" + segmentid +
+                "' where unitid=" + unitid + " and segmentid=" + segmentid +
                 " and designz=" + designz;
             try
             {
@@ -50,16 +50,31 @@ namespace DamLKK.DB.datamap
         }
 
         //得到当前高程的上一个高程
-        public double getLastDesignZ(int blockid, double designz, int segmentid, String vertex)
+        public double getLastDesignZ(int unitid, double designz, int segmentid, String vertex)
         {
+            //designz
+            //平层不分单元 斜层限制在一个单元内
+            //计算厚度的时候 平层和斜层分开
+            //平层的designz都大于1000
+            //斜层的designz从1开始 递增
+
             List<Segment> segments = new List<Segment>();
             SqlConnection connection = null;
             SqlDataReader reader = null;
             List<double> last_designzs = new List<double>();
             List<String> last_vertexs = new List<string>();
             //dtend = "2009/4/23 17:00:00";
-            String getdesignDepth = "(select designdepth from segment where blockid=" + blockid + " and segmentid=" + segmentid + " and designz=" + designz + ")";
-            String sqlTxt = "select * from segment where blockid=" + blockid + " and (designz < " + (designz.ToString()) + "-" + getdesignDepth + "*0.5) and designz>(" + designz + "-" + getdesignDepth + "*1.25) and workstate=2 order by dtend desc";
+            String getdesignDepth = "(select designdepth from segment where unitid=" + unitid + " and segmentid=" + segmentid + " and designz=" + designz + ")";
+            String sqlTxt = "";
+            if (designz > 1000)//平层
+            {
+                sqlTxt = "select * from segment where (designz < " + (designz.ToString()) + "-" + getdesignDepth + "*0.5) and designz>(" + designz + "-" + getdesignDepth + "*1.25) and workstate=2 order by dtend desc";
+            }
+            else { //斜层
+                sqlTxt = "select * from segment where unitid=" + unitid + " and (designz < " + (designz.ToString()) + "-" + getdesignDepth + "*0.5) and designz>(" + designz + "-" + getdesignDepth + "*1.25) and workstate=2 order by dtend desc";
+            }
+            
+             
             try
             {
                 connection = DBConnection.getSqlConnection();
@@ -117,8 +132,8 @@ namespace DamLKK.DB.datamap
                 int right_index = DataMapManager4.getRightIndex(all);
                 int top_index = DataMapManager4.getTopIndex(all);
                 int bottom_index = DataMapManager4.getBottomIndex(all);
-                int map_width =(int)Math.Round(all[right_index].X - all[left_index].X);
-                int map_height = (int)Math.Round(all[bottom_index].Y - all[top_index].Y);
+                int map_width = (int)Math.Round( all[right_index].X - all[left_index].X);
+                int map_height = (int)Math.Round( all[bottom_index].Y - all[top_index].Y);
 
                 Bitmap[] bitmaps = new Bitmap[count];
                 Graphics[] graphicses = new Graphics[count];
@@ -145,9 +160,8 @@ namespace DamLKK.DB.datamap
                     this_region.Intersect(up_GraphicsPath);
                     graphicses[i].FillRegion(new SolidBrush(colors[i]), this_region);
                     graphicses[i].Flush();
-                    //bitmaps[i].Save("c:/" + blockid + " " + designz + " " + segmentid +" -"+i+ ".png", ImageFormat.Png);
+                    //bitmaps[i].Save("c:/" + unitid + " " + designz + " " + segmentid +" -"+i+ ".png", ImageFormat.Png);
                 }
-
 
                 for (int i = 0; i < count; i++)
                 {
@@ -188,12 +202,12 @@ namespace DamLKK.DB.datamap
             }
         }
 
-        public List<Segment> getSegments(Int32 blockID, Double designZ)
+        public List<Segment> getSegments(Int32 unitid, Double designZ)
         {
             List<Segment> segments = new List<Segment>();
             SqlConnection connection = null;
             SqlDataReader reader = null;
-            string sqlTxt = "select * from segment where (blockid=" + blockID + ") and (designZ=" + designZ + ") and workstate=2 ";
+            string sqlTxt = "select * from segment where (unitid=" + unitid + ") and (designZ=" + designZ + ") and workstate=2 ";
             try
             {
                 connection = DBConnection.getSqlConnection();
@@ -216,13 +230,13 @@ namespace DamLKK.DB.datamap
             }
         }
 
-        public List<Segment> getSegments(int blockid, double begin_designz, double end_designz)
+        public List<Segment> getSegments(int unitid, double begin_designz, double end_designz)
         {
             List<Segment> segments = new List<Segment>();
             Segment segment = null;
             SqlConnection connection = null;
             SqlDataReader reader = null;
-            string sqlTxt = "select * from segment where blockid=" + blockid + " and designz between " + begin_designz + " and " + end_designz + "and workstate=2 order by designz desc,segmentid desc";
+            string sqlTxt = "select * from segment where unitid=" + unitid + " and designz between " + begin_designz + " and " + end_designz + "and workstate=2 order by designz desc,segmentid desc";
             try
             {
                 connection = DBConnection.getSqlConnection();
@@ -253,7 +267,7 @@ namespace DamLKK.DB.datamap
                     //                     segment.DesignRollCount = designRollCount;
                     //                     segment.ErrorParam = errorParam;
                     //                     segment.Remark = (remark);
-                    //                     segment.BlockID = (blockID);
+                    //                     segment.UnitID = (unitid);
                     //                     segment.SegmentID = (segmentid);
                     //                     segment.WorkState = (DB.SegmentWorkState)(workState);
                     //                     segment.DesignZ = (designZ);
@@ -284,13 +298,12 @@ namespace DamLKK.DB.datamap
             }
         }
 
-        public Segment getSegment(Int32 blockID, double designZ, Int32 segmentid)
+        public Segment getSegment(Int32 unitid, double designZ, Int32 segmentid)
         {
-
             Segment segment = null;
             SqlConnection connection = null;
             SqlDataReader reader = null;
-            string sqlTxt = "select * from segment where (blockid=" + blockID + ") and (designZ=" + designZ +
+            string sqlTxt = "select * from segment where (unitid=" + unitid + ") and (designZ=" + designZ +
                 ") and (segmentid=" + segmentid + ")";
             try
             {
@@ -322,7 +335,7 @@ namespace DamLKK.DB.datamap
                     //                     segment.DesignRollCount = designRollCount;
                     //                     segment.ErrorParam = errorParam;
                     //                     segment.Remark = (remark);
-                    //                     segment.BlockID = (blockID);
+                    //                     segment.UnitID = (unitid);
                     //                     segment.SegmentID = (segmentid);
                     //                     segment.WorkState = (DB.SegmentWorkState)(workState);
                     //                     segment.DesignZ = (designZ);
@@ -354,7 +367,7 @@ namespace DamLKK.DB.datamap
         private Segment readSegment(SqlDataReader reader)
         {
             Segment segment = new Segment();
-            DeckWorkState workState = (DeckWorkState)Convert.ToInt32(reader["workState"]);
+            DamLKK._Model.DeckWorkState workState = (DamLKK._Model.DeckWorkState)Convert.ToInt32(reader["workState"]);
             //Int32 segmentid = Convert.ToInt32(reader["segmentid"]);
             string vertex = reader["vertex"].ToString();
             DateTime enddate = DateTime.MinValue;
@@ -371,21 +384,21 @@ namespace DamLKK.DB.datamap
             string segmentname = reader["segmentname"].ToString();
             Double startZ = Convert.ToDouble(reader["startz"]);
             Double maxSpeed = Convert.ToDouble(reader["maxspeed"]);
-            Int32 designRollCount = Convert.ToInt32(reader["designRollCount"]);
+            //Int32 designRollCount = Convert.ToInt32(reader["designRollCount"]);
             Double errorParam = Convert.ToDouble(reader["errorParam"]);
             string elevationValues = reader["elevationValues"].ToString();
             segment = new Segment();
             segment.MaxSpeed = maxSpeed;
 
             segment.ElevationValues = elevationValues;
-            segment.DesignRollCount = designRollCount;
+            //segment.DesignRollCount = designRollCount;
             segment.ErrorParam = errorParam;
             segment.Remark = (remark);
-            segment.BlockID = (int)(reader["BLOCKID"]);
+            segment.UnitID = (int)(reader["UnitID"]);
             segment.SegmentID = (int)(reader["SEGMENTID"]);
-            segment.WorkState = (DeckWorkState)(workState);
+            segment.WorkState = (DamLKK._Model.DeckWorkState)(workState);
             segment.DesignZ = (double)(reader["DESIGNZ"]);
-            //segment.BlockName=
+            //segment.UnitName=
             segment.StartDate = (startdate);
             segment.EndDate = (enddate);
             segment.SegmentName = (segmentname);
@@ -397,11 +410,11 @@ namespace DamLKK.DB.datamap
             return segment;
         }
 
-        public byte[] getDatamap(int blockid, double designz, int segmentid)
+        public byte[] getDatamap(int unitid, double designz, int segmentid)
         {
             string sqltext = string.Format(
-                "select DATAMAP from SEGMENT where (BLOCKID ={0}) and (DESIGNZ={1}) and (SEGMENTID={2})",
-                blockid, designz, segmentid);
+                "select DATAMAP from SEGMENT where (UnitID ={0}) and (DESIGNZ={1}) and (SEGMENTID={2})",
+                unitid, designz, segmentid);
             SqlConnection connection = null;
             SqlDataReader reader = null;
             try
@@ -436,9 +449,9 @@ namespace DamLKK.DB.datamap
 
 
 
-        public int updateElevationBitMap(Int32 blockid, Double designz, Int32 segmentid, byte[] elevationImage, string values)
+        public int updateElevationBitMap(Int32 unitid, Double designz, Int32 segmentid, byte[] elevationImage, string values)
         {
-            string sqlTxt = "update segment set elevationImage  = @elevationImage,elevationValues='" + values + "'  where blockid = " + blockid + " and designz=" + designz + " and segmentid=" + segmentid;
+            string sqlTxt = "update segment set elevationImage  = @elevationImage,elevationValues='" + values + "'  where unitid = " + unitid + " and designz=" + designz + " and segmentid=" + segmentid;
 
             SqlConnection conn = null;
             SqlCommand cmd = null;
@@ -464,39 +477,10 @@ namespace DamLKK.DB.datamap
 
         }
 
-
-        public int updateRollBitMap(Int32 blockid, Double designz, Int32 segmentid, byte[] rollImage)
-        {
-            string sqlTxt = "update segment set rollImage  = @rollImage where blockid = " + blockid + " and designz=" + designz + " and segmentid=" + segmentid;
-
-            SqlConnection conn = null;
-            SqlCommand cmd = null;
-            try
-            {
-                conn = DBConnection.getSqlConnection();
-                cmd = new SqlCommand(sqlTxt, conn);
-                SqlParameter sqlImage = cmd.Parameters.Add("@rollImage", SqlDbType.Image);
-                sqlImage.Value = rollImage;
-                conn.Open();
-                int rows = cmd.ExecuteNonQuery();
-                return rows;
-            }
-            catch (System.Data.SqlClient.SqlException E)
-            {
-                DebugUtil.log(E);
-                return -1;
-            }
-            finally
-            {
-                DBConnection.closeSqlConnection(conn);
-            }
-
-        }
-
-        public Bitmap getElevationBitMap(int blockid, double designz, int segmentid)
+        public Bitmap getElevationBitMap(int unitid, double designz, int segmentid)
         {
             string sqltext = string.Format(
-                "select elevationImage  from SEGMENT where (BLOCKID ={0}) and (DESIGNZ={1}) and (SEGMENTID={2})", blockid, designz, segmentid);
+                "select elevationImage  from SEGMENT where (UnitID ={0}) and (DESIGNZ={1}) and (SEGMENTID={2})", unitid, designz, segmentid);
             SqlConnection connection = null;
             SqlDataReader reader = null;
             try
@@ -520,6 +504,34 @@ namespace DamLKK.DB.datamap
             {
                 return null;
             }
+        }
+
+        public string getUnitBlocks(int unitid){
+            
+            SqlConnection connection = null;
+            SqlDataReader reader = null;
+            string sqlTxt = "select blockid from unit where (id=" + unitid + ") ";
+            try
+            {
+                connection = DBConnection.getSqlConnection();
+                reader = DBConnection.executeQuery(connection, sqlTxt);
+                if (reader.Read())
+                {
+                    return reader["blockid"].ToString();
+                }
+               
+            }
+            catch (Exception exp)
+            {
+                DebugUtil.log(exp);
+            
+            }
+            finally
+            {
+                DBConnection.closeDataReader(reader);
+                DBConnection.closeSqlConnection(connection);
+            }
+            return null;
         }
 
     }

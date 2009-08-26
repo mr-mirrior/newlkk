@@ -76,7 +76,7 @@ namespace DamLKK
             dlg = new DamLKK.Forms.Waiting();
             dlg.Start(null, "请稍候，正在读取数据库……", Init, 2000);
 #endif
-            //DamLKK.Geo.Coord coord = new DamLKK.Geo.Coord(341937.3756, 2936527.1123);
+            //DamLKK.Geo.Coord coord = new DamLKK.Geo.Coord(50229.8203125, 8426.7900390625);
             //DamLKK.Geo.Coord temp;
             //temp = coord.ToDamAxisCoord();
             //coord = temp.ToEarthCoord();

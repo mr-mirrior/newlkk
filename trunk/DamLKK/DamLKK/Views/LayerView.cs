@@ -1716,7 +1716,7 @@ namespace DamLKK.Views
         private void ReportThicknest()
         {
             //Bitmap[] bp=DB.datamap.DataMapManager.draw(layer.VisibleDeck.DeckInfo.BlockID, layer.VisibleDeck.DeckInfo.DesignZ, layer.VisibleDeck.DeckInfo.SegmentID);
-            Bitmap[] bp = DB.datamap.DataMapManager4.draw(_MyLayer.VisibleDeck.Unit.ID, _MyLayer.VisibleDeck.Elevation.Height, _MyLayer.VisibleDeck.ID);
+            Bitmap[] bp =DM.DB.datamap.DataMapManager4.draw(_MyLayer.VisibleDeck.Unit.ID, _MyLayer.VisibleDeck.Elevation.Height, _MyLayer.VisibleDeck.ID);
             if (bp == null)
                 Utils.MB.Warning("此仓面或者此仓面的下层仓面没有生成数据图，请确认这两个仓面都已在结束碾压监控状态出过图形报告！");
             else
@@ -1729,20 +1729,20 @@ namespace DamLKK.Views
                     di.Create();
                 }
 #if DEBUG
-                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
-                image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
+                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
+                //image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
 #else
-                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
-                image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
+                image.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
+                //image2.Save(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Elevation.Height.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "elevation.png");
 #endif
                 image.Dispose();
                 image2.Dispose();
                 System.IO.FileInfo fi = new System.IO.FileInfo(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name.Trim() + @"\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png");
-                if (fi.Exists)
+                //if (fi.Exists)
 #if !DEBUG
                 Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
 #else
-                    Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png", null);
+                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png", null);
 #endif
             }
             dlg.Finished = true;

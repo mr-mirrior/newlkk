@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using DamLKK.Utils;
+using DM.DB.datamap;
 namespace DamLKK.DB.datamap
 {
     class DataMapManager
@@ -27,14 +28,14 @@ namespace DamLKK.DB.datamap
         public static Bitmap[] draw(int blockid, double designz, int segmentid)
         {
             //从数据库中读出本仓面,和本仓面上一层的所有仓面信息.
-            Segment segment = DAO.getInstance().getSegment(blockid, designz, segmentid);
+            DM.DB.Segment segment = DAO.getInstance().getSegment(blockid, designz, segmentid);
             if (segment == null)
                 return null;
             //得到上一层的所有仓面信息
             DateTime dtend = segment.EndDate;
             String vertex = segment.Vertext;//大地坐标的vertex
             double lastDesignz = DAO.getInstance().getLastDesignZ(blockid, designz, segmentid, vertex);
-            List<Segment> segments = DAO.getInstance().getSegments(blockid, lastDesignz);
+            List<DM.DB.Segment> segments = DAO.getInstance().getSegments(blockid, lastDesignz);
             //将上一层所有仓面的数据图读出来
             if (segments == null || segments.Count == 0)
             {
@@ -691,13 +692,13 @@ namespace DamLKK.DB.datamap
 
         }
 
-        public static Pixel getPixel(String x, String y, List<Segment> segments)
+        public static Pixel getPixel(String x, String y, List<DM.DB.Segment> segments)
         {
             //确定所属仓面
             //System.out.println(blockid+" "+designz);		 
             for (int i = 0; i < segments.Count; i++)
             {
-                Segment segment = segments[i];
+                DM.DB.Segment segment = segments[i];
                 String vertex = segment.Vertext;
                 //System.out.println(vertex+" "+x+" "+y);
                 //byte[] bytes1 = getBytes(blockid,designz,segment.getSegmentID());
