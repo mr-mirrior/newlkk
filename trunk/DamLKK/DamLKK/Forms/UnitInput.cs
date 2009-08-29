@@ -143,7 +143,7 @@ namespace DamLKK.Forms
             if (DamLKK._Model.Dam.GetInstance().NewOneUnit(Blocks,tbName.Text, coordtxt, float.Parse(tbStartZ.Text), float.Parse(tbEndZ.Text)))
             {
                 Utils.MB.OK("添加仓面成功!");
-                Forms.ToolsWindow.GetInstance().cbWorkUnit.Items.Add(tbName.Text);
+                Forms.ToolsWindow.GetInstance().cbWorkUnit.Items.Insert(0, tbName.Text);
                 this.Close();
             }
             else

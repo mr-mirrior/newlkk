@@ -1006,7 +1006,7 @@ namespace DamLKK._Model
             thisPf = new RectangleF(0, topBlank * 0.7f + s.Height, bitMp.Width * 0.98f, topBlank);
             endG.DrawString(dateEndString, ftWord, Brushes.Black, thisPf, thisSf);
             //输出分区，高程，名称，时间
-            string allString = this.MyLayer.MyUnit.Name + "仓面   " + this.Elevation.Height.ToString() + "    " + this.Name + "碾压层" + this.Polygon.ActualArea.ToString("（0.00 米²）");
+            string allString =  allString = this.MyLayer.MyUnit.Blocks.First().BlockID.ToString() + "-" + this.MyLayer.MyUnit.Blocks.Last().BlockID.ToString() + "坝段   " + this.MyLayer.MyUnit.StartZ.ToString("0.0米-") + this.MyLayer.MyUnit.EndZ.ToString("0.0米")+"     " + this._Name + "碾压层" +this.Polygon.ActualArea.ToString("（0.00 米²）");
             fa = 20f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1444,7 +1444,7 @@ namespace DamLKK._Model
             //输出分区，高程，名称，时间
 
 
-            string allString = this.MyLayer.MyUnit.Name + "仓面   " + this._Elevation.Height.ToString() + "     " + this._Name + "碾压层" + pl.ActualArea.ToString("（0.00 米²）");
+            string allString = this.MyLayer.MyUnit.Blocks.First().BlockID.ToString() + "-" + this.MyLayer.MyUnit.Blocks.Last().BlockID.ToString() + "坝段   " + this.MyLayer.MyUnit.StartZ.ToString("0.0米-") + this.MyLayer.MyUnit.EndZ.ToString("0.0米")+"     " + this._Name + "碾压层" + pl.ActualArea.ToString("（0.00 米²）");
             fa = 50f;
             ftTime = new Font("微软雅黑", fa * factor);
             s = newG.MeasureString(allString, ftTime);
@@ -1539,12 +1539,14 @@ namespace DamLKK._Model
             double lo, hi;
             double zoomold = this.MyLayer.Zoom;
             this.MyLayer.Zoom = 5;
-            //this.MyLayer.CreateScreen();
+            this.MyLayer.CreateScreen();
             Bitmap bmp = ElevationImage(out lo, out hi);
             //无高程原图
             if (bmp == null)
                 return null;
-
+#if DEBUG
+            bmp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignElevation.png", System.Drawing.Imaging.ImageFormat.Png);
+#endif
             DB.DeckDAO.GetInstance().UpdateElevationBitMap(this._Unit.ID, this._Elevation.Height, this._ID,DamLKK.DB.DeckDAO.GetInstance().ToByte(bmp), lo.ToString("0.00") + "," + hi.ToString("0.00"));
             this.MyLayer.Zoom = zoomold;
             bmp = ElevationImage(out lo, out hi);
@@ -1562,10 +1564,6 @@ namespace DamLKK._Model
             {
                 di.Create();
             }
-
-#if DEBUG
-            bmp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignElevation.png", System.Drawing.Imaging.ImageFormat.Png);
-#endif
             return bmp;
         }
 #endregion
@@ -1669,6 +1667,25 @@ namespace DamLKK._Model
              bs= new DamLKK.Geo.BorderShapeII(this._Polygon.Vertex);
              return bs.IsInsideIII(cd);
         }
+
+        //private string getSubTitle(Segment segment)
+        //{
+            //几到几坝段 多少到多少高程 仓面名称 平层就显示多少多少米 斜层就显示“斜层-几”
+
+            //String unitblocks = DAO.getInstance().getUnitBlocks(segment.UnitID);
+            //String startzendz = DAO.getInstance().getStartZEndZ(segment.UnitID);
+            //string[] blocks = unitblocks.Split(',');
+            //unitblocks = blocks[1] + "-" + blocks[blocks.Length - 2];
+            //if (segment.DesignZ > 1000)
+            //{//斜层
+            //    return unitblocks + "坝段 " + startzendz +/*" 碾压层名称  "+segment.SegmentName+" "+*/segment.DesignZ + "米";
+            //}
+            //else
+            //{
+            //    return unitblocks + "坝段 " + startzendz /*+ " 碾压层名称  " + segment.SegmentName  */+ "  第" + segment.DesignZ + "斜层";
+            //}
+
+        //}
     }
 
 }
