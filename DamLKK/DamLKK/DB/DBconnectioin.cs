@@ -94,9 +94,9 @@ namespace DamLKK.DB
 
         }
 
-        ///
+        /// <summary>
         /// 执行查询sql语句,返回SqlDataReader
-
+        /// </summary>
         public static SqlDataReader executeQuery(SqlConnection sqlConnection, string sqlString)
         {
 

@@ -1397,6 +1397,10 @@ namespace DamLKK.Views
             {
                 this.tmiNotRolling.Enabled = false;
             }
+            if (_MyLayer.CurrentDeck.WorkState == DeckWorkState.END)
+            {
+                this.btnChange.Enabled = false;
+            }
 #endif
             menuDeck.Show(pt);
 
@@ -1421,8 +1425,10 @@ namespace DamLKK.Views
                 miEndDeck.Enabled = showStop;
                 miProperties.Enabled = showPrandAs;
                 miAssignment.Enabled = showPrandAs;
-                btnChange.Enabled = showPrandAs;
+                //btnChange.Enabled = showPrandAs;
             }
+            else
+                btnChange.Enabled = false;
         }
         private void CloseDeckMenu()
         {

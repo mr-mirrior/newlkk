@@ -21,6 +21,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 ;Source: "..\bin\release\HVMRuntm.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\debug\difference.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\debug\DamLKK.exe"; DestDir: "{app}"; Flags: ignoreversion
 source: "TrackPoint.wav"; destdir:"{app}"; flags: ignoreversion
 ;Source: ".\TrackingExp.txt"; DestDir: "{app}"; Flags: ignoreversion
