@@ -60,7 +60,7 @@ namespace DamLKK.Utils
                 if (s == string.Empty)
                     continue;
                 xy = s.Split(',');
-                DamLKK.Geo.Coord temp = new Geo.Coord(Convert.ToDouble(xy[0]), -Convert.ToDouble(xy[1]));
+                DamLKK.Geo.Coord temp = new Geo.Coord(Convert.ToDouble(xy[0]), Convert.ToDouble(xy[1]));
                 cds.Add(temp.ToEarthCoord());
             }
 

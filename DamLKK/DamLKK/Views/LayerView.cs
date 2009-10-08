@@ -814,10 +814,10 @@ namespace DamLKK.Views
                 count=new int[]{0,0};
 
             Coord dampt = ScreenToDam(DePadding(_CursorPos));
-            
+
             Coord damaxis = dampt.ToDamAxisCoord();
             //dampt = damaxis.ToEarthCoord();
-            //dampt.Y = -dampt.Y;
+            //damaxis.Y = -dampt.Y;
             PointF scrPt = pt;
             scrPt = new PointF(pt.X, _MyDisplayRectangle.Height - _CursorPos.Y - PAD_VERT * 2);
             string dbg = string.Format("层:{0}, 大地{1}, 施工{2}",
@@ -1748,7 +1748,7 @@ namespace DamLKK.Views
 #if !DEBUG
                 Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
 #else
-                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png", null);
+                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.ID.ToString()+ _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "thickness.png", null);
 #endif
             }
             dlg.Finished = true;
@@ -1773,7 +1773,7 @@ namespace DamLKK.Views
 #if !DEBUG
                 Utils.Sys.SysUtils.StartProgram(fi.FullName, null);
 #else
-                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.Name + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "roll.png", null);
+                Utils.Sys.SysUtils.StartProgram(@"C:\OUTPUT\" + _MyLayer.VisibleDeck.Unit.ID.ToString() + _MyLayer.VisibleDeck.Elevation.Height.ToString("0.0") + _MyLayer.VisibleDeck.ID.ToString() + "roll.png", null);
 #endif
             }
         }

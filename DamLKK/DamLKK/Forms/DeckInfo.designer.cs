@@ -374,7 +374,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "仓面设置";
+            this.Text = "碾压层设置";
             this.Load += new System.EventHandler(this.OpenDeckInfo_Load);
             this.Shown += new System.EventHandler(this.DeckInfo_Shown);
             this.groupBox1.ResumeLayout(false);
