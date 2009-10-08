@@ -50,7 +50,7 @@ namespace DamLKK.Forms
                     Utils.MB.Warning("您输入的坐标不正确，请检查后重新输入！");
                     return;
                 }
-                DamLKK.Geo.Coord cd = new DamLKK.Geo.Coord(Convert.ToDouble(cdxy[0]),-Convert.ToDouble(cdxy[1]));
+                DamLKK.Geo.Coord cd = new DamLKK.Geo.Coord(Convert.ToDouble(cdxy[0]),Convert.ToDouble(cdxy[1]));
                 //if (cd.XF>700||cd.YF>500||cd.YF<-500)
                 //{
                 //    Utils.MB.Warning("输入坐标超越坝轴坐标界限，请检查后重新输入！");

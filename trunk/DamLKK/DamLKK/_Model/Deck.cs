@@ -686,12 +686,12 @@ namespace DamLKK._Model
                     return false;
 
                 int[] areas;
-                _Rolladdress = @"C:\OUTPUT\" + this._MyLayer.CurrentDeck.Name + @"\"  +this.Elevation.Height.ToString("0.0") + this.ID.ToString();
+                _Rolladdress = @"C:\OUTPUT\" + this._MyLayer.CurrentDeck.Name + @"\" + this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString();
                 Bitmap output = CreateRollCountImage(out areas,0);
 
                 DB.DeckDAO.GetInstance().UpdateRollBitMap(this.Unit.ID, this.Elevation.Height, this._ID, DB.DeckDAO.GetInstance().ToByte(output));
 #if DEBUG
-                output.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignRoll.png", System.Drawing.Imaging.ImageFormat.Png);
+                output.Save(@"C:\OUTPUT\" + this.Unit.ID.ToString()+ this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignRoll.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
                 layer.Zoom = oldZoom;
 
@@ -1044,15 +1044,15 @@ namespace DamLKK._Model
             {
                 case 0:
                     endG.DrawString("碾压遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-                    mapname=this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
+                    mapname = this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "roll.png";
                     break;
                 case 1:
                     endG.DrawString("静碾遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-                    mapname=this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "NoLibroll.png";
+                    mapname = this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "NoLibroll.png";
                     break;
                 case 2:
                     endG.DrawString("振碾遍数图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-                    mapname = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "Libroll.png";
+                    mapname = this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "Libroll.png";
                     break;
             }       
             
@@ -1475,12 +1475,12 @@ namespace DamLKK._Model
             s = endG.MeasureString("轴", _FtScale);
             endG.DrawString("轴(m)", _FtScale, Brushes.Black, offset * 0.9f, topBlank - s.Height * 0.9f + 2 * factor);
             endG.DrawString("碾压轨迹图形报告", ftTitle, Brushes.Black, thisPf, thisSf);
-            _Trackingaddress = this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png";
+            _Trackingaddress = this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png";
 
 #if DEBUG
-            bitMp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png");
+            bitMp.Save(@"C:\OUTPUT\" + this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "tracing.png");
 #else
-            bitMp.Save(_Rolladdress+"Elevetion.png", System.Drawing.Imaging.ImageFormat.Png);
+            bitMp.Save(_Rolladdress+"tracing.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
 
             output.Dispose();
@@ -1545,7 +1545,7 @@ namespace DamLKK._Model
             if (bmp == null)
                 return null;
 #if DEBUG
-            bmp.Save(@"C:\OUTPUT\" + this.Unit.Name + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignElevation.png", System.Drawing.Imaging.ImageFormat.Png);
+            bmp.Save(@"C:\OUTPUT\" + this.Unit.ID.ToString() + this.Elevation.Height.ToString("0.0") + this.ID.ToString() + "OrignElevation.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
             DB.DeckDAO.GetInstance().UpdateElevationBitMap(this._Unit.ID, this._Elevation.Height, this._ID,DamLKK.DB.DeckDAO.GetInstance().ToByte(bmp), lo.ToString("0.00") + "," + hi.ToString("0.00"));
             this.MyLayer.Zoom = zoomold;
